@@ -2,9 +2,9 @@
 
 [![GEOS-ESM](https://circleci.com/gh/GEOS-ESM/MAPL.svg?style=svg)](https://app.circleci.com/pipelines/github/GEOS-ESM/MAPL)
 
-[![ESMF develop - main](https://github.com/GEOS-ESM/MAPL/actions/workflows/spack-ci-esmf-develop.yml/badge.svg)
-[![ESMF develop - develop](https://github.com/GEOS-ESM/MAPL/actions/workflows/spack-ci-esmf-develop.yml/badge.svg?branch=develop)
-[![ESMF develop - MAPL3](https://github.com/GEOS-ESM/MAPL/actions/workflows/spack-ci-esmf-develop.yml/badge.svg?branch=release/MAPL-v3)
+![ESMF develop - main](https://github.com/GEOS-ESM/MAPL/actions/workflows/spack-ci-esmf-develop.yml/badge.svg)
+![ESMF develop - develop](https://github.com/GEOS-ESM/MAPL/actions/workflows/spack-ci-esmf-develop.yml/badge.svg?branch=develop)
+![ESMF develop - MAPL3](https://github.com/GEOS-ESM/MAPL/actions/workflows/spack-ci-esmf-develop.yml/badge.svg?branch=release/MAPL-v3)
 
 [![DOI](https://zenodo.org/badge/195083467.svg)](https://zenodo.org/badge/latestdoi/195083467)
 
