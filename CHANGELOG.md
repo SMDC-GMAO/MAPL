@@ -9,15 +9,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Fixed bug with dervied exports in ExtData in filter function
+- define `comp_name` in `MAPL_GridCreate` when GC is not present
 - Fixed bug in profiler demo
+- Fixed uninitialized num_levels bug causing gcc14 to crash a node due to allocating enormous amount of memory
+- Fix for GNU + MVAPICH 4 disabling ieee halting around `MPI_Init_thread()`
 
 ### Added
+
+- Added logging prints for `MAPL_read_bundle`
+- Added a new `StateFilterItem` funtion to apply a mask or extra using a combination of variables from a state and return an array with the result
+- Implemented a new feature in to allow users to select the appropriate [`ESMF_PIN`](https://earthsystemmodeling.org/docs/release/latest/ESMF_refdoc/node6.html#const:pin_flag) values. Users control this via `CAP.rc` and the choices are:
+  - `ESMF_PINFLAG: PET` --> `ESMF_PIN_DE_TO_PET`
+  - `ESMF_PINFLAG: VAS` --> `ESMF_PIN_DE_TO_VAS`
+  - `ESMF_PINFLAG: SSI` --> `ESMF_PIN_DE_TO_SSI`
+  - `ESMF_PINFLAG: SSI_CONTIG` --> `ESMF_PIN_DE_TO_SSI_CONTIG` (default with no setting)
 
 ### Changed
 
 - Update `components.yaml`
-  - `ESMA_cmake` v3.58.2
+  - `ESMA_env` v4.37.0
+    - Update to Baselibs 7.33.0
+      - ESMF 8.8.1 (needed for MAPL3)
+      - Fixes for CMake 4
+  - `ESMA_cmake` v3.59.0
     - Fix for XCode 16.3
+    - Fixes for f2py with MPT
+
+- Update documentation on ACG in repo
+- Update CI to use ifx 2025.1
 
 ### Removed
 
@@ -27,11 +47,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Renamed module for convervative vertical regridding code so as to not conflict so an external module
+- Renamed module for conservative vertical regridding code so as to not conflict so an external module
 
 ### Added
 
-- Added a few error traps in ExtData when processing veritcal coordinate for use in regridding
+- Added a few error traps in ExtData when processing vertical coordinate for use in regridding
 
 ## [2.55.0] - 2025-04-15
 
