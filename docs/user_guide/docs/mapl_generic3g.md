@@ -180,6 +180,103 @@ call MAPL_GridCompSetGeom(gridcomp, xgrid, rc=rc)
 call MAPL_GridCompSetGeom(gridcomp, locstream, rc=rc)
 ```
 
+### MAPL_GridCompIsGeneric
+
+Determines if a gridded component is a generic MAPL component.
+
+**Interface:**
+```fortran
+is_generic = MAPL_GridCompIsGeneric(gridcomp, rc=rc)
+```
+
+**Parameters:**
+- `gridcomp` (ESMF_GridComp, in): The gridded component to test
+- `rc` (integer, optional, out): Return code
+
+**Returns:** `.true.` if the component is generic, `.false.` otherwise
+
+### MAPL_GridCompIsUser
+
+Determines if a gridded component is a user-defined component.
+
+**Interface:**
+```fortran
+is_user = MAPL_GridCompIsUser(gridcomp, rc=rc)
+```
+
+**Parameters:**
+- `gridcomp` (ESMF_GridComp, in): The gridded component to test
+- `rc` (integer, optional, out): Return code
+
+**Returns:** `.true.` if the component is user-defined, `.false.` otherwise
+
+### MAPL_GridCompAddConnectivity
+
+Adds connectivity between source and destination components.
+
+**Interface:**
+```fortran
+call MAPL_GridCompAddConnectivity(gridcomp, &
+     src_comp=src_comp, src_names=src_names, &
+     dst_comp=dst_comp, dst_names=dst_names, rc=rc)
+```
+
+**Parameters:**
+- `gridcomp` (ESMF_GridComp, inout): Parent gridded component
+- `src_comp` (character, in): Source component name
+- `src_names` (character, in): Source field names
+- `dst_comp` (character, in): Destination component name
+- `dst_names` (character, optional, in): Destination field names (defaults to src_names)
+- `rc` (integer, optional, out): Return code
+
+### MAPL_GridCompReexport
+
+Re-exports a field from a source component with optional renaming.
+
+**Interface:**
+```fortran
+call MAPL_GridCompReexport(gridcomp, &
+     src_comp=src_comp, src_name=src_name, &
+     src_intent=src_intent, new_name=new_name, rc=rc)
+```
+
+**Parameters:**
+- `gridcomp` (ESMF_GridComp, inout): Parent gridded component
+- `src_comp` (character, in): Source component name
+- `src_name` (character, in): Source field name
+- `src_intent` (character, optional, in): Source field intent
+- `new_name` (character, optional, in): New name for the re-exported field
+- `rc` (integer, optional, out): Return code
+
+### MAPL_GridCompConnectAll
+
+Connects all compatible fields between source and destination components.
+
+**Interface:**
+```fortran
+call MAPL_GridCompConnectAll(gridcomp, src_comp, dst_comp, rc=rc)
+```
+
+**Parameters:**
+- `gridcomp` (ESMF_GridComp, inout): Parent gridded component
+- `src_comp` (character, in): Source component name
+- `dst_comp` (character, in): Destination component name
+- `rc` (integer, optional, out): Return code
+
+### MAPL_ClockGet
+
+Retrieves timing information from an ESMF clock.
+
+**Interface:**
+```fortran
+call MAPL_ClockGet(clock, dt, rc=rc)
+```
+
+**Parameters:**
+- `clock` (ESMF_Clock, in): ESMF clock object
+- `dt` (real(ESMF_KIND_R4), out): Time step in seconds
+- `rc` (integer, optional, out): Return code
+
 ### MAPL_GridCompGetResource
 
 Retrieves configuration resources with type-specific overloads for different data types:
@@ -268,6 +365,61 @@ call MAPL_GridCompGetResource(gridcomp, "MY_REAL_KEY", my_real_value, rc=rc)
 ! Get string resource
 call MAPL_GridCompGetResource(gridcomp, "MY_STRING_KEY", my_string_value, &
                               default="default_value", rc=rc)
+```
+
+### Component Type Checking
+
+```fortran
+use mapl3g_Generic
+type(ESMF_GridComp) :: gridcomp
+logical :: is_generic, is_user
+integer :: rc
+
+! Check component type
+is_generic = MAPL_GridCompIsGeneric(gridcomp, rc=rc)
+is_user = MAPL_GridCompIsUser(gridcomp, rc=rc)
+
+if (is_generic) then
+   ! Handle generic component
+   print *, "Component is generic"
+else if (is_user) then
+   ! Handle user component
+   print *, "Component is user-defined"
+end if
+```
+
+### Component Connectivity
+
+```fortran
+use mapl3g_Generic
+type(ESMF_GridComp) :: parent_comp
+integer :: rc
+
+! Add simple connectivity between components
+call MAPL_GridCompAddConnectivity(parent_comp, &
+     src_comp="AtmosphereModel", src_names="Temperature,Humidity", &
+     dst_comp="OceanModel", dst_names="SST,Evaporation", rc=rc)
+
+! Re-export a field with a new name
+call MAPL_GridCompReexport(parent_comp, &
+     src_comp="AtmosphereModel", src_name="Temperature", &
+     new_name="AirTemperature", rc=rc)
+
+! Connect all compatible fields between components
+call MAPL_GridCompConnectAll(parent_comp, "AtmosphereModel", "OceanModel", rc=rc)
+```
+
+### Timing Operations
+
+```fortran
+use mapl3g_Generic
+type(ESMF_Clock) :: clock
+real :: dt_seconds
+integer :: rc
+
+! Get time step from clock
+call MAPL_ClockGet(clock, dt_seconds, rc=rc)
+print *, "Time step: ", dt_seconds, " seconds"
 ```
 
 ## Error Handling
