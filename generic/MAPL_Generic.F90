@@ -665,30 +665,41 @@ contains
        type(ESMF_GridComp), pointer :: childgridcomp
        logical :: found
 
+       ! Process variable specifications to handle dependency relationships
+       ! This handles two types of dependencies:
+       ! 1. DEPENDS_ON_CHILDREN: Variables that depend on child component outputs
+       ! 2. DEPENDS_ON: Variables that depend on other variables in the same component
+       
        ! get the export specs
        call  MAPL_StateGetVarSpecs(meta, export=ex_specs, _RC)
        ! allow for possibility we do not have export specs
        _RETURN_IF(.not. associated(ex_specs))
 
-       ! check for DEPENDS_ON_CHILDREN
+       ! Loop through all export specifications to check for dependencies
        do K=1,size(EX_SPECS)
           call MAPL_VarSpecGet(EX_SPECS(K), SHORT_NAME=SHORT_NAME, &
                DEPENDS_ON_CHILDREN=DEPENDS_ON_CHILDREN, &
                DEPENDS_ON=DEPENDS_ON, _RC)
+               
+          ! Handle DEPENDS_ON_CHILDREN: mark corresponding variables in all children as alwaysAllocate
           if (DEPENDS_ON_CHILDREN) then
-!             mark SHORT_NAME in each child "alwaysAllocate"
+             ! Ensure we have children if variable depends on them
              nc = meta%get_num_children()
              _ASSERT(nc > 0, 'DEPENDS_ON_CHILDREN requires at least 1 child')
+             
+             ! Search each child component for matching export variable
              do I=1, nc
                 childgridcomp => meta%get_child_gridcomp(i)
                 call MAPL_InternalStateRetrieve(childgridcomp, cmeta, _RC)
                 found = .false.
                 call  MAPL_StateGetVarSpecs(cmeta, export=c_ex_specs, _RC)
                 _ASSERT(associated(c_ex_specs), 'Component '//trim(cmeta%compname)//' must have a valid export spec')
+                
                 ! find the "correct" export spec (i.e. has the same SHORT_NAME)
                 do j=1,size(c_ex_specs)
                    call MAPL_VarSpecGet(c_ex_specs(j), SHORT_NAME=NAME, _RC)
                    if (short_name == name) then
+                      ! Mark this variable as always allocated since parent depends on it
                       call MAPL_VarSpecSet(c_ex_specs(j), alwaysAllocate=.true., _RC)
                       found = .true.
                       exit
@@ -698,10 +709,12 @@ contains
              end do
           end if ! DEPENDS_ON_CHILDREN
 
+          ! Handle DEPENDS_ON: mark specified variables in this component as alwaysAllocate  
           if (allocated(depends_on)) then
-!             mark SHORT_NAME in each variable "alwaysAllocate"
              nvars = size(depends_on)
              _ASSERT(nvars > 0, 'DEPENDS_ON requires at least 1 var')
+             
+             ! Mark each dependent variable as always allocated
              do I=1, nvars
                 ! find the "correct" export spec (i.e. has the same SHORT_NAME)
                 do j=1,size(ex_specs)
@@ -823,20 +836,26 @@ contains
                call MAPL_GenericConnCheck(GC, _RC)
 
                ! Collect all IMPORT and EXPORT specs in the entire tree in one list
+               ! This creates a unified view of all variable specifications across
+               ! the entire component hierarchy for connectivity analysis
                !-------------------------------------------------------------------
                call MAPL_GenericSpecEnum(GC, SPECS, _RC)
 
-               ! Label each spec by its place on the list--sort of.
+               ! Label each spec by its place on the list for connectivity tracking
+               ! This labeling system is used to identify and group related variables
+               ! across different components that should be connected together
                !--------------------------------------------------
 
                TS = SPECS%var_specs%size()
                allocate(LABEL(TS), __STAT__)
 
+               ! Initialize each spec with its own unique label
                do I = 1, TS
                   LABEL(I)=I
                end do
 
-               ! For each spec...
+               ! Process each specification to group related variables
+               ! Variables that should be connected get the same label
                !-----------------
 
                do I = 1, TS
@@ -846,10 +865,12 @@ contains
                   call MAPL_VarSpecGet(SPECS%old_var_specs(I), LABEL=LBL, _RC)
                   _ASSERT(LBL > 0, "GenericSetServices :: Expected LBL > 0.")
 
-                  ! Do something to sort labels???
+                  ! Apply label consolidation algorithm to group related variables
+                  ! This ensures that variables that should be connected share labels
                   !-------------------------------
                   LOWEST_(LBL)
 
+                  ! Assign the lower label value to maintain consistent grouping
                   good_label = min(lbl, i)
                   bad_label = max(lbl, i)
                   label(bad_label) = good_label
@@ -4074,6 +4095,19 @@ contains
 
 
    !BOPI
+   !>
+   !> @brief Sets an entry point method for a gridded component
+   !>
+   !> This subroutine registers a user-provided routine as an entry point
+   !> for a specific ESMF method (Initialize, Run, Finalize, etc.) in a
+   !> gridded component. This is used to customize component behavior
+   !> while maintaining the MAPL framework structure.
+   !>
+   !> @param[inout] GC - Gridded component to set entry point for
+   !> @param[in] registeredMethod - ESMF method type to register
+   !> @param[in] usersRoutine - User-provided subroutine to register
+   !> @param[out] RC - Return code (optional)
+   !>
    ! !IROUTINE: MAPL_GridCompSetEntryPoint
 
    !INTERFACE:
@@ -10157,6 +10191,20 @@ contains
    end subroutine MAPL_GenericMakeXchgNatural
 
 
+   !>
+   !> @brief Creates or configures an ESMF grid for a MAPL component
+   !>
+   !> This subroutine creates an ESMF grid based on configuration parameters
+   !> or copies a grid from an existing source component. It handles various
+   !> grid types including cubed-sphere, lat-lon, and other specialized grids
+   !> supported by the MAPL grid manager.
+   !>
+   !> @param[inout] GC - Gridded component to set grid for (optional)
+   !> @param[inout] MAPLOBJ - MAPL component metadata (optional)
+   !> @param[out] ESMFGRID - Created ESMF grid (optional)
+   !> @param[inout] srcGC - Source component to copy grid from (optional)
+   !> @param[out] rc - Return code (optional)
+   !>
    subroutine MAPL_GridCreate(GC, MAPLOBJ, ESMFGRID, srcGC, rc)
       type(ESMF_GridComp), optional,         intent(INOUT) :: GC
       type (MAPL_MetaComp),optional, target, intent(INOUT) :: MAPLOBJ
@@ -10448,6 +10496,20 @@ contains
 
    end subroutine MAPL_SetStateSave
 
+   !>
+   !> @brief Recursively saves component states to files
+   !>
+   !> This subroutine performs state saving (checkpointing) for a component
+   !> and all its children. It saves both import and internal states to
+   !> files according to the configured file format and naming conventions.
+   !> This is typically called when recording alarms ring.
+   !>
+   !> @param[inout] GC - Composite gridded component to save
+   !> @param[inout] IMPORT - Import state to save
+   !> @param[inout] EXPORT - Export state (unused but required by interface)
+   !> @param[inout] CLOCK - Current clock for timestamp generation
+   !> @param[out] RC - Return code (optional)
+   !>
    recursive subroutine MAPL_GenericStateSave( GC, IMPORT, EXPORT, CLOCK, RC )
       type(ESMF_GridComp), intent(inout) :: GC     ! composite gridded component
       type(ESMF_State),    intent(inout) :: IMPORT ! import state
@@ -10588,6 +10650,20 @@ contains
    end subroutine MAPL_GenericStateSave
 
 
+   !>
+   !> @brief Recursively restores component states from files
+   !>
+   !> This subroutine performs state restoration from previously saved
+   !> checkpoint files for a component and all its children. It reads
+   !> both import and internal states from files and restores the
+   !> component to the saved state.
+   !>
+   !> @param[inout] GC - Composite gridded component to restore
+   !> @param[inout] IMPORT - Import state to restore
+   !> @param[inout] EXPORT - Export state (unused but required by interface)
+   !> @param[inout] CLOCK - Current clock for file operations
+   !> @param[out] RC - Return code (optional)
+   !>
    recursive subroutine MAPL_GenericStateRestore ( GC, IMPORT, EXPORT, CLOCK, RC )
 
       ! !ARGUMENTS:
@@ -10706,6 +10782,18 @@ contains
 
    end subroutine MAPL_DestroyStateSave
 
+   !>
+   !> @brief Adds recording alarms to a MAPL component
+   !>
+   !> This subroutine configures alarms that will trigger state recording
+   !> (checkpointing) operations for a MAPL component. Each alarm can be
+   !> associated with a different file format for output.
+   !>
+   !> @param[inout] MAPLOBJ - MAPL component to add recording alarms to
+   !> @param[inout] ALARM - Array of ESMF alarms that trigger recording
+   !> @param[in] FILETYPE - Array of file format types for each alarm
+   !> @param[out] RC - Return code (optional)
+   !>
    subroutine MAPL_AddRecord(MAPLOBJ, ALARM, FILETYPE, RC)
       type(MAPL_MetaComp), intent(inout) :: MAPLOBJ
       type(ESMF_Alarm),    intent(INout) :: ALARM(:)
@@ -10783,6 +10871,17 @@ contains
       _RETURN(ESMF_SUCCESS)
    end subroutine MAPL_AddRecord
 
+   !>
+   !> @brief Recursively disables a recording alarm by name
+   !>
+   !> This subroutine searches for and disables a recording alarm with the
+   !> specified name in the current component and all its children. This
+   !> can be used to temporarily stop recording operations.
+   !>
+   !> @param[inout] MAPLOBJ - MAPL component to search for alarm
+   !> @param[in] ALARM_NAME - Name of the alarm to disable
+   !> @param[out] RC - Return code (optional)
+   !>
    recursive subroutine MAPL_DisableRecord(MAPLOBJ, ALARM_NAME, RC)
       type(MAPL_MetaComp), intent(inout) :: MAPLOBJ
       character(len=*),    intent(in   ) :: ALARM_NAME
@@ -11071,6 +11170,18 @@ contains
       _RETURN(ESMF_SUCCESS)
    end subroutine MAPL_GetAllExchangeGrids
 
+   !>
+   !> @brief Marks an import variable to not be allocated automatically
+   !>
+   !> This subroutine prevents automatic allocation of a specified import
+   !> variable in a gridded component. This is useful when the variable
+   !> will be allocated manually or provided by another component.
+   !>
+   !> @param[inout] GC - Gridded component containing the import specification
+   !> @param[in] NAME - Name of the import variable to skip allocation
+   !> @param[in] notFoundOK - If true, don't fail if variable not found (optional)
+   !> @param[out] RC - Return code (optional)
+   !>
    subroutine MAPL_DoNotAllocateImport(GC, NAME, notFoundOK, RC)
       type(ESMF_GridComp),  intent(INOUT) :: GC         ! Gridded component
       character(len=*),     intent(IN   ) :: NAME
@@ -11096,6 +11207,18 @@ contains
       _RETURN(ESMF_SUCCESS)
    end subroutine MAPL_DoNotAllocateImport
 
+   !>
+   !> @brief Marks an internal variable to not be allocated automatically
+   !>
+   !> This subroutine prevents automatic allocation of a specified internal
+   !> variable in a gridded component. This is useful when the variable
+   !> will be allocated manually or handled in a custom way.
+   !>
+   !> @param[inout] GC - Gridded component containing the internal specification
+   !> @param[in] NAME - Name of the internal variable to skip allocation
+   !> @param[in] notFoundOK - If true, don't fail if variable not found (optional)
+   !> @param[out] RC - Return code
+   !>
    subroutine MAPL_DoNotAllocateInternal(GC, NAME, notFoundOK, RC)
       type(ESMF_GridComp),  intent(INOUT) :: GC         ! Gridded component
       character(len=*),     intent(IN   ) :: NAME
@@ -11119,6 +11242,18 @@ contains
       _RETURN(ESMF_SUCCESS)
    end subroutine MAPL_DoNotAllocateInternal
 
+   !>
+   !> @brief Core routine to mark a variable specification for non-allocation
+   !>
+   !> This is the underlying routine that actually sets the doNotAllocate flag
+   !> on a variable specification. It's called by the higher-level wrapper
+   !> routines for import and internal variables.
+   !>
+   !> @param[inout] SPEC - Array of variable specifications to search
+   !> @param[in] NAME - Name of the variable to mark as non-allocatable
+   !> @param[in] notFoundOK - If true, don't fail if variable not found (optional)
+   !> @param[out] RC - Return code (optional)
+   !>
    subroutine MAPL_DoNotAllocateVar(SPEC, NAME, notFoundOK, RC)
       type (MAPL_VarSpec),  pointer       :: SPEC(:)
       character(len=*),     intent(IN   ) :: NAME
@@ -11443,6 +11578,20 @@ contains
       _RETURN(ESMF_SUCCESS)
    end subroutine warn_empty
 
+   !>
+   !> @brief Recursively adds integer attributes to fields across component hierarchy
+   !>
+   !> This subroutine recursively traverses the component hierarchy and adds
+   !> a specified integer attribute to all fields with the given name. This
+   !> is useful for setting metadata attributes that need to be consistent
+   !> across multiple components.
+   !>
+   !> @param[inout] gc - Pointer to gridded component to start from
+   !> @param[in] field_name - Name of the field to add attribute to
+   !> @param[in] att_name - Name of the attribute to add
+   !> @param[in] att_val - Integer value of the attribute
+   !> @param[out] rc - Return code (optional)
+   !>
    recursive subroutine MAPL_AddAttributeToFields_I4(gc,field_name,att_name,att_val,rc)
       type(ESMF_GridComp), pointer, intent(inout) :: gc
       character(len=*), intent(in) :: field_name
@@ -11480,6 +11629,19 @@ contains
       _RETURN(_SUCCESS)
    end subroutine MAPL_AddAttributeToFields_I4
 
+   !>
+   !> @brief Adds a method callback to an ESMF state
+   !>
+   !> This subroutine registers a user-provided callback method with an ESMF
+   !> state using the specified label. The method can then be invoked later
+   !> using the label. This is part of the MAPL callback system for extensible
+   !> component behavior.
+   !>
+   !> @param[inout] state - ESMF state to add method to
+   !> @param[in] label - Label/name for the method
+   !> @param[in] userRoutine - User-provided callback routine
+   !> @param[out] rc - Return code (optional)
+   !>
    subroutine MAPL_MethodAdd(state, label, userRoutine, rc)
       use mapl_ESMF_Interfaces
       use mapl_CallbackMap
