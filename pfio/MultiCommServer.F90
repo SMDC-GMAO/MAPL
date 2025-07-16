@@ -169,11 +169,11 @@ contains
       integer :: status
 
       if ( this%front_comm /= MPI_COMM_NULL) then
-         call start_front(_RC)
+         call start_front(_rc)
       endif
 
       if ( this%back_comm /= MPI_COMM_NULL) then
-         call start_back(_RC)
+         call start_back(_rc)
       endif
 
       call this%splitter%free_sub_comm()
@@ -195,11 +195,11 @@ contains
             call MPI_Bcast(cmd, 1, MPI_INTEGER, 0, this%server_comm, ierr)
             _VERIFY(ierr)
             if (cmd == -1) exit
-            call this%create_remote_win(_RC)
-            call this%receive_output_data(_RC)
-            call this%put_dataToFile(_RC)
+            call this%create_remote_win(_rc)
+            call this%receive_output_data(_rc)
+            call this%put_dataToFile(_rc)
 
-            call this%clean_up(_RC)
+            call this%clean_up(_rc)
 
          enddo
          _RETURN(_SUCCESS)
@@ -229,7 +229,7 @@ contains
 
                thread_ptr=>this%threads%at(i)
                !handle the message
-               call thread_ptr%run(_RC)
+               call thread_ptr%run(_rc)
                !delete the thread object if it terminates
                if(thread_ptr%do_terminate()) then
                   mask(i) = .true.
@@ -471,7 +471,7 @@ contains
 
 
       call this%clear_DataReference()
-      call this%clear_RequestHandle(_RC)
+      call this%clear_RequestHandle(_rc)
       call this%set_AllBacklogIsEmpty(.true.)
       this%serverthread_done_msgs(:) = .false.
 
@@ -517,7 +517,7 @@ contains
                   offset     = this%stage_offset%at(i_to_string(q%request_id))
                   offset_address   = c_loc(i_ptr(offset+1))
                   ! (2) write data
-                  call threadPtr%put_DataToFile(q,offset_address, _RC)
+                  call threadPtr%put_DataToFile(q,offset_address, _rc)
                   !  (3) leave a mark, it has been written
                   call this%stage_offset%insert(i_to_string(q%request_id)//'done',0_MPI_ADDRESS_KIND)
                endif

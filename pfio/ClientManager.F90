@@ -167,7 +167,7 @@ contains
       integer :: request_id, status
 
       clientPtr => this%current()
-      request_id = clientPtr%prefetch_data(collection_id, file_name, var_name, data_reference, start=start, _RC)
+      request_id = clientPtr%prefetch_data(collection_id, file_name, var_name, data_reference, start=start, _rc)
 
       _RETURN(_SUCCESS)
       _UNUSED_DUMMY(unusable)
@@ -331,7 +331,7 @@ contains
       integer :: request_id, status
 
       clientPtr => this%current()
-      request_id = clientPtr%collective_stage_data(collection_id, file_name, var_name, data_reference, _RC)
+      request_id = clientPtr%collective_stage_data(collection_id, file_name, var_name, data_reference, _rc)
 
       _RETURN(_SUCCESS)
       _UNUSED_DUMMY(unusable)
@@ -346,7 +346,7 @@ contains
       class (ClientThread), pointer :: clientPtr
 
       clientPtr =>this%current()
-      call clientPtr%shake_hand(_RC)
+      call clientPtr%shake_hand(_rc)
 
       _RETURN(_SUCCESS)
       _UNUSED_DUMMY(unusable)
@@ -361,7 +361,7 @@ contains
       class (ClientThread), pointer :: clientPtr
 
       clientPtr =>this%current()
-      call clientPtr%done_prefetch(_RC)
+      call clientPtr%done_prefetch(_rc)
 
       _RETURN(_SUCCESS)
       _UNUSED_DUMMY(unusable)
@@ -375,7 +375,7 @@ contains
       class (ClientThread), pointer :: clientPtr
 
       clientPtr =>this%current()
-      call clientPtr%done_collective_prefetch(_RC)
+      call clientPtr%done_collective_prefetch(_rc)
 
       _RETURN(_SUCCESS)
       _UNUSED_DUMMY(unusable)
@@ -389,7 +389,7 @@ contains
       class (ClientThread), pointer :: clientPtr
 
       clientPtr =>this%current()
-      call clientPtr%done_stage(_RC)
+      call clientPtr%done_stage(_rc)
 
       _RETURN(_SUCCESS)
       _UNUSED_DUMMY(unusable)
@@ -404,7 +404,7 @@ contains
       integer :: status
 
       clientPtr =>this%current()
-      call clientPtr%done_collective_stage(_RC)
+      call clientPtr%done_collective_stage(_rc)
 
       _RETURN(_SUCCESS)
       _UNUSED_DUMMY(unusable)
@@ -418,7 +418,7 @@ contains
       class (ClientThread), pointer :: clientPtr
 
       clientPtr =>this%current()
-      call clientPtr%wait_all(_RC)
+      call clientPtr%wait_all(_rc)
 
       _RETURN(_SUCCESS)
       _UNUSED_DUMMY(unusable)
@@ -433,7 +433,7 @@ contains
       class (ClientThread), pointer :: clientPtr
 
       clientPtr =>this%current()
-      call clientPtr%post_wait_all(_RC)
+      call clientPtr%post_wait_all(_rc)
 
       _RETURN(_SUCCESS)
       _UNUSED_DUMMY(unusable)
@@ -450,7 +450,7 @@ contains
 
       do i = 1, this%size()
          clientPtr =>this%clients%at(i)
-         call clientPtr%wait_all(_RC)
+         call clientPtr%wait_all(_rc)
          call clientPtr%terminate()
       enddo
 
@@ -503,7 +503,7 @@ contains
 
       if (ssize == 0) then
          call this%next()
-         call this%wait(_RC)
+         call this%wait(_rc)
          _RETURN(_SUCCESS)
       endif
 
@@ -556,7 +556,7 @@ contains
          nwritings_small(1:ssize-1) = nwritings_small(2:ssize)
          nwritings_small(ssize) = nwriting
       end if
-      call this%wait(_RC)
+      call this%wait(_rc)
 
       _RETURN(_SUCCESS)
       _UNUSED_DUMMY(unusable)

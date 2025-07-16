@@ -106,8 +106,8 @@ contains
          _RETURN(_SUCCESS)
       end if
 
-      call this%make_metadata(filename,file_metadata,_RC)
-      call file_metadata%get_time_info(timeVector=time_series,_RC)
+      call this%make_metadata(filename,file_metadata,_rc)
+      call file_metadata%get_time_info(timeVector=time_series,_rc)
       num_times = size(time_series)
       found_time = .false.
       if (bracketside == 'L') then
@@ -185,7 +185,7 @@ contains
      if (allocated(this%valid_range)) then
         useable_time = this%valid_range(1)
      end if
-     call fill_grads_template(trial_file, this%file_template, time=useable_time, _RC)
+     call fill_grads_template(trial_file, this%file_template, time=useable_time, _rc)
      inquire(file=trim(trial_file),exist=file_found)
 
      if (file_found) then
@@ -194,7 +194,7 @@ contains
      end if
      do i=1, MAX_TRIALS
         useable_time = useable_time + this%frequency
-        call fill_grads_template(trial_file, this%file_template, time=useable_time, _RC)
+        call fill_grads_template(trial_file, this%file_template, time=useable_time, _rc)
         inquire(file=trim(trial_file),exist=file_found)
         if (file_found) exit
      enddo

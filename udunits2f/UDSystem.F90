@@ -417,7 +417,7 @@ contains
 
       unit1 = UDUnit(from)
       unit2 = UDUnit(to)
-      convertible = are_convertible_udunit(unit1, unit2, _RC)
+      convertible = are_convertible_udunit(unit1, unit2, _rc)
 
       _RETURN(UT_SUCCESS)
    end function are_convertible_str

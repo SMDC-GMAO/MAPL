@@ -36,21 +36,21 @@ contains
       
       option => options%at('nx')
       _ASSERT(associated(option), 'nx not found')
-      call cast(option, spec%nx, _RC)
+      call cast(option, spec%nx, _rc)
 
       option => options%at('n_levs')
       _ASSERT(associated(option), 'n_levs not found')
-      call cast(option, spec%n_levs, _RC)
+      call cast(option, spec%n_levs, _rc)
 
 
       option => options%at('n_writers')
       _ASSERT(associated(option), 'n_writers not found')
-      call cast(option, spec%n_writers, _RC)
+      call cast(option, spec%n_writers, _rc)
 
 
       option => options%at('n_tries')
       _ASSERT(associated(option), 'n_tries not found')
-      call cast(option, spec%n_tries, _RC)
+      call cast(option, spec%n_tries, _rc)
       
       _RETURN(_SUCCESS)
    end function make_GathervSpec
@@ -100,7 +100,7 @@ contains
       n = int(spec%nx,kind=INT64)**2 * 6 * spec%n_levs / npes
 
       kernel = GathervKernel(n, comm)
-      call kernel%init(_RC)
+      call kernel%init(_rc)
 
       _RETURN(_SUCCESS)
    end function make_GathervKernel

@@ -107,7 +107,7 @@ contains
       integer, optional, intent(out) :: rc
       integer :: status
       
-      call extract_ISO8601_from_CF_Time(CF_Time_Integer(0, units), isostring, _RC)
+      call extract_ISO8601_from_CF_Time(CF_Time_Integer(0, units), isostring, _rc)
 
       _RETURN(_SUCCESS)
 
@@ -175,7 +175,7 @@ contains
       integer, optional, intent(out) :: rc
       integer :: status
 
-      call extract_CF_Time_unit(CF_Time_Integer(0, units), time_unit, _RC)
+      call extract_CF_Time_unit(CF_Time_Integer(0, units), time_unit, _rc)
 
       _RETURN(_SUCCESS)
 
@@ -226,7 +226,7 @@ contains
       integer, optional, intent(out) :: rc
       integer :: status
 
-      call convert_CF_Time_to_datetime_duration(CF_Time_Integer(duration, units), dt_duration, _RC)
+      call convert_CF_Time_to_datetime_duration(CF_Time_Integer(duration, units), dt_duration, _rc)
 
       _RETURN(_SUCCESS)
 
@@ -239,7 +239,7 @@ contains
       integer, optional, intent(out) :: rc
       integer :: status
 
-      call convert_CF_Time_to_datetime_duration(CF_Time_Real(duration, units), dt_duration, _RC)
+      call convert_CF_Time_to_datetime_duration(CF_Time_Real(duration, units), dt_duration, _rc)
 
       _RETURN(_SUCCESS)
 

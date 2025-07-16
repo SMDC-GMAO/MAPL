@@ -1238,7 +1238,7 @@ program main
 
 
    call system_clock(c0)
-   call regridder%write_data(_RC)
+   call regridder%write_data(_rc)
    call system_clock(c1)
    if (local_pet == 0) then
      print*,'write_data()', real(c1-c0)/crate

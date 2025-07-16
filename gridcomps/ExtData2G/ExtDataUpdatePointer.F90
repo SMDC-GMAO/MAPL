@@ -74,7 +74,7 @@ contains
       logical :: is_heartbeat
 
       this%last_checked = time
-      call ESMF_ClockGet(clock, timestep=timestep, _RC)
+      call ESMF_ClockGet(clock, timestep=timestep, _rc)
       if (update_freq == "-") then
          this%single_shot = .true.
       else if (update_freq /= "PT0S") then
@@ -83,10 +83,10 @@ contains
          hour=int_time/10000
          minute=mod(int_time/100,100)
          second=mod(int_time,100)
-         call ESMF_TimeGet(time,yy=year,mm=month,dd=day,_RC)
-         call ESMF_TimeSet(this%reference_time,yy=year,mm=month,dd=day,h=hour,m=minute,s=second,_RC)
+         call ESMF_TimeGet(time,yy=year,mm=month,dd=day,_rc)
+         call ESMF_TimeSet(this%reference_time,yy=year,mm=month,dd=day,h=hour,m=minute,s=second,_rc)
          this%last_ring = this%reference_time
-         this%update_freq = string_to_esmf_timeinterval(update_freq,_RC)
+         this%update_freq = string_to_esmf_timeinterval(update_freq,_rc)
       end if
       i = index(update_offset,"-") + 1
       j = index(update_offset, '+') + 1
@@ -97,7 +97,7 @@ contains
       if(is_heartbeat) then
          this%offset = multiplier * timestep
       else
-         this%offset=string_to_esmf_timeinterval(update_offset(i:),_RC)
+         this%offset=string_to_esmf_timeinterval(update_offset(i:),_rc)
       end if
       if(negative_offset) this%offset = -this%offset
       _RETURN(_SUCCESS)
@@ -115,7 +115,7 @@ contains
       integer :: status
 
       multiplier = 1
-      upper = ESMF_UtilStringUpperCase(timestring, _RC)
+      upper = ESMF_UtilStringUpperCase(timestring, _rc)
       call split_on(upper, HEARTBEAT_STRING, found_string=found_string)
       is_heartbeat = len(found_string) > 0
       ! For now, multiplier is simply set to 1. In the future, as needed, the before_string

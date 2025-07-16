@@ -52,7 +52,7 @@ contains
 
       integer :: status
 
-      grid = ESMF_GridCreateNoPeriDim(countsPerDeDim1=[2,2], countsPerDeDim2=[2,2], indexflag=INDEX_FLAG_DEFAULT, name = grid_name, _RC)
+      grid = ESMF_GridCreateNoPeriDim(countsPerDeDim1=[2,2], countsPerDeDim2=[2,2], indexflag=INDEX_FLAG_DEFAULT, name = grid_name, _rc)
 
       _RETURN(_SUCCESS)
    end function mk_grid
@@ -67,7 +67,7 @@ contains
 
       integer :: status
 
-      field = mk_field_common(tk = ESMF_TYPEKIND_R4, name = name, ungriddedLBound=ungriddedLBound, ungriddedUBound=ungriddedUBound, _RC)
+      field = mk_field_common(tk = ESMF_TYPEKIND_R4, name = name, ungriddedLBound=ungriddedLBound, ungriddedUBound=ungriddedUBound, _rc)
 
       _RETURN(_SUCCESS)
    end function mk_field_r4_ungrid
@@ -82,8 +82,8 @@ contains
 
       integer :: status
 
-      field = mk_field_common(tk = ESMF_TYPEKIND_R4, name = name, _RC)
-      call ESMF_FieldGet(field, farrayPtr = ptr, _RC)
+      field = mk_field_common(tk = ESMF_TYPEKIND_R4, name = name, _rc)
+      call ESMF_FieldGet(field, farrayPtr = ptr, _rc)
       
       ptr = farray
 
@@ -100,8 +100,8 @@ contains
 
       integer :: status
 
-      field = mk_field_common(tk = ESMF_TYPEKIND_R8, name = name, _RC)
-      call ESMF_FieldGet(field, farrayPtr = ptr, _RC)
+      field = mk_field_common(tk = ESMF_TYPEKIND_R8, name = name, _rc)
+      call ESMF_FieldGet(field, farrayPtr = ptr, _rc)
       ptr = farray
 
       _RETURN(_SUCCESS)
@@ -120,8 +120,8 @@ contains
       type(ESMF_Grid) :: grid
       integer :: status
       
-      grid = mk_grid(grid_name = name // GRID_SUFFIX, _RC)
-      field = ESMF_FieldCreate(grid, typekind = tk, name = name // FIELD_SUFFIX, ungriddedLBound = ungriddedLBound, ungriddedUBound = ungriddedUBound, _RC)
+      grid = mk_grid(grid_name = name // GRID_SUFFIX, _rc)
+      field = ESMF_FieldCreate(grid, typekind = tk, name = name // FIELD_SUFFIX, ungriddedLBound = ungriddedLBound, ungriddedUBound = ungriddedUBound, _rc)
 
       _RETURN(_SUCCESS)
    end function mk_field_common
@@ -172,7 +172,7 @@ contains
 
       integer :: status
 
-      r4field = mk_field(r4array, name = field_name, _RC)
+      r4field = mk_field(r4array, name = field_name, _rc)
 
       _RETURN(_SUCCESS)
 
@@ -186,7 +186,7 @@ contains
 
       integer :: status
 
-      r8field = mk_field(r8array, name = field_name, _RC)
+      r8field = mk_field(r8array, name = field_name, _rc)
 
       _RETURN(_SUCCESS)
 
@@ -201,7 +201,7 @@ contains
 
       integer :: status
 
-      r4field = mk_field_r4_ungrid(name = field_name, ungriddedLBound=[lbound],ungriddedUBound=[ubound],_RC)
+      r4field = mk_field_r4_ungrid(name = field_name, ungriddedLBound=[lbound],ungriddedUBound=[ubound],_rc)
 
       _RETURN(_SUCCESS)
 

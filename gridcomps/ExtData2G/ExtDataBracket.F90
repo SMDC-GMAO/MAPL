@@ -185,8 +185,8 @@ contains
       integer :: status
       logical :: right_node_set, left_node_set
 
-      right_node_set = this%right_node%check_if_initialized(_RC)
-      left_node_set = this%left_node%check_if_initialized(_RC)
+      right_node_set = this%right_node%check_if_initialized(_rc)
+      left_node_set = this%left_node%check_if_initialized(_rc)
 
       alpha = 0.0
       if ( (.not.this%disable_interpolation) .and. (.not.this%intermittent_disable) .and. right_node_set .and. left_node_set) then
@@ -194,12 +194,12 @@ contains
          tinv2 = this%right_node%time - this%left_node%time
          alpha = tinv1/tinv2
       end if
-      call assign_fptr(field,var1d,_RC)
+      call assign_fptr(field,var1d,_rc)
       if (right_node_set) then
-         call assign_fptr(this%right_node%field,var1d_right,_RC)
+         call assign_fptr(this%right_node%field,var1d_right,_rc)
       end if
       if (left_node_set) then
-         call assign_fptr(this%left_node%field,var1d_left,_RC)
+         call assign_fptr(this%left_node%field,var1d_left,_rc)
       end if
       if ( left_node_set .and. (time == this%left_node%time .or. this%disable_interpolation)) then
          var1d = var1d_left
@@ -238,12 +238,12 @@ contains
       real, pointer :: left_ptr(:), right_ptr(:)
       logical :: left_created, right_created
 
-      left_created  = ESMF_FieldIsCreated(this%left_node%field,_RC)
-      right_created = ESMF_FieldIsCreated(this%right_node%field,_RC)
-      left_created  = ESMF_FieldIsCreated(this%left_node%field,_RC)
+      left_created  = ESMF_FieldIsCreated(this%left_node%field,_rc)
+      right_created = ESMF_FieldIsCreated(this%right_node%field,_rc)
+      left_created  = ESMF_FieldIsCreated(this%left_node%field,_rc)
       if (left_created .and. right_created) then     
-         call assign_fptr(this%left_node%field,left_ptr,_RC) 
-         call assign_fptr(this%right_node%field,right_ptr,_RC) 
+         call assign_fptr(this%left_node%field,left_ptr,_rc) 
+         call assign_fptr(this%right_node%field,right_ptr,_rc) 
          left_ptr = right_ptr
       end if
       _RETURN(_SUCCESS)

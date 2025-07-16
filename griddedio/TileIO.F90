@@ -57,14 +57,14 @@ module MAPL_TileIOMod
          integer, allocatable :: local_start(:), global_start(:), global_count(:)
 
 
-         call ESMF_FieldBundleGet(this%bundle, fieldCount=num_vars, _RC)
+         call ESMF_FieldBundleGet(this%bundle, fieldCount=num_vars, _rc)
          allocate(this%tile_buffer(num_vars))
          allocate(names(num_vars))
-         call ESMF_FieldBundleGet(this%bundle, fieldNameList=names, _RC)
+         call ESMF_FieldBundleGet(this%bundle, fieldNameList=names, _rc)
          do i=1,num_vars
-            call ESMF_FieldBundleGet(this%bundle,names(i),field=field,_RC)
-            call ESMF_FieldGet(field,rank=rank,grid=grid,_RC)
-            call MAPL_GridGet(grid,globalCellCountPerDim=counts,_RC)
+            call ESMF_FieldBundleGet(this%bundle,names(i),field=field,_rc)
+            call ESMF_FieldGet(field,rank=rank,grid=grid,_rc)
+            call MAPL_GridGet(grid,globalCellCountPerDim=counts,_rc)
             if (rank==1) then
                allocate(local_start(2),global_start(2),global_count(2))
                local_start = [1,timeindex]
@@ -77,7 +77,7 @@ module MAPL_TileIOMod
                end if
                ref = ArrayReference(this%tile_buffer(i)%ptr)
                call i_clients%collective_prefetch_data(this%read_collection_id, filename, trim(names(i)), ref,  &
-                  start=local_start, global_start=global_start, global_count = global_count, _RC)
+                  start=local_start, global_start=global_start, global_count = global_count, _rc)
                deallocate(local_start,global_start,global_count)
             else
                _FAIL("rank >1 tile fields not supported")
@@ -99,16 +99,16 @@ module MAPL_TileIOMod
          integer, pointer :: mask(:)
          real, pointer :: ptr1d(:)
 
-         call ESMF_FieldBundleGet(this%bundle, fieldCount=num_vars, _RC)
+         call ESMF_FieldBundleGet(this%bundle, fieldCount=num_vars, _rc)
          allocate(names(num_vars))
-         call ESMF_FieldBundleGet(this%bundle, fieldNameList=names, _RC)
+         call ESMF_FieldBundleGet(this%bundle, fieldNameList=names, _rc)
          do i=1,num_vars
-            call ESMF_FieldBundleGet(this%bundle,names(i),field=field,_RC)
-            call ESMF_FieldGet(field,rank=rank,grid=grid,_RC)
-            call MAPL_TileMaskGet(grid,mask,_RC)
+            call ESMF_FieldBundleGet(this%bundle,names(i),field=field,_rc)
+            call ESMF_FieldGet(field,rank=rank,grid=grid,_rc)
+            call MAPL_TileMaskGet(grid,mask,_rc)
             if (rank==1) then
-               call ESMF_FieldGet(field,localDE=0,farrayPtr=ptr1d,_RC)
-               call ArrayScatter(ptr1d,this%tile_buffer(i)%ptr,grid,mask=mask,_RC)
+               call ESMF_FieldGet(field,localDE=0,farrayPtr=ptr1d,_rc)
+               call ArrayScatter(ptr1d,this%tile_buffer(i)%ptr,grid,mask=mask,_rc)
                deallocate(this%tile_buffer(i)%ptr)
             else
                _FAIL("rank not supported for tile io")

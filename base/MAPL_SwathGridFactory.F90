@@ -153,7 +153,7 @@ contains
       if (present(ims)) factory%ims = ims
       if (present(jms)) factory%jms = jms
 
-      call factory%check_and_fill_consistency(_RC)
+      call factory%check_and_fill_consistency(_rc)
 
       _RETURN(_SUCCESS)
    end function SwathGridFactory_from_parameters
@@ -168,8 +168,8 @@ contains
 
       _UNUSED_DUMMY(unusable)
 
-      grid = this%create_basic_grid(_RC)
-      call this%add_horz_coordinates_from_file(grid,_RC)
+      grid = this%create_basic_grid(_rc)
+      call this%add_horz_coordinates_from_file(grid,_rc)
       _RETURN(_SUCCESS)
    end function make_new_grid
 
@@ -191,16 +191,16 @@ contains
            & coordDep1=[1,2], &
            & coordDep2=[1,2], &
            & coordSys=ESMF_COORDSYS_SPH_RAD, &
-           & _RC)
+           & _rc)
 
       ! Allocate coords at default stagger location
-      call ESMF_GridAddCoord(grid, _RC)
+      call ESMF_GridAddCoord(grid, _rc)
 
       if (this%lm /= MAPL_UNDEFINED_INTEGER) then
-         call ESMF_AttributeSet(grid, name='GRID_LM', value=this%lm, _RC)
+         call ESMF_AttributeSet(grid, name='GRID_LM', value=this%lm, _rc)
       end if
-      call ESMF_AttributeSet(grid, 'GridType', 'Swath', _RC)
-      call ESMF_AttributeSet(grid, 'Global', .false., _RC)
+      call ESMF_AttributeSet(grid, 'GridType', 'Swath', _rc)
+      call ESMF_AttributeSet(grid, 'Global', .false., _rc)
 
       _RETURN(_SUCCESS)
    end function create_basic_grid
@@ -241,17 +241,17 @@ contains
 
       _UNUSED_DUMMY(unusable)
 
-      call ESMF_VMGetCurrent(vm,_RC)
-!!      call ESMF_VMGet(vm, mpiCommunicator=mpic, localPet=mypet, petCount=petCount, _RC)
+      call ESMF_VMGetCurrent(vm,_rc)
+!!      call ESMF_VMGet(vm, mpiCommunicator=mpic, localPet=mypet, petCount=petCount, _rc)
 
       Xdim=this%im_world
       Ydim=this%jm_world
       count = Xdim * Ydim
 
       call MAPL_grid_interior(grid, i_1, i_n, j_1, j_n)
-      call MAPL_AllocateShared(arr_lon,[Xdim,Ydim],transroot=.true.,_RC)
-      call MAPL_AllocateShared(arr_lat,[Xdim,Ydim],transroot=.true.,_RC)
-      call MAPL_SyncSharedMemory(_RC)
+      call MAPL_AllocateShared(arr_lon,[Xdim,Ydim],transroot=.true.,_rc)
+      call MAPL_AllocateShared(arr_lat,[Xdim,Ydim],transroot=.true.,_rc)
+      call MAPL_SyncSharedMemory(_rc)
 
       if (mapl_am_i_root()) then
          allocate( lon_true(0,0), lat_true(0,0), time_true(0,0) )
@@ -261,7 +261,7 @@ contains
               var_name_lat=this%var_name_lat, &
               var_name_time=this%var_name_time, &
               lon=lon_true, lat=lat_true, time=time_true, &
-              Tfilter=.true., _RC)
+              Tfilter=.true., _rc)
          k=0
          do j=this%epoch_index(3), this%epoch_index(4)
             k=k+1
@@ -276,18 +276,18 @@ contains
 !         write(6,'(11x,100f10.1)')  arr_lon(::5,189)
       end if
 !      call MPI_Barrier(mpic, status)
-      call MAPL_SyncSharedMemory(_RC)
+      call MAPL_SyncSharedMemory(_rc)
 
-      call MAPL_BcastShared (VM, data=arr_lon, N=count, Root=MAPL_ROOT, RootOnly=.false., _RC)
-      call MAPL_BcastShared (VM, data=arr_lat, N=count, Root=MAPL_ROOT, RootOnly=.false., _RC)
+      call MAPL_BcastShared (VM, data=arr_lon, N=count, Root=MAPL_ROOT, RootOnly=.false., _rc)
+      call MAPL_BcastShared (VM, data=arr_lat, N=count, Root=MAPL_ROOT, RootOnly=.false., _rc)
 
 !      write(6,'(2x,a,2x,i5,4x,100f10.1)')  'PET', mypet, arr_lon(::5,189)
 !      call MPI_Barrier(mpic, status)
 
       call ESMF_GridGetCoord(grid, coordDim=1, localDE=0, &
-           staggerloc=ESMF_STAGGERLOC_CENTER, farrayPtr=fptr, _RC)
+           staggerloc=ESMF_STAGGERLOC_CENTER, farrayPtr=fptr, _rc)
       fptr=real(arr_lon(i_1:i_n,j_1:j_n), kind=ESMF_KIND_R8)
-      call MAPL_SyncSharedMemory(_RC)
+      call MAPL_SyncSharedMemory(_rc)
 
       call ESMF_GridGetCoord(grid, coordDim=2, localDE=0, &
            staggerloc=ESMF_STAGGERLOC_CENTER, &
@@ -295,8 +295,8 @@ contains
       fptr=real(arr_lat(i_1:i_n,j_1:j_n), kind=ESMF_KIND_R8)
 
       if(MAPL_ShmInitialized) then
-         call MAPL_DeAllocNodeArray(arr_lon,_RC)
-         call MAPL_DeAllocNodeArray(arr_lat,_RC)
+         call MAPL_DeAllocNodeArray(arr_lon,_rc)
+         call MAPL_DeAllocNodeArray(arr_lat,_rc)
       else
          deallocate(arr_lon)
          deallocate(arr_lat)
@@ -359,12 +359,12 @@ contains
          lon_name = 'lon'
          hasLon = file_metadata%has_dimension(lon_name)
          if (hasLon) then
-            im = file_metadata%get_dimension(lon_name, _RC)
+            im = file_metadata%get_dimension(lon_name, _rc)
          else
             lon_name = 'longitude'
             hasLongitude = file_metadata%has_dimension(lon_name)
             if (hasLongitude) then
-               im = file_metadata%get_dimension(lon_name, _RC)
+               im = file_metadata%get_dimension(lon_name, _rc)
             else
                _FAIL('no longitude coordinate')
             end if
@@ -372,12 +372,12 @@ contains
          lat_name = 'lat'
          hasLat = file_metadata%has_dimension(lat_name)
          if (hasLat) then
-            jm = file_metadata%get_dimension(lat_name, _RC)
+            jm = file_metadata%get_dimension(lat_name, _rc)
          else
             lat_name = 'latitude'
             hasLatitude = file_metadata%has_dimension(lat_name)
             if (hasLatitude) then
-               jm = file_metadata%get_dimension(lat_name, _RC)
+               jm = file_metadata%get_dimension(lat_name, _rc)
             else
                _FAIL('no latitude coordinate')
             end if
@@ -387,17 +387,17 @@ contains
          lev_name = 'lev'
          hasLev = file_metadata%has_dimension(lev_name)
          if (hasLev) then
-            lm = file_metadata%get_dimension(lev_name,_RC)
+            lm = file_metadata%get_dimension(lev_name,_rc)
          else
             lev_name = 'levels'
             hasLevel = file_metadata%has_dimension(lev_name)
             if (hasLevel) then
-               lm = file_metadata%get_dimension(lev_name,_RC)
+               lm = file_metadata%get_dimension(lev_name,_rc)
             end if
          end if
     end associate
 
-    call this%make_arbitrary_decomposition(this%nx, this%ny, _RC)
+    call this%make_arbitrary_decomposition(this%nx, this%ny, _rc)
 
     ! Determine IMS and JMS with constraint for ESMF that each DE has at least an extent
     ! of 2.  Required for ESMF_FieldRegrid().
@@ -406,7 +406,7 @@ contains
     call MAPL_DecomposeDim(this%im_world, this%ims, this%nx, min_DE_extent=2)
     call MAPL_DecomposeDim(this%jm_world, this%jms, this%ny, min_DE_extent=2)
 
-    call this%check_and_fill_consistency(_RC)
+    call this%check_and_fill_consistency(_rc)
 
     _RETURN(_SUCCESS)
 
@@ -456,7 +456,7 @@ contains
       _UNUSED_DUMMY(unusable)
       lgr => logging%get_logger('HISTORY.sampler')
 
-      call ESMF_VmGetCurrent(VM, _RC)
+      call ESMF_VmGetCurrent(VM, _rc)
 
       !   input :  config
       !   output:  this%epoch_index,  nx, ny
@@ -471,35 +471,35 @@ contains
       call ESMF_ConfigGetAttribute(config, this%nx,  label=prefix//'NX:', default=MAPL_UNDEFINED_INTEGER)
       call ESMF_ConfigGetAttribute(config, this%ny,  label=prefix//'NY:', default=MAPL_UNDEFINED_INTEGER)
       call ESMF_ConfigGetAttribute(config, this%lm,  label=prefix//'LM:', default=MAPL_UNDEFINED_INTEGER)
-      call ESMF_ConfigGetAttribute(config, this%input_template, label=prefix//'GRID_FILE:', default='unknown.txt', _RC)
-      call ESMF_ConfigGetAttribute(config, this%epoch, label=prefix//'Epoch:', default=300, _RC)
-      call ESMF_ConfigGetAttribute(config, tmp,      label=prefix//'Epoch_init:', default='2006', _RC)
+      call ESMF_ConfigGetAttribute(config, this%input_template, label=prefix//'GRID_FILE:', default='unknown.txt', _rc)
+      call ESMF_ConfigGetAttribute(config, this%epoch, label=prefix//'Epoch:', default=300, _rc)
+      call ESMF_ConfigGetAttribute(config, tmp,      label=prefix//'Epoch_init:', default='2006', _rc)
       _ASSERT (this%lm /= MAPL_UNDEFINED_INTEGER, 'LM: is undefined in swath grid')
 
       call lgr%debug(' %a  %a', 'CurrTime =', trim(tmp))
 
 
       if ( index(tmp, 'T') /= 0 .OR. index(tmp, '-') /= 0 ) then
-         call ESMF_TimeSet(currTime, timeString=tmp, _RC)
+         call ESMF_TimeSet(currTime, timeString=tmp, _rc)
       else
          read(tmp,'(i4,5i2)') yy,mm,dd,h,m,s
-         call ESMF_Timeset(currTime, yy=yy, mm=mm, dd=dd, h=h, m=m, s=s, _RC)
+         call ESMF_Timeset(currTime, yy=yy, mm=mm, dd=dd, h=h, m=m, s=s, _rc)
       endif
       second = hms_2_s(this%Epoch)
-      call ESMF_TimeIntervalSet(this%epoch_frequency, s=second, _RC)
+      call ESMF_TimeIntervalSet(this%epoch_frequency, s=second, _rc)
 
 
       call ESMF_ConfigGetAttribute(config, value=STR1, default="", &
-           label= prefix// 'obs_reftime:', _RC)
+           label= prefix// 'obs_reftime:', _rc)
       _ASSERT (trim(STR1)/='', 'obs_reftime missing, critical for data with 5 min interval!')
-      call ESMF_TimeSet(this%obsfile_start_time, timestring=STR1, _RC)
+      call ESMF_TimeSet(this%obsfile_start_time, timestring=STR1, _rc)
 
       if (mapl_am_I_root()) then
          write(6,105) 'obs_reftime provided: ', trim(STR1)
       end if
 
       call ESMF_ConfigGetAttribute(config, value=STR1, default="", &
-           label= prefix// 'obs_frequency:', _RC)
+           label= prefix// 'obs_frequency:', _rc)
       _ASSERT(STR1/='', 'fatal error: obs_frequency not provided in RC file')
       if (mapl_am_I_root()) write(6,105) 'obs_frequency:', trim(STR1)
       if (mapl_am_I_root()) write(6,106) 'Epoch (second)   :', second
@@ -512,27 +512,27 @@ contains
          symd=''
          shms=trim(STR1)
       endif
-      call convert_twostring_2_esmfinterval (symd, shms,  this%obsfile_interval, _RC)
+      call convert_twostring_2_esmfinterval (symd, shms,  this%obsfile_interval, _rc)
 
       call ESMF_ConfigGetAttribute(config, value=this%index_name_lon, default="", &
-           label=prefix // 'index_name_lon:', _RC)
+           label=prefix // 'index_name_lon:', _rc)
       call ESMF_ConfigGetAttribute(config, value=this%index_name_lat, default="", &
-                 label=prefix // 'index_name_lat:', _RC)
+                 label=prefix // 'index_name_lat:', _rc)
       call ESMF_ConfigGetAttribute(config, this%var_name_lon, &
-           label=prefix // 'var_name_lon:', default="", _RC)
+           label=prefix // 'var_name_lon:', default="", _rc)
       call ESMF_ConfigGetAttribute(config, this%var_name_lat, &
-           label=prefix // 'var_name_lat:', default="", _RC)
+           label=prefix // 'var_name_lat:', default="", _rc)
       call ESMF_ConfigGetAttribute(config, this%var_name_time, default="", &
-           label=prefix//'var_name_time:',  _RC)
+           label=prefix//'var_name_time:',  _rc)
       call ESMF_ConfigGetAttribute(config, this%tunit, default="", &
-           label=prefix//'tunit:',  _RC)
+           label=prefix//'tunit:',  _rc)
 
       call lgr%debug(' %a  %a', 'input_template =', trim(this%input_template))
 
 
       !__ s2. find obsFile even if missing on disk and get array: this%t_alongtrack(:)
       !
-      call ESMF_VMGet(vm, mpiCommunicator=mpic, _RC)
+      call ESMF_VMGet(vm, mpiCommunicator=mpic, _rc)
       call MPI_COMM_RANK(mpic, irank, ierror)
       _VERIFY(ierror)
 
@@ -546,11 +546,11 @@ contains
            'tunit:',          trim(this%tunit)
 
       if (irank==0) then
-         call ESMF_TimeIntervalSet(Toff, h=0, m=0, s=0, _RC)
+         call ESMF_TimeIntervalSet(Toff, h=0, m=0, s=0, _rc)
          call Find_M_files_for_currTime (currTime, &
               this%obsfile_start_time, this%obsfile_interval, &
               this%epoch_frequency,  this%input_template, M_file, this%filenames, &
-              T_offset_in_file_content = Toff,  _RC)
+              T_offset_in_file_content = Toff,  _rc)
          this%M_file = M_file
          write(6,'(10(2x,a20,2x,i40))') &
               'M_file:', M_file
@@ -574,7 +574,7 @@ contains
               var_name_lat=this%var_name_lat, &
               var_name_time=this%var_name_time, &
               lon=lon_true, lat=lat_true, time=scanTime, &
-              Tfilter=.true., _RC)
+              Tfilter=.true., _rc)
 
          nlon=nx
          nlat=ny
@@ -626,7 +626,7 @@ contains
          ! use Epoch to find j1
          ! search j0, j1 in t_a
 
-         call time_esmf_2_nc_int (currTime, this%tunit, j0, _RC)
+         call time_esmf_2_nc_int (currTime, this%tunit, j0, _rc)
          sec = hms_2_s (this%Epoch)
          j1= j0 + sec
          jx0= j0
@@ -694,18 +694,18 @@ contains
 
       call ESMF_ConfigGetAttribute(config, tmp, label=prefix//'IMS_FILE:', rc=status)
       if ( status == _SUCCESS ) then
-         call get_ims_from_file(this%ims, trim(tmp),this%nx, _RC)
+         call get_ims_from_file(this%ims, trim(tmp),this%nx, _rc)
       else
-         call get_multi_integer(this%ims, 'IMS:', _RC)
+         call get_multi_integer(this%ims, 'IMS:', _rc)
       endif
       call ESMF_ConfigGetAttribute(config, tmp, label=prefix//'JMS_FILE:', rc=status)
       if ( status == _SUCCESS ) then
-         call get_ims_from_file(this%jms, trim(tmp),this%ny, _RC)
+         call get_ims_from_file(this%jms, trim(tmp),this%ny, _rc)
       else
-         call get_multi_integer(this%jms, 'JMS:', _RC)
+         call get_multi_integer(this%jms, 'JMS:', _rc)
       endif
       ! ims is set at here
-      call this%check_and_fill_consistency(_RC)
+      call this%check_and_fill_consistency(_rc)
       call lgr%debug(' %a  %i5  %i5', 'nx, ny (check_and_fill_consistency) = ', this%nx, this%ny)
 
       _RETURN(_SUCCESS)
@@ -726,7 +726,7 @@ contains
          integer :: status
          logical :: isPresent
 
-         call ESMF_ConfigFindLabel(config, label=prefix//label, isPresent=isPresent, _RC)
+         call ESMF_ConfigFindLabel(config, label=prefix//label, isPresent=isPresent, _rc)
 
          if (.not. isPresent) then
             _RETURN(_SUCCESS)
@@ -747,9 +747,9 @@ contains
          ! Second pass: allocate and fill
          allocate(values(n), stat=status) ! no point in checking status
          _VERIFY(status)
-         call ESMF_ConfigFindLabel(config, label=prefix//label,_RC)
+         call ESMF_ConfigFindLabel(config, label=prefix//label,_rc)
          do i = 1, n
-            call ESMF_ConfigGetAttribute(config, values(i), _RC)
+            call ESMF_ConfigGetAttribute(config, values(i), _rc)
             write(6,*) 'values(i)=', values(i)
          end do
 
@@ -783,7 +783,7 @@ contains
             close(UNIT)
          endif
 
-         call MAPL_CommsBcast(VM, values, n=N, ROOT=MAPL_Root, _RC)
+         call MAPL_CommsBcast(VM, values, n=N, ROOT=MAPL_Root, _rc)
          _RETURN(_SUCCESS)
 
       end subroutine get_ims_from_file
@@ -798,14 +798,14 @@ contains
          integer :: status
          logical :: isPresent
 
-         call ESMF_ConfigFindLabel(config, label=prefix//label,isPresent=isPresent,_RC)
+         call ESMF_ConfigFindLabel(config, label=prefix//label,isPresent=isPresent,_rc)
          if (.not. isPresent) then
             _RETURN(_SUCCESS)
          end if
 
          ! Must be 2 values: min and max
-         call ESMF_ConfigGetAttribute(config, range%min, _RC)
-         call ESMF_ConfigGetAttribute(config, range%max, _RC)
+         call ESMF_ConfigGetAttribute(config, range%min, _rc)
+         call ESMF_ConfigGetAttribute(config, range%max, _rc)
 
          _RETURN(_SUCCESS)
 
@@ -848,9 +848,9 @@ contains
       call verify(this%ny, this%jm_world, this%jms, rc=status)
 
       if (.not.this%force_decomposition) then
-         verify_decomp = this%check_decomposition(_RC)
+         verify_decomp = this%check_decomposition(_rc)
          if ( (.not.verify_decomp) ) then
-            call this%generate_newnxy(_RC)
+            call this%generate_newnxy(_rc)
          end if
       end if
       _RETURN(_SUCCESS)
@@ -1002,18 +1002,18 @@ contains
       allocate(max_index(dim_count, tile_count))
       call ESMF_DistGridGet(dist_grid, maxindexPTile=max_index)
 
-      config = MAPL_ConfigCreate(_RC)
-      call MAPL_ConfigSetAttribute(config, max_index(1,1), 'IM_WORLD:', _RC)
-      call MAPL_ConfigSetAttribute(config, max_index(2,1), 'JM_WORLD:', _RC)
-      call MAPL_ConfigSetAttribute(config, max_index(3,1), 'LM:', _RC)
+      config = MAPL_ConfigCreate(_rc)
+      call MAPL_ConfigSetAttribute(config, max_index(1,1), 'IM_WORLD:', _rc)
+      call MAPL_ConfigSetAttribute(config, max_index(2,1), 'JM_WORLD:', _rc)
+      call MAPL_ConfigSetAttribute(config, max_index(3,1), 'LM:', _rc)
 
       lon => null()
       lat => null()
-      call ESMF_LocalArrayGet(lon_array, farrayPtr=lon, _RC)
-      call ESMF_LocalArrayGet(lat_array, farrayPtr=lat, _RC)
+      call ESMF_LocalArrayGet(lon_array, farrayPtr=lon, _rc)
+      call ESMF_LocalArrayGet(lat_array, farrayPtr=lat, _rc)
 
-      call ESMF_VMGetCurrent(vm, _RC)
-      call ESMF_VMGet(vm, PETcount=nPet, _RC)
+      call ESMF_VMGetCurrent(vm, _rc)
+      call ESMF_VMGet(vm, PETcount=nPet, _rc)
 
       nx_guess = nint(sqrt(real(nPet)))
       do nx = nx_guess,1,-1
@@ -1025,7 +1025,7 @@ contains
          end if
       enddo
 
-      call this%initialize(config, _RC)
+      call this%initialize(config, _rc)
 
    end subroutine initialize_from_esmf_distGrid
 
@@ -1271,7 +1271,7 @@ contains
 
       _UNUSED_DUMMY(this)
 
-      call MAPL_GridGet(grid,globalCellCountPerDim=global_dim,_RC)
+      call MAPL_GridGet(grid,globalCellCountPerDim=global_dim,_rc)
       call MAPL_GridGetInterior(grid,i1,in,j1,jn)
       allocate(local_start,source=[i1,j1])
       allocate(global_start,source=[1,1])
@@ -1340,8 +1340,8 @@ contains
       integer :: jlo, jhi, je
 
 
-      call ESMF_VmGetCurrent(VM, _RC)
-      call ESMF_VMGet(vm, mpiCommunicator=mpic, _RC)
+      call ESMF_VmGetCurrent(VM, _rc)
+      call ESMF_VMGet(vm, mpiCommunicator=mpic, _rc)
       call MPI_COMM_RANK(mpic, irank, ierror)
       _VERIFY(ierror)
 
@@ -1355,8 +1355,8 @@ contains
 
          ! this%t_alongtrack
          !
-         call time_esmf_2_nc_int (T1, this%tunit, i1, _RC)
-         call time_esmf_2_nc_int (T2, this%tunit, i2, _RC)
+         call time_esmf_2_nc_int (T1, this%tunit, i1, _rc)
+         call time_esmf_2_nc_int (T2, this%tunit, i2, _rc)
          iT1 = i1   ! int to real*8
          iT2 = i2
          if (this%epoch_index(3) > 2) then
@@ -1439,16 +1439,16 @@ contains
       integer :: mypet, petcount
       integer :: mpic
 
-      call ESMF_VMGetCurrent(vm,_RC)
-      call ESMF_VMGet(vm, mpiCommunicator=mpic, localPet=mypet, petCount=petCount, _RC)
+      call ESMF_VMGetCurrent(vm,_rc)
+      call ESMF_VMGet(vm, mpiCommunicator=mpic, localPet=mypet, petCount=petCount, _rc)
 
       Xdim=this%im_world
       Ydim=this%jm_world
       count=Xdim*Ydim
 
       call MAPL_grid_interior(grid, i_1, i_n, j_1, j_n)
-      call MAPL_AllocateShared(arr_time,[Xdim,Ydim],transroot=.true.,_RC)
-      call MAPL_SyncSharedMemory(_RC)
+      call MAPL_AllocateShared(arr_time,[Xdim,Ydim],transroot=.true.,_rc)
+      call MAPL_SyncSharedMemory(_rc)
 
       if (mapl_am_i_root()) then
          allocate( lon_true(0,0), lat_true(0,0), time_true(0,0) )
@@ -1458,7 +1458,7 @@ contains
               var_name_lat=this%var_name_lat, &
               var_name_time=this%var_name_time, &
               lon=lon_true, lat=lat_true, time=time_true, &
-              Tfilter=.true., _RC)
+              Tfilter=.true., _rc)
          k=0
          do j=this%epoch_index(3), this%epoch_index(4)
             k=k+1
@@ -1469,9 +1469,9 @@ contains
 !         write(6,*) 'in root, time'
 !         write(6,'(11x,100E12.5)')  arr_time(::5,189)
       end if
-      call MAPL_SyncSharedMemory(_RC)
+      call MAPL_SyncSharedMemory(_rc)
 
-      call MAPL_BcastShared (VM, data=arr_time, N=count, Root=MAPL_ROOT, RootOnly=.false., _RC)
+      call MAPL_BcastShared (VM, data=arr_time, N=count, Root=MAPL_ROOT, RootOnly=.false., _rc)
 
 !      write(6,'(2x,a,2x,i5,4x,100E12.5)')  'PET, time', mypet, arr_time(::5,189)
 !      call MPI_Barrier(mpic, status)
@@ -1480,7 +1480,7 @@ contains
       obs_time = arr_time(i_1:i_n,j_1:j_n)
 
       if(MAPL_ShmInitialized) then
-         call MAPL_DeAllocNodeArray(arr_time,_RC)
+         call MAPL_DeAllocNodeArray(arr_time,_rc)
       else
          deallocate(arr_time)
       end if

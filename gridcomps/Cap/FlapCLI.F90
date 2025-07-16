@@ -60,7 +60,7 @@ contains
       _VERIFY(status)
 
       if (present(extra)) then
-         call extra(flap_cli%cli_options, _RC)
+         call extra(flap_cli%cli_options, _rc)
       end if
 
       call flap_cli%cli_options%parse(error=status); _VERIFY(status)
@@ -90,7 +90,7 @@ contains
       _VERIFY(status)
 
       if (present(extra)) then
-         call extra(flapcap%cli_options, _RC)
+         call extra(flapcap%cli_options, _rc)
       end if
 
       call flapcap%cli_options%parse(error=status); _VERIFY(status)

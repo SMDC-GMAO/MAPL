@@ -19,15 +19,15 @@ module AAA_GridComp
 
      integer :: status
 
-     call MAPL_GridCompSetEntryPoint ( gc, ESMF_METHOD_INITIALIZE,  my_initialize, _RC)
-     call MAPL_GridCompSetEntryPoint ( gc, ESMF_METHOD_RUN,  my_run, _RC)
+     call MAPL_GridCompSetEntryPoint ( gc, ESMF_METHOD_INITIALIZE,  my_initialize, _rc)
+     call MAPL_GridCompSetEntryPoint ( gc, ESMF_METHOD_RUN,  my_run, _rc)
 
      call MAPL_AddExportSpec(gc,short_name='field1', long_name='NA',units='NA', &
                                  dims = MAPL_DimsHorzOnly, &
-                                 vlocation = MAPL_VLocationNone, _RC)
+                                 vlocation = MAPL_VLocationNone, _rc)
 
 
-     call MAPL_GenericSetServices(gc, _RC)
+     call MAPL_GenericSetServices(gc, _rc)
      _RETURN(_SUCCESS)
 
   end subroutine setservices
@@ -42,7 +42,7 @@ module AAA_GridComp
 
      integer :: status
 
-     call MAPL_GenericInitialize(gc, import, export, clock, _RC)
+     call MAPL_GenericInitialize(gc, import, export, clock, _rc)
 
      _RETURN(_SUCCESS)
 
@@ -62,10 +62,10 @@ module AAA_GridComp
      real(ESMF_KIND_R8) :: relative_time
      integer :: status
 
-     call MAPL_GetPointer(export,ptr_2d,'field1',_RC)
-     call ESMF_ClockGet(clock,currTime=current_time,startTime=start_time,_RC)
+     call MAPL_GetPointer(export,ptr_2d,'field1',_rc)
+     call ESMF_ClockGet(clock,currTime=current_time,startTime=start_time,_rc)
      time_interval = current_time - start_time
-     call ESMF_TimeIntervalGet(time_interval,h_r8=relative_time,_RC)
+     call ESMF_TimeIntervalGet(time_interval,h_r8=relative_time,_rc)
      if (associated(ptr_2d)) ptr_2d = relative_time
 
      _RETURN(_SUCCESS)

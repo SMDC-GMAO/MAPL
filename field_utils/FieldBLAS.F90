@@ -82,7 +82,7 @@ contains
       real(kind=ESMF_KIND_R4), pointer :: x_ptr(:)
       integer :: status
 
-      call assign_fptr(x, x_ptr, _RC)
+      call assign_fptr(x, x_ptr, _rc)
       x_ptr = a * x_ptr
 
       _RETURN(_SUCCESS)
@@ -96,7 +96,7 @@ contains
       real(kind=ESMF_KIND_R8), pointer :: x_ptr(:)
       integer :: status
 
-      call assign_fptr(x, x_ptr, _RC)
+      call assign_fptr(x, x_ptr, _rc)
       x_ptr = a * x_ptr
 
       _RETURN(_SUCCESS)
@@ -118,8 +118,8 @@ contains
       conformable = FieldsAreConformable(x, y)
       _ASSERT(conformable, 'FieldAXPY() - fields not conformable.')
       
-      call assign_fptr(x, x_ptr, _RC)
-      call assign_fptr(y, y_ptr, _RC)
+      call assign_fptr(x, x_ptr, _rc)
+      call assign_fptr(y, y_ptr, _rc)
 
       y_ptr = y_ptr + a * x_ptr
 
@@ -142,8 +142,8 @@ contains
       conformable = FieldsAreConformable(x, y)
       _ASSERT(conformable, 'FieldAXPY() - fields not conformable.')
       
-      call assign_fptr(x, x_ptr, _RC)
-      call assign_fptr(y, y_ptr, _RC)
+      call assign_fptr(x, x_ptr, _rc)
+      call assign_fptr(y, y_ptr, _rc)
 
       y_ptr = y_ptr + a * x_ptr
 
@@ -185,8 +185,8 @@ contains
       _ASSERT(conformable, 'FieldGEMV() - fields not conformable.')
 
       ! Reference dimensions
-      local_element_count = FieldGetLocalElementCount(x(1), _RC)
-      call ESMF_FieldGet(x(1), dimcount=dimcount, _RC)
+      local_element_count = FieldGetLocalElementCount(x(1), _rc)
+      call ESMF_FieldGet(x(1), dimcount=dimcount, _rc)
 
       n_gridded = product(local_element_count(1:dimcount))
       n_ungridded = product(local_element_count(dimcount+1:))
@@ -195,12 +195,12 @@ contains
 
 !      y = matmul(A, x)
       do jy = 1, size(y)
-         call assign_fptr(y(jy), fp_shape, y_ptr, _RC)
+         call assign_fptr(y(jy), fp_shape, y_ptr, _rc)
          y_ptr(:,jy) = beta * y_ptr(:,jy)
-!         call FieldSCAL(beta, y_ptr(:,jy), _RC)
+!         call FieldSCAL(beta, y_ptr(:,jy), _rc)
 
          do ix = 1, size(x)
-            call assign_fptr(x(ix), fp_shape, x_ptr, _RC)
+            call assign_fptr(x(ix), fp_shape, x_ptr, _rc)
             do kv = 1, n_ungridded
                y_ptr(:,jy) = y_ptr(:,jy) + alpha * A(:,ix,jy) * x_ptr(:,kv)
             end do
@@ -241,8 +241,8 @@ contains
       _ASSERT(conformable, 'FieldGEMV() - fields not conformable.')
 
       ! Reference dimensions
-      local_element_count = FieldGetLocalElementCount(x(1), _RC)
-      call ESMF_FieldGet(x(1), dimcount=dimcount, _RC)
+      local_element_count = FieldGetLocalElementCount(x(1), _rc)
+      call ESMF_FieldGet(x(1), dimcount=dimcount, _rc)
 
       n_gridded = product(local_element_count(1:dimcount))
       n_ungridded = product(local_element_count(dimcount+1:))
@@ -251,12 +251,12 @@ contains
 
 !      y = matmul(A, x)
       do jy = 1, size(y)
-         call assign_fptr(y(jy), fp_shape, y_ptr, _RC)
+         call assign_fptr(y(jy), fp_shape, y_ptr, _rc)
          y_ptr(:,jy) = beta * y_ptr(:,jy)
-!         call FieldSCAL(beta, y_ptr(:,jy), _RC)
+!         call FieldSCAL(beta, y_ptr(:,jy), _rc)
 
          do ix = 1, size(x)
-            call assign_fptr(x(ix), fp_shape, x_ptr, _RC)
+            call assign_fptr(x(ix), fp_shape, x_ptr, _rc)
             do kv = 1, n_ungridded
                y_ptr(:,jy) = y_ptr(:,jy) + alpha * A(:,ix,jy) * x_ptr(:,kv)
             end do
@@ -279,7 +279,7 @@ contains
       allocate(vector(ncopies))
 
       do i=1, ncopies
-         call FieldCOPY(source, vector(i), _RC)
+         call FieldCOPY(source, vector(i), _rc)
       end do
 
       _RETURN(_SUCCESS)
@@ -296,7 +296,7 @@ contains
       
       do i = 1, size(expected_tks)
          actual_tk = expected_tks(i)
-         call ESMF_FieldGet(x, typekind=found_tk, _RC)
+         call ESMF_FieldGet(x, typekind=found_tk, _rc)
          if(actual_tk == found_tk) return
       end do
 
@@ -313,7 +313,7 @@ contains
 
       type(ESMF_TypeKind_Flag) :: found_tk
       
-      call ESMF_FieldGet(x, typekind=found_tk, _RC)
+      call ESMF_FieldGet(x, typekind=found_tk, _rc)
 
       _ASSERT((found_tk == expected_tk), 'Found incorrect typekind.')
       _RETURN(_SUCCESS)   
@@ -328,7 +328,7 @@ contains
       integer :: i
 
       do i = 1, size(x)
-         call verify_typekind(x(i), expected_tk, _RC)
+         call verify_typekind(x(i), expected_tk, _rc)
       end do
       _RETURN(_SUCCESS)   
    end subroutine verify_typekind_array
@@ -342,7 +342,7 @@ contains
 !      integer :: i
 !      
 !      do i = 1, size(x)
-!         call verify_typekind(x(i), expected_tk, _RC)
+!         call verify_typekind(x(i), expected_tk, _rc)
 !      end do
 !      
 !      _RETURN(_SUCCESS)
@@ -357,17 +357,17 @@ contains
       type(ESMF_TypeKind_Flag) :: tk_x, tk_y
       integer :: status
 
-      call ESMF_FieldGet(x, typekind=tk_x, _RC)
+      call ESMF_FieldGet(x, typekind=tk_x, _rc)
       _ASSERT(is_valid_typekind(tk_x, expected_tks), 'Unexpected typekind')
-      call ESMF_FieldGet(y, typekind=tk_y, _RC)
+      call ESMF_FieldGet(y, typekind=tk_y, _rc)
       _ASSERT(is_valid_typekind(tk_y, expected_tks), 'Unexpected typekind')
 
       if(tk_x == tk_y) then
-         call FieldCOPY(x, y, _RC)
+         call FieldCOPY(x, y, _rc)
       else if(tk_x == ESMF_TYPEKIND_R4) then
-         call convert_prec_R4_to_R8(x, y, _RC)
+         call convert_prec_R4_to_R8(x, y, _rc)
       else
-         call convert_prec_R8_to_R4(x, y, _RC)
+         call convert_prec_R8_to_R4(x, y, _rc)
       end if
 
       _RETURN(_SUCCESS)
@@ -396,8 +396,8 @@ contains
       real(kind=ESMF_KIND_R4), pointer :: original_ptr(:)
       real(kind=ESMF_KIND_R8), pointer :: converted_ptr(:)
 
-      call assign_fptr(original, original_ptr, _RC)
-      call assign_fptr(converted, converted_ptr, _RC)
+      call assign_fptr(original, original_ptr, _rc)
+      call assign_fptr(converted, converted_ptr, _rc)
 
       converted_ptr = original_ptr
 
@@ -413,8 +413,8 @@ contains
       real(kind=ESMF_KIND_R8), pointer :: original_ptr(:)
       real(kind=ESMF_KIND_R4), pointer :: converted_ptr(:)
       
-      call assign_fptr(original, original_ptr, _RC)
-      call assign_fptr(converted, converted_ptr, _RC)
+      call assign_fptr(original, original_ptr, _rc)
+      call assign_fptr(converted, converted_ptr, _rc)
 
       converted_ptr = original_ptr
 

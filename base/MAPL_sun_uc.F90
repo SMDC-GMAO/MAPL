@@ -818,25 +818,25 @@ type(MAPL_SunOrbit) function MAPL_SunOrbitCreate(CLOCK,                  &
       ! -----------------------------------------------------------------------
       call ESMF_ConfigGetAttribute (CF, &
          ECC, label="ECCENTRICITY:", &
-         default=DEFAULT_ORBIT_ECCENTRICITY, _RC)
+         default=DEFAULT_ORBIT_ECCENTRICITY, _rc)
 
       call ESMF_ConfigGetAttribute (CF, &
          OB, label="OBLIQUITY:", &
-         default=DEFAULT_ORBIT_OBLIQUITY, _RC)
+         default=DEFAULT_ORBIT_OBLIQUITY, _rc)
 
       call ESMF_ConfigGetAttribute (CF, &
          PER, label="PERIHELION:", &
-         default=DEFAULT_ORBIT_PERIHELION, _RC)
+         default=DEFAULT_ORBIT_PERIHELION, _rc)
 
       call ESMF_ConfigGetAttribute (CF, &
          EQNX, label="EQUINOX:", &
-         default=DEFAULT_ORBIT_EQUINOX, _RC)
+         default=DEFAULT_ORBIT_EQUINOX, _rc)
 
       ! Apply Equation of Time correction?
       ! ----------------------------------
       call ESMF_ConfigGetAttribute (CF, &
          EOT, label="EOT:", &
-         default=.FALSE., _RC)
+         default=.FALSE., _rc)
 
       ! New orbital system (analytic two-body) allows some time-varying
       ! behavior, namely, linear variation in LAMBDAP, ECC, and OBQ.
@@ -844,60 +844,60 @@ type(MAPL_SunOrbit) function MAPL_SunOrbitCreate(CLOCK,                  &
 
       call ESMF_ConfigGetAttribute (CF, &
          ORBIT_ANAL2B, label="ORBIT_ANAL2B:", &
-         default=.FALSE., _RC)
+         default=.FALSE., _rc)
 
       ! Fixed anomalistic year length in mean solar days
       call ESMF_ConfigGetAttribute (CF, &
          ORB2B_YEARLEN, label="ORB2B_YEARLEN:", &
-         default=DEFAULT_ORB2B_YEARLEN, _RC)
+         default=DEFAULT_ORB2B_YEARLEN, _rc)
 
       ! Reference date and time for orbital parameters
       call ESMF_ConfigGetAttribute (CF, &
          ORB2B_REF_YYYYMMDD, label="ORB2B_REF_YYYYMMDD:", &
-         default=DEFAULT_ORB2B_REF_YYYYMMDD, _RC)
+         default=DEFAULT_ORB2B_REF_YYYYMMDD, _rc)
       call ESMF_ConfigGetAttribute (CF, &
          ORB2B_REF_HHMMSS, label="ORB2B_REF_HHMMSS:", &
-         default=DEFAULT_ORB2B_REF_HHMMSS, _RC)
+         default=DEFAULT_ORB2B_REF_HHMMSS, _rc)
 
       ! Orbital eccentricity at reference date
       call ESMF_ConfigGetAttribute (CF, &
          ORB2B_ECC_REF, label="ORB2B_ECC_REF:", &
-         default=DEFAULT_ORB2B_ECC_REF, _RC)
+         default=DEFAULT_ORB2B_ECC_REF, _rc)
 
       ! Rate of change of orbital eccentricity per Julian century
       call ESMF_ConfigGetAttribute (CF, &
          ORB2B_ECC_RATE, label="ORB2B_ECC_RATE:", &
-         default=DEFAULT_ORB2B_ECC_RATE, _RC)
+         default=DEFAULT_ORB2B_ECC_RATE, _rc)
 
       ! Earth's obliquity (axial tilt) at reference date [degrees]
       call ESMF_ConfigGetAttribute (CF, &
          ORB2B_OBQ_REF, label="ORB2B_OBQ_REF:", &
-         default=DEFAULT_ORB2B_OBQ_REF, _RC)
+         default=DEFAULT_ORB2B_OBQ_REF, _rc)
 
       ! Rate of change of obliquity [degrees per Julian century]
       call ESMF_ConfigGetAttribute (CF, &
          ORB2B_OBQ_RATE, label="ORB2B_OBQ_RATE:", &
-         default=DEFAULT_ORB2B_OBQ_RATE, _RC)
+         default=DEFAULT_ORB2B_OBQ_RATE, _rc)
 
       ! Longitude of perihelion at reference date [degrees]
       !   (from March equinox to perihelion in direction of earth's motion)
       call ESMF_ConfigGetAttribute (CF, &
          ORB2B_LAMBDAP_REF, label="ORB2B_LAMBDAP_REF:", &
-         default=DEFAULT_ORB2B_LAMBDAP_REF, _RC)
+         default=DEFAULT_ORB2B_LAMBDAP_REF, _rc)
 
       ! Rate of change of LAMBDAP [degrees per Julian century]
       !   (Combines both equatorial and ecliptic precession)
       call ESMF_ConfigGetAttribute (CF, &
          ORB2B_LAMBDAP_RATE, label="ORB2B_LAMBDAP_RATE:", &
-         default=DEFAULT_ORB2B_LAMBDAP_RATE, _RC)
+         default=DEFAULT_ORB2B_LAMBDAP_RATE, _rc)
 
       ! March Equinox date and time
       call ESMF_ConfigGetAttribute (CF, &
          ORB2B_EQUINOX_YYYYMMDD, label="ORB2B_EQUINOX_YYYYMMDD:", &
-         default=DEFAULT_ORB2B_EQUINOX_YYYYMMDD, _RC)
+         default=DEFAULT_ORB2B_EQUINOX_YYYYMMDD, _rc)
       call ESMF_ConfigGetAttribute (CF, &
          ORB2B_EQUINOX_HHMMSS, label="ORB2B_EQUINOX_HHMMSS:", &
-         default=DEFAULT_ORB2B_EQUINOX_HHMMSS, _RC)
+         default=DEFAULT_ORB2B_EQUINOX_HHMMSS, _rc)
 
       ! create the orbit object
       ORBIT = MAPL_SunOrbitCreate ( &
@@ -908,7 +908,7 @@ type(MAPL_SunOrbit) function MAPL_SunOrbitCreate(CLOCK,                  &
          ORB2B_OBQ_REF, ORB2B_OBQ_RATE, &
          ORB2B_LAMBDAP_REF, ORB2B_LAMBDAP_RATE, &
          ORB2B_EQUINOX_YYYYMMDD, ORB2B_EQUINOX_HHMMSS, &
-         FIX_SUN=FIX_SUN,_RC)
+         FIX_SUN=FIX_SUN,_rc)
 
       _RETURN(ESMF_SUCCESS)
 
@@ -2569,7 +2569,7 @@ subroutine  MAPL_SunOrbitQuery(ORBIT,           &
 
          ! Broadcast the number of lines
          ! -----------------------------
-         call MAPL_CommsBcast(vm, DATA=numlines, N=1, ROOT=0, _RC)
+         call MAPL_CommsBcast(vm, DATA=numlines, N=1, ROOT=0, _rc)
 
          ! Allocate our arrays on all processes
          ! ------------------------------------
@@ -2606,11 +2606,11 @@ subroutine  MAPL_SunOrbitQuery(ORBIT,           &
          ! Broadcast the tables
          ! --------------------
 
-         call MAPL_CommsBcast(vm, DATA=yearTable, N=numlines, ROOT=0, _RC)
-         call MAPL_CommsBcast(vm, DATA=doyTable,  N=numlines, ROOT=0, _RC)
-         call MAPL_CommsBcast(vm, DATA=tsi,       N=numlines, ROOT=0, _RC)
-         call MAPL_CommsBcast(vm, DATA=mgindex,   N=numlines, ROOT=0, _RC)
-         call MAPL_CommsBcast(vm, DATA=sbindex,   N=numlines, ROOT=0, _RC)
+         call MAPL_CommsBcast(vm, DATA=yearTable, N=numlines, ROOT=0, _rc)
+         call MAPL_CommsBcast(vm, DATA=doyTable,  N=numlines, ROOT=0, _rc)
+         call MAPL_CommsBcast(vm, DATA=tsi,       N=numlines, ROOT=0, _rc)
+         call MAPL_CommsBcast(vm, DATA=mgindex,   N=numlines, ROOT=0, _rc)
+         call MAPL_CommsBcast(vm, DATA=sbindex,   N=numlines, ROOT=0, _rc)
 
          TableCreated = .TRUE.
 
@@ -2621,12 +2621,12 @@ subroutine  MAPL_SunOrbitQuery(ORBIT,           &
 
       ! Get current time
       ! ----------------
-      call ESMF_ClockGet(CLOCK, CURRTIME=currentTime, _RC)
+      call ESMF_ClockGet(CLOCK, CURRTIME=currentTime, _rc)
 
       call ESMF_TimeGet( currentTime, YY = currentYear,   &
                                       MM = currentMon,    &
                                       DD = currentDay,    &
-                               dayOfYear = currentDOY, _RC)
+                               dayOfYear = currentDOY, _rc)
 
       ! Test if current time is outside our file
       ! ----------------------------------------
@@ -2676,7 +2676,7 @@ subroutine  MAPL_SunOrbitQuery(ORBIT,           &
                                              DD = 1,     &
                                               H = 12,    &
                                               M = 00,    &
-                                              S = 00, _RC)
+                                              S = 00, _rc)
 
             ! Create an ESMF_Time at start of Cycle 25
             ! ----------------------------------------
@@ -2685,7 +2685,7 @@ subroutine  MAPL_SunOrbitQuery(ORBIT,           &
                                              DD = 1,     &
                                               H = 12,    &
                                               M = 00,    &
-                                              S = 00, _RC)
+                                              S = 00, _rc)
 
             ! Create TimeInterval based on interval
             ! from start of latest Cycle 25
@@ -2717,7 +2717,7 @@ subroutine  MAPL_SunOrbitQuery(ORBIT,           &
             call ESMF_TimeGet( currentTime, YY = currentYear,   &
                                             MM = currentMon,    &
                                             DD = currentDay,    &
-                                     dayOfYear = currentDOY, _RC)
+                                     dayOfYear = currentDOY, _rc)
 
             call lgr%debug('Off the end of table, moving into last complete cycle')
             call lgr%debug('  Original Year-Mon-Day to Find: %i0.4~-%i0.2~-%i0.2', originalYear,originalMon,originalDay)
@@ -2736,12 +2736,12 @@ subroutine  MAPL_SunOrbitQuery(ORBIT,           &
                                          DD = currentDay,  &
                                           H = 12,          &
                                           M = 00,          &
-                                          S = 00,       _RC)
+                                          S = 00,       _rc)
 
       ! Figure out bracketing days for interpolation
       ! NOTE: nextNoon is mainly for debugging purposes
       ! -----------------------------------------------
-      call ESMF_TimeIntervalSet(oneDayInterval, D=1, _RC)
+      call ESMF_TimeIntervalSet(oneDayInterval, D=1, _rc)
       if (currentTime <= noonCurrentDay) then
          prevNoon = noonCurrentDay - oneDayInterval
          nextNoon = noonCurrentDay
@@ -2752,8 +2752,8 @@ subroutine  MAPL_SunOrbitQuery(ORBIT,           &
 
       ! Get the DOYs
       ! ------------
-      call ESMF_TimeGet( prevNoon, YY = prevNoonYear, dayOfYear = prevDOY, _RC)
-      call ESMF_TimeGet( nextNoon, YY = nextNoonYear, dayOfYear = nextDOY, _RC)
+      call ESMF_TimeGet( prevNoon, YY = prevNoonYear, dayOfYear = prevDOY, _rc)
+      call ESMF_TimeGet( nextNoon, YY = nextNoonYear, dayOfYear = nextDOY, _rc)
 
       ! Our interpolation factor is based of when we are compared to the next noon
       ! --------------------------------------------------------------------------
@@ -2762,7 +2762,7 @@ subroutine  MAPL_SunOrbitQuery(ORBIT,           &
       ! The FAC for interpolating is just the real version
       ! of the size of the timeinterval to the next noon
       ! --------------------------------------------------
-      call ESMF_TimeIntervalGet(intToNextNoon, d_r8=days_r8, _RC)
+      call ESMF_TimeIntervalGet(intToNextNoon, d_r8=days_r8, _rc)
       FAC = real(days_r8)
 
       ! Use our find_file_index function to get the index for previous noon
@@ -3101,9 +3101,9 @@ subroutine  MAPL_SunOrbitQuery(ORBIT,           &
          T = TIME
       else
          if (present(CLOCK)) then
-            call ESMF_ClockGet (      CLOCK, CURRTIME=T, _RC)
+            call ESMF_ClockGet (      CLOCK, CURRTIME=T, _rc)
          else
-            call ESMF_ClockGet (ORBIT%CLOCK, CURRTIME=T, _RC)
+            call ESMF_ClockGet (ORBIT%CLOCK, CURRTIME=T, _rc)
          end if
       end if
 
@@ -3128,7 +3128,7 @@ subroutine  MAPL_SunOrbitQuery(ORBIT,           &
          if (ORBIT%ANAL2B) then
 
             ! include time variation in orbit from reference time
-            call ESMF_TimeIntervalGet (T - ORBIT%ORB2B_TIME_REF, d_r8=days, _RC)
+            call ESMF_TimeIntervalGet (T - ORBIT%ORB2B_TIME_REF, d_r8=days, _rc)
             ECC     = ORBIT%ORB2B_ECC_REF     + days * ORBIT%ORB2B_ECC_RATE
             OBQ     = ORBIT%ORB2B_OBQ_REF     + days * ORBIT%ORB2B_OBQ_RATE
             LAMBDAP = ORBIT%ORB2B_LAMBDAP_REF + days * ORBIT%ORB2B_LAMBDAP_RATE
@@ -3138,7 +3138,7 @@ subroutine  MAPL_SunOrbitQuery(ORBIT,           &
             OMSQECC = OMECC * OPECC
             EAFAC = sqrt(OMECC/OPECC)
             ! time interval since perhelion in days
-            call ESMF_TimeIntervalGet (T - ORBIT%ORB2B_TIME_PERI, d_r8=days, _RC)
+            call ESMF_TimeIntervalGet (T - ORBIT%ORB2B_TIME_PERI, d_r8=days, _rc)
             ! mean anomaly
             MA = ORBIT%ORB2B_OMG0 * days
             ! eccentric anomaly

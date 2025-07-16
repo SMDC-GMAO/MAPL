@@ -29,7 +29,7 @@ contains
       class(ExtDataNode), intent(inout) :: this
       integer, intent(out), optional :: rc
       integer :: status
-      field_initialized = ESMF_FieldIsCreated(this%field,_RC)
+      field_initialized = ESMF_FieldIsCreated(this%field,_rc)
       _RETURN(_SUCCESS)
    end function
 

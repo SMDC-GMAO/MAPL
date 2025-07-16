@@ -63,7 +63,7 @@ contains
          call fm%write(this%fmd, rc=status)
          _VERIFY(status)
        else
-          call fm%open(trim(file_name), pFIO_WRITE, _RC)
+          call fm%open(trim(file_name), pFIO_WRITE, _rc)
        endif
        call this%formatters%insert( trim(file_name),fm)
        iter = this%formatters%find(trim(file_name))
@@ -83,7 +83,7 @@ contains
 
     iter = var_map%begin()
     do while (iter /= var_map%end())
-       call this%fmd%modify_variable(iter%key(), iter%value(), _RC)
+       call this%fmd%modify_variable(iter%key(), iter%value(), _rc)
 
        call iter%next()
     enddo

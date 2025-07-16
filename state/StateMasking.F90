@@ -43,7 +43,7 @@ module MAPL_StateMaskMod
       i1 = index(mask_expression,"(")
       _ASSERT(i1 > 0,'Incorrect format for function expression: missing "("')
       function_name = adjustl(mask_expression(:i1-1))
-      function_name = ESMF_UtilStringLowerCase(function_name, _RC)
+      function_name = ESMF_UtilStringLowerCase(function_name, _rc)
 
       if (index(function_name,"regionmask") /= 0) then
          new_mask%mask_type = "regionmask"
@@ -99,11 +99,11 @@ module MAPL_StateMaskMod
       integer :: status
       select case(this%mask_type)
       case("regionmask")
-         call this%evaluate_region_mask(state,field,_RC)
+         call this%evaluate_region_mask(state,field,_rc)
       case("zonemask")
-         call this%evaluate_zone_mask(state,field,_RC)
+         call this%evaluate_zone_mask(state,field,_rc)
       case("boxmask")
-         call this%evaluate_box_mask(state,field,_RC)
+         call this%evaluate_box_mask(state,field,_rc)
       end select
       _RETURN(_SUCCESS)
    end subroutine evaluate_mask
@@ -126,7 +126,7 @@ module MAPL_StateMaskMod
       real, pointer        :: out_var3d(:,:,:)
       integer              :: rank,ib,ie
 
-      call ESMF_FieldGet(field,rank=rank,_RC)
+      call ESMF_FieldGet(field,rank=rank,_rc)
 
        ! get mask string
        ib = index(this%mask_arguments,";")
@@ -137,13 +137,13 @@ module MAPL_StateMaskMod
        vartomask = this%mask_arguments(:ib-1)
        maskname = this%mask_arguments(ib+1:ie-1)
 
-       call MAPL_GetPointer(state,rmask,maskName,_RC)
+       call MAPL_GetPointer(state,rmask,maskName,_rc)
        if (rank == 2) then
-          call ESMF_FieldGet(field,0,farrayPtr=out_var2d,_RC)
-          call MAPL_GetPointer(state,var2d, vartomask, _RC)
+          call ESMF_FieldGet(field,0,farrayPtr=out_var2d,_rc)
+          call MAPL_GetPointer(state,var2d, vartomask, _rc)
        else if (rank == 3) then
-          call ESMF_FieldGet(field,0,farrayPtr=out_var3d,_RC)
-          call MAPL_GetPointer(state,var3d, vartomask, _RC)
+          call ESMF_FieldGet(field,0,farrayPtr=out_var3d,_rc)
+          call MAPL_GetPointer(state,var3d, vartomask, _rc)
        else
           _FAIL('Rank must be 2 or 3')
        end if
@@ -204,7 +204,7 @@ module MAPL_StateMaskMod
        integer              :: rank,ib,is
        type(ESMF_CoordSys_Flag) :: coordSys
 
-       call ESMF_FieldGet(field,rank=rank,grid=grid,_RC)
+       call ESMF_FieldGet(field,rank=rank,grid=grid,_rc)
 
        ib = index(this%mask_arguments,",")
        vartomask = this%mask_arguments(:ib-1)
@@ -219,18 +219,18 @@ module MAPL_StateMaskMod
        call ESMF_GridGetCoord(grid, coordDim=2, localDE=0, &
             staggerloc=ESMF_STAGGERLOC_CENTER, farrayPtr=lats, rc=status)
        _VERIFY(status)
-       call ESMF_GridGet(grid,coordsys=coordsys,_RC)
+       call ESMF_GridGet(grid,coordsys=coordsys,_rc)
        if (coordsys == ESMF_COORDSYS_SPH_RAD) then
           limitN=limitN*MAPL_PI_R8/180.0d0
           limitS=limitS*MAPL_PI_R8/180.0d0
        end if
 
        if (rank == 2) then
-          call ESMF_FieldGet(field,0,farrayPtr=out_var2d,_RC)
-          call MAPL_GetPointer(state,var2d, vartomask, _RC)
+          call ESMF_FieldGet(field,0,farrayPtr=out_var2d,_rc)
+          call MAPL_GetPointer(state,var2d, vartomask, _rc)
        else if (rank == 3) then
-          call ESMF_FieldGet(field,0,farrayPtr=out_var3d,_RC)
-          call MAPL_GetPointer(state,var3d, vartomask, _RC)
+          call ESMF_FieldGet(field,0,farrayPtr=out_var3d,_rc)
+          call MAPL_GetPointer(state,var3d, vartomask, _rc)
        else
           _FAIL('Rank must be 2 or 3')
        end if
@@ -275,8 +275,8 @@ module MAPL_StateMaskMod
        character(len=ESMF_MAXSTR) :: args(5)
        type(ESMF_CoordSys_Flag) :: coordSys
 
-       call ESMF_FieldGet(field,rank=rank,grid=grid,_RC)
-       call ESMF_GridGet(grid,coordsys=coordsys,_RC)
+       call ESMF_FieldGet(field,rank=rank,grid=grid,_rc)
+       call ESMF_GridGet(grid,coordsys=coordsys,_rc)
 
        strtmp = this%mask_arguments
        do nargs=1,5
@@ -373,11 +373,11 @@ module MAPL_StateMaskMod
        end if
 
        if (rank == 2) then
-          call ESMF_FieldGet(field,0,farrayPtr=out_var2d,_RC)
-          call MAPL_GetPointer(state,var2d, vartomask, _RC)
+          call ESMF_FieldGet(field,0,farrayPtr=out_var2d,_rc)
+          call MAPL_GetPointer(state,var2d, vartomask, _rc)
        else if (rank == 3) then
-          call ESMF_FieldGet(field,0,farrayPtr=out_var3d,_RC)
-          call MAPL_GetPointer(state,var3d, vartomask, _RC)
+          call ESMF_FieldGet(field,0,farrayPtr=out_var3d,_rc)
+          call MAPL_GetPointer(state,var3d, vartomask, _rc)
        else
           _FAIL('Rank must be 2 or 3')
        end if

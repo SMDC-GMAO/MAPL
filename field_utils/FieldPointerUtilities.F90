@@ -92,9 +92,9 @@ contains
       integer(ESMF_KIND_I8) :: local_size
       integer :: status
 
-      local_size = FieldGetLocalSize(x, _RC)
+      local_size = FieldGetLocalSize(x, _rc)
       fp_shape = [ local_size ]
-      call FieldGetCptr(x, cptr, _RC)
+      call FieldGetCptr(x, cptr, _rc)
       call c_f_pointer(cptr, fptr, fp_shape)
 
       _RETURN(_SUCCESS)
@@ -111,9 +111,9 @@ contains
       integer(ESMF_KIND_I8) :: local_size
       integer :: status
 
-      local_size = FieldGetLocalSize(x, _RC)
+      local_size = FieldGetLocalSize(x, _rc)
       fp_shape = [ local_size ]
-      call FieldGetCptr(x, cptr, _RC)
+      call FieldGetCptr(x, cptr, _rc)
       call c_f_pointer(cptr, fptr, fp_shape)
 
       _RETURN(_SUCCESS)
@@ -129,7 +129,7 @@ contains
       type(c_ptr) :: cptr
       integer :: status
 
-      call FieldGetCptr(x, cptr, _RC)
+      call FieldGetCptr(x, cptr, _rc)
       call c_f_pointer(cptr, fptr, fp_shape)
 
       _RETURN(_SUCCESS)
@@ -145,7 +145,7 @@ contains
       type(c_ptr) :: cptr
       integer :: status
 
-      call FieldGetCptr(x, cptr, _RC)
+      call FieldGetCptr(x, cptr, _rc)
       call c_f_pointer(cptr, fptr, fp_shape)
 
       _RETURN(_SUCCESS)
@@ -159,16 +159,16 @@ contains
       integer :: status
       type(ESMF_TypeKind_Flag) :: tk_x
 
-      call ESMF_FieldGet(x, typekind=tk_x, _RC)
+      call ESMF_FieldGet(x, typekind=tk_x, _rc)
 
       if (tk_x == ESMF_TYPEKIND_R4) then
-         call get_cptr_r4(x, cptr, _RC)
+         call get_cptr_r4(x, cptr, _rc)
       elseif (tk_x == ESMF_TYPEKIND_R8) then
-         call get_cptr_r8(x, cptr, _RC)
+         call get_cptr_r8(x, cptr, _rc)
       elseif (tk_x == ESMF_TYPEKIND_I4) then
-         call get_cptr_i4(x, cptr, _RC)
+         call get_cptr_i4(x, cptr, _rc)
       elseif (tk_x == ESMF_TYPEKIND_I8) then
-         call get_cptr_i8(x, cptr, _RC)
+         call get_cptr_i8(x, cptr, _rc)
       else
          _FAIL('Unsupported typekind in FieldGetCptr().')
       end if
@@ -189,23 +189,23 @@ contains
       real(kind=ESMF_KIND_R4), pointer :: x_4d(:,:,:,:)
       real(kind=ESMF_KIND_R4), pointer :: x_5d(:,:,:,:,:)
 
-      call ESMF_FieldGet(x, rank=rank, _RC)
+      call ESMF_FieldGet(x, rank=rank, _rc)
 
       select case (rank)
       case (1)
-         call ESMF_FieldGet(x, farrayPtr = x_1d, _RC)
+         call ESMF_FieldGet(x, farrayPtr = x_1d, _rc)
          cptr = c_loc(x_1d)
       case (2)
-         call ESMF_FieldGet(x, farrayPtr = x_2d, _RC)
+         call ESMF_FieldGet(x, farrayPtr = x_2d, _rc)
          cptr = c_loc(x_2d)
       case (3)
-         call ESMF_FieldGet(x, farrayPtr = x_3d, _RC)
+         call ESMF_FieldGet(x, farrayPtr = x_3d, _rc)
          cptr = c_loc(x_3d)
       case (4)
-         call ESMF_FieldGet(x, farrayPtr = x_4d, _RC)
+         call ESMF_FieldGet(x, farrayPtr = x_4d, _rc)
          cptr = c_loc(x_4d)
       case (5)
-         call ESMF_FieldGet(x, farrayPtr = x_5d, _RC)
+         call ESMF_FieldGet(x, farrayPtr = x_5d, _rc)
          cptr = c_loc(x_5d)
       case default
          _FAIL('Unsupported rank in FieldGetCptr().')
@@ -227,23 +227,23 @@ contains
       real(kind=ESMF_KIND_R8), pointer :: x_4d(:,:,:,:)
       real(kind=ESMF_KIND_R8), pointer :: x_5d(:,:,:,:,:)
 
-      call ESMF_FieldGet(x, rank=rank, _RC)
+      call ESMF_FieldGet(x, rank=rank, _rc)
 
       select case (rank)
       case (1)
-         call ESMF_FieldGet(x, farrayPtr = x_1d, _RC)
+         call ESMF_FieldGet(x, farrayPtr = x_1d, _rc)
          cptr = c_loc(x_1d)
       case (2)
-         call ESMF_FieldGet(x, farrayPtr = x_2d, _RC)
+         call ESMF_FieldGet(x, farrayPtr = x_2d, _rc)
          cptr = c_loc(x_2d)
       case (3)
-         call ESMF_FieldGet(x, farrayPtr = x_3d, _RC)
+         call ESMF_FieldGet(x, farrayPtr = x_3d, _rc)
          cptr = c_loc(x_3d)
       case (4)
-         call ESMF_FieldGet(x, farrayPtr = x_4d, _RC)
+         call ESMF_FieldGet(x, farrayPtr = x_4d, _rc)
          cptr = c_loc(x_4d)
       case (5)
-         call ESMF_FieldGet(x, farrayPtr = x_5d, _RC)
+         call ESMF_FieldGet(x, farrayPtr = x_5d, _rc)
          cptr = c_loc(x_5d)
       case default
          _FAIL('Unsupported rank in FieldGetCptr().')
@@ -265,23 +265,23 @@ contains
       integer(kind=ESMF_KIND_I4), pointer :: x_4d(:,:,:,:)
       integer(kind=ESMF_KIND_I4), pointer :: x_5d(:,:,:,:,:)
 
-      call ESMF_FieldGet(x, rank=rank, _RC)
+      call ESMF_FieldGet(x, rank=rank, _rc)
 
       select case (rank)
       case (1)
-         call ESMF_FieldGet(x, farrayPtr = x_1d, _RC)
+         call ESMF_FieldGet(x, farrayPtr = x_1d, _rc)
          cptr = c_loc(x_1d)
       case (2)
-         call ESMF_FieldGet(x, farrayPtr = x_2d, _RC)
+         call ESMF_FieldGet(x, farrayPtr = x_2d, _rc)
          cptr = c_loc(x_2d)
       case (3)
-         call ESMF_FieldGet(x, farrayPtr = x_3d, _RC)
+         call ESMF_FieldGet(x, farrayPtr = x_3d, _rc)
          cptr = c_loc(x_3d)
       case (4)
-         call ESMF_FieldGet(x, farrayPtr = x_4d, _RC)
+         call ESMF_FieldGet(x, farrayPtr = x_4d, _rc)
          cptr = c_loc(x_4d)
       case (5)
-         call ESMF_FieldGet(x, farrayPtr = x_5d, _RC)
+         call ESMF_FieldGet(x, farrayPtr = x_5d, _rc)
          cptr = c_loc(x_5d)
       case default
          _FAIL('Unsupported rank in FieldGetCptr().')
@@ -303,23 +303,23 @@ contains
       integer(kind=ESMF_KIND_I8), pointer :: x_4d(:,:,:,:)
       integer(kind=ESMF_KIND_I8), pointer :: x_5d(:,:,:,:,:)
 
-      call ESMF_FieldGet(x, rank=rank, _RC)
+      call ESMF_FieldGet(x, rank=rank, _rc)
 
       select case (rank)
       case (1)
-         call ESMF_FieldGet(x, farrayPtr = x_1d, _RC)
+         call ESMF_FieldGet(x, farrayPtr = x_1d, _rc)
          cptr = c_loc(x_1d)
       case (2)
-         call ESMF_FieldGet(x, farrayPtr = x_2d, _RC)
+         call ESMF_FieldGet(x, farrayPtr = x_2d, _rc)
          cptr = c_loc(x_2d)
       case (3)
-         call ESMF_FieldGet(x, farrayPtr = x_3d, _RC)
+         call ESMF_FieldGet(x, farrayPtr = x_3d, _rc)
          cptr = c_loc(x_3d)
       case (4)
-         call ESMF_FieldGet(x, farrayPtr = x_4d, _RC)
+         call ESMF_FieldGet(x, farrayPtr = x_4d, _rc)
          cptr = c_loc(x_4d)
       case (5)
-         call ESMF_FieldGet(x, farrayPtr = x_5d, _RC)
+         call ESMF_FieldGet(x, farrayPtr = x_5d, _rc)
          cptr = c_loc(x_5d)
       case default
          _FAIL('Unsupported rank in FieldGetCptr().')
@@ -336,12 +336,12 @@ contains
       integer :: status
       integer :: rank
 
-      call ESMF_FieldGet(x, rank=rank, _RC)
+      call ESMF_FieldGet(x, rank=rank, _rc)
       allocate(element_count(rank))
       ! ESMF has a big fat bug with multi tile grids and loal element count
-      !call ESMF_FieldGet(x, localElementCount=element_count, _RC)
+      !call ESMF_FieldGet(x, localElementCount=element_count, _rc)
       ! until it is fixed we must kluge :(
-      call MAPL_FieldGetLocalElementCount(x, element_count, _RC)
+      call MAPL_FieldGetLocalElementCount(x, element_count, _rc)
 
       _RETURN(_SUCCESS)
    end function get_local_element_count
@@ -355,7 +355,7 @@ contains
       integer, allocatable :: element_count(:)
 
       sz = 0
-      element_count = FieldGetLocalElementCount(x, _RC)
+      element_count = FieldGetLocalElementCount(x, _rc)
       sz = int(product(element_count), kind=ESMF_KIND_I8)
 
       _RETURN(_SUCCESS)
@@ -382,50 +382,50 @@ contains
       real(kind=ESMF_KIND_R8), pointer      :: VR8_1D(:), VR8_2D(:,:), VR8_3D(:,:,:), VR8_4D(:,:,:,:)
       integer, allocatable :: lc(:)
 
-      call ESMF_FieldGet(x,grid=grid,rank=field_rank,_RC)
-      lc = get_local_element_count(x,_RC)
-      call ESMF_GridGet(grid,dimCount=grid_rank,indexFlag=index_flag,_RC)
+      call ESMF_FieldGet(x,grid=grid,rank=field_rank,_rc)
+      lc = get_local_element_count(x,_rc)
+      call ESMF_GridGet(grid,dimCount=grid_rank,indexFlag=index_flag,_rc)
       ungrid_size = field_rank-grid_rank
       allocate(gridToFieldMap(grid_rank))
       allocate(ungriddedLBound(ungrid_size),ungriddedUBound(ungrid_size))
       call ESMF_FieldGet(x, typekind=tk, name = name, &
          staggerloc=staggerloc, gridToFieldMap=gridToFieldMap, &
-         ungriddedLBound=ungriddedLBound, ungriddedUBound=ungriddedUBound,  _RC)
+         ungriddedLBound=ungriddedLBound, ungriddedUBound=ungriddedUBound,  _rc)
 
       name = trim(name) // CLONE_TAG
 
       if (index_flag == ESMF_INDEX_USER) then
          if (tk == ESMF_TYPEKIND_R4 .and. field_rank == 1) then
             allocate(VR4_1d(lc(1)),_STAT)
-            y = ESMF_FieldCreate(grid,VR4_1d,gridToFieldMap=gridToFieldMap,name=name,_RC)
+            y = ESMF_FieldCreate(grid,VR4_1d,gridToFieldMap=gridToFieldMap,name=name,_rc)
          else if (tk == ESMF_TYPEKIND_R8 .and. field_rank == 1) then
             allocate(VR8_1d(lc(1)),_STAT)
-            y = ESMF_FieldCreate(grid,VR8_1d,gridToFieldMap=gridToFieldMap,name=name,_RC)
+            y = ESMF_FieldCreate(grid,VR8_1d,gridToFieldMap=gridToFieldMap,name=name,_rc)
          else if (tk == ESMF_TYPEKIND_R4 .and. field_rank == 2) then
             allocate(VR4_2d(lc(1),lc(2)),_STAT)
-            y = ESMF_FieldCreate(grid,VR4_2d,gridToFieldMap=gridToFieldMap,name=name,_RC)
+            y = ESMF_FieldCreate(grid,VR4_2d,gridToFieldMap=gridToFieldMap,name=name,_rc)
          else if (tk == ESMF_TYPEKIND_R8 .and. field_rank == 2) then
             allocate(VR8_2d(lc(1),lc(2)),_STAT)
-            y = ESMF_FieldCreate(grid,VR8_2d,gridToFieldMap=gridToFieldMap,name=name,_RC)
+            y = ESMF_FieldCreate(grid,VR8_2d,gridToFieldMap=gridToFieldMap,name=name,_rc)
          else if (tk == ESMF_TYPEKIND_R4 .and. field_rank == 3) then
             allocate(VR4_3d(lc(1),lc(2),lc(3)),_STAT)
-            y = ESMF_FieldCreate(grid,VR4_3d,gridToFieldMap=gridToFieldMap,name=name,_RC)
+            y = ESMF_FieldCreate(grid,VR4_3d,gridToFieldMap=gridToFieldMap,name=name,_rc)
          else if (tk == ESMF_TYPEKIND_R8 .and. field_rank == 3) then
             allocate(VR8_3d(lc(1),lc(2),lc(3)),_STAT)
-            y = ESMF_FieldCreate(grid,VR8_3d,gridToFieldMap=gridToFieldMap,name=name,_RC)
+            y = ESMF_FieldCreate(grid,VR8_3d,gridToFieldMap=gridToFieldMap,name=name,_rc)
          else if (tk == ESMF_TYPEKIND_R4 .and. field_rank == 4) then
             allocate(VR4_4d(lc(1),lc(2),lc(3),lc(4)),_STAT)
-            y = ESMF_FieldCreate(grid,VR4_4d,gridToFieldMap=gridToFieldMap,name=name,_RC)
+            y = ESMF_FieldCreate(grid,VR4_4d,gridToFieldMap=gridToFieldMap,name=name,_rc)
          else if (tk == ESMF_TYPEKIND_R8 .and. field_rank == 4) then
             allocate(VR8_4d(lc(1),lc(2),lc(3),lc(4)),_STAT)
-            y = ESMF_FieldCreate(grid,VR8_4d,gridToFieldMap=gridToFieldMap,name=name,_RC)
+            y = ESMF_FieldCreate(grid,VR8_4d,gridToFieldMap=gridToFieldMap,name=name,_rc)
          else
             _FAIL( 'unsupported typekind+field_rank')
          end if
       else
          y = ESMF_FieldCreate(grid, tk, staggerloc=staggerloc, &
             gridToFieldMap=gridToFieldMap, ungriddedLBound=ungriddedLBound, &
-            ungriddedUBound=ungriddedUBound, name=name, _RC)
+            ungriddedUBound=ungriddedUBound, name=name, _rc)
       end if
 
       _RETURN(_SUCCESS)
@@ -441,12 +441,12 @@ contains
 
       conformable = .false.
 
-      call ESMF_FieldGet(x, rank=rank_x, _RC)
-      call ESMF_FieldGet(y, rank=rank_y, _RC)
+      call ESMF_FieldGet(x, rank=rank_x, _rc)
+      call ESMF_FieldGet(y, rank=rank_y, _rc)
 
       if(rank_x == rank_y) then
-         count_x = FieldGetLocalElementCount(x, _RC)
-         count_y = FieldGetLocalElementCount(y, _RC)
+         count_x = FieldGetLocalElementCount(x, _rc)
+         count_y = FieldGetLocalElementCount(y, _rc)
          conformable = all(count_x == count_y)
       end if
 
@@ -466,7 +466,7 @@ contains
       element_not_conformable = .false.
 
       do j = 1, size(y)
-         element_not_conformable = .not. FieldsAreConformable(x, y(j), _RC)
+         element_not_conformable = .not. FieldsAreConformable(x, y(j), _rc)
          if(element_not_conformable) return
       end do
 
@@ -489,19 +489,19 @@ contains
       ! for now we will do this until we have a geom agnostic stuff worked out...
       ! the ideal algorithm would be if geom == geom and input does not have ungridded
       ! and thing we are copying to does, then we are "conformable"
-      normal_conformable = FIeldsAreConformable(x,y,_RC)
+      normal_conformable = FIeldsAreConformable(x,y,_rc)
 
       if (normal_conformable) then
          conformable = .true.
          _RETURN(_SUCCESS)
       end if
 
-      call ESMF_FieldGet(x, rank=rank_x, _RC)
-      call ESMF_FieldGet(y, rank=rank_y, _RC)
+      call ESMF_FieldGet(x, rank=rank_x, _rc)
+      call ESMF_FieldGet(y, rank=rank_y, _rc)
 
       if( (rank_x+1) == rank_y) then
-         count_x = FieldGetLocalElementCount(x, _RC)
-         count_y = FieldGetLocalElementCount(y, _RC)
+         count_x = FieldGetLocalElementCount(x, _rc)
+         count_y = FieldGetLocalElementCount(y, _rc)
          conformable = all(count_x == count_y(:rank_y-1))
       end if
 
@@ -517,8 +517,8 @@ contains
       type(ESMF_TypeKind_Flag) :: tk_x, tk_y
 
       same_tk = .false.
-      call ESMF_FieldGet(x, typekind=tk_x, _RC)
-      call ESMF_FieldGet(y, typekind=tk_y, _RC)
+      call ESMF_FieldGet(x, typekind=tk_x, _rc)
+      call ESMF_FieldGet(y, typekind=tk_y, _rc)
 
       same_tk = (tk_x == tk_y)
 
@@ -534,7 +534,7 @@ contains
 
       type(ESMF_TypeKind_Flag) :: found_tk
 
-      call ESMF_FieldGet(x, typekind=found_tk, _RC)
+      call ESMF_FieldGet(x, typekind=found_tk, _rc)
 
       _ASSERT((found_tk == expected_tk), 'Found incorrect typekind.')
       _RETURN(_SUCCESS)
@@ -549,7 +549,7 @@ contains
       integer :: i
 
       do i = 1, size(x)
-         call verify_typekind(x(i), expected_tk, _RC)
+         call verify_typekind(x(i), expected_tk, _rc)
       end do
       _RETURN(_SUCCESS)
    end subroutine verify_typekind_array
@@ -586,22 +586,22 @@ contains
 
       conformable = FieldsAreConformable(x, y)
       if (conformable) then
-         call copy(x,y,_RC)
+         call copy(x,y,_rc)
          _RETURN(_SUCCESS)
       end if
       broadcast = FieldsAreBroadcastConformable(x,y)
       _ASSERT(broadcast, 'FieldCopy() - field can not be broadcast.')
 
-      call MAPL_FieldGetLocalElementCount(x,x_shape,_RC)
-      call MAPL_FieldGetLocalElementCount(y,y_shape,_RC)
-      call FieldGetCptr(x, cptr_x, _RC)
-      call ESMF_FieldGet(x, typekind = tk_x, _RC)
+      call MAPL_FieldGetLocalElementCount(x,x_shape,_rc)
+      call MAPL_FieldGetLocalElementCount(y,y_shape,_rc)
+      call FieldGetCptr(x, cptr_x, _rc)
+      call ESMF_FieldGet(x, typekind = tk_x, _rc)
 
       n_input = product(x_shape)
       n_extra = y_shape(size(y_shape))
 
-      call FieldGetCptr(y, cptr_y, _RC)
-      call ESMF_FieldGet(y, typekind = tk_y, _RC)
+      call FieldGetCptr(y, cptr_y, _rc)
+      call ESMF_FieldGet(y, typekind = tk_y, _rc)
 
       y_is_double = (tk_y == ESMF_TYPEKIND_R8)
       _ASSERT(y_is_double .or. (tk_y == ESMF_TYPEKIND_R4), UNSUPPORTED_TK//'y.')
@@ -712,13 +712,13 @@ contains
       conformable = FieldsAreConformable(x, y)
       !wdb fixme need to pass RC
       _ASSERT(conformable, 'FieldCopy() - fields not conformable.')
-      call FieldGetCptr(x, cptr_x, _RC)
-      call ESMF_FieldGet(x, typekind = tk_x, _RC)
+      call FieldGetCptr(x, cptr_x, _rc)
+      call ESMF_FieldGet(x, typekind = tk_x, _rc)
 
-      n  = FieldGetLocalSize(x, _RC)
+      n  = FieldGetLocalSize(x, _rc)
 
-      call FieldGetCptr(y, cptr_y, _RC)
-      call ESMF_FieldGet(y, typekind = tk_y, _RC)
+      call FieldGetCptr(y, cptr_y, _rc)
+      call ESMF_FieldGet(y, typekind = tk_y, _rc)
 
      !wdb  fixme convert between precisions ? get rid of extra cases
       y_is_double = (tk_y == ESMF_TYPEKIND_R8)
@@ -809,35 +809,35 @@ contains
      real(kind=ESMF_KIND_R4), pointer :: r4_1d(:),r4_2d(:,:),r4_3d(:,:,:),r4_4d(:,:,:,:)
      real(kind=ESMF_KIND_R8), pointer :: r8_1d(:),r8_2d(:,:),r8_3d(:,:,:),r8_4d(:,:,:,:)
 
-     call ESMF_FieldGet(field,rank=rank,typekind=tk,_RC)
+     call ESMF_FieldGet(field,rank=rank,typekind=tk,_rc)
      if (tk == ESMF_TypeKind_R4) then
         if (rank==1) then
-           call ESMF_FieldGet(field,0,farrayptr=r4_1d,_RC)
+           call ESMF_FieldGet(field,0,farrayptr=r4_1d,_rc)
            local_count = shape(r4_1d)
         else if (rank ==2) then
-           call ESMF_FieldGet(field,0,farrayptr=r4_2d,_RC)
+           call ESMF_FieldGet(field,0,farrayptr=r4_2d,_rc)
            local_count = shape(r4_2d)
         else if (rank ==3) then
-           call ESMF_FieldGet(field,0,farrayptr=r4_3d,_RC)
+           call ESMF_FieldGet(field,0,farrayptr=r4_3d,_rc)
            local_count = shape(r4_3d)
         else if (rank ==4) then
-           call ESMF_FieldGet(field,0,farrayptr=r4_4d,_RC)
+           call ESMF_FieldGet(field,0,farrayptr=r4_4d,_rc)
            local_count = shape(r4_4d)
         else
            _FAIL("Unsupported rank")
         end if
      else if (tk == ESMF_TypeKind_R8) then
         if (rank==1) then
-           call ESMF_FieldGet(field,0,farrayptr=r8_1d,_RC)
+           call ESMF_FieldGet(field,0,farrayptr=r8_1d,_rc)
            local_count = shape(r8_1d)
         else if (rank ==2) then
-           call ESMF_FieldGet(field,0,farrayptr=r8_2d,_RC)
+           call ESMF_FieldGet(field,0,farrayptr=r8_2d,_rc)
            local_count = shape(r8_2d)
         else if (rank ==3) then
-           call ESMF_FieldGet(field,0,farrayptr=r8_3d,_RC)
+           call ESMF_FieldGet(field,0,farrayptr=r8_3d,_rc)
            local_count = shape(r8_3d)
         else if (rank ==4) then
-           call ESMF_FieldGet(field,0,farrayptr=r8_4d,_RC)
+           call ESMF_FieldGet(field,0,farrayptr=r8_4d,_rc)
            local_count = shape(r8_4d)
         else
            _FAIL("Unsupported rank")
@@ -858,7 +858,7 @@ contains
 
      all_have_undef = .true.
      do i =1,size(fields)
-        call ESMF_AttributeGet(fields(i),name="missing_value",isPresent=isPresent,_RC)
+        call ESMF_AttributeGet(fields(i),name="missing_value",isPresent=isPresent,_rc)
         all_have_undef = (all_have_undef .and. isPresent)
      enddo
      _RETURN(_SUCCESS)
@@ -874,9 +874,9 @@ contains
 
      allocate(undef_values(size(fields)))
      do i =1,size(fields)
-        call ESMF_AttributeGet(fields(i),name="missing_value",isPresent=isPresent,_RC)
+        call ESMF_AttributeGet(fields(i),name="missing_value",isPresent=isPresent,_rc)
         _ASSERT(isPresent,"missing undef value")
-        call ESMF_AttributeGet(fields(i),value=undef_values(i),name="missing_value",_RC)
+        call ESMF_AttributeGet(fields(i),value=undef_values(i),name="missing_value",_rc)
      enddo
      _RETURN(_SUCCESS)
   end subroutine GetFieldsUndef_r4
@@ -891,9 +891,9 @@ contains
 
      allocate(undef_values(size(fields)))
      do i =1,size(fields)
-        call ESMF_AttributeGet(fields(i),name="missing_value",isPresent=isPresent,_RC)
+        call ESMF_AttributeGet(fields(i),name="missing_value",isPresent=isPresent,_rc)
         _ASSERT(isPresent,"missing undef value")
-        call ESMF_AttributeGet(fields(i),value=undef_values(i),name="missing_value",_RC)
+        call ESMF_AttributeGet(fields(i),value=undef_values(i),name="missing_value",_rc)
      enddo
      _RETURN(_SUCCESS)
   end subroutine GetFieldsUndef_r8
@@ -910,31 +910,31 @@ subroutine Destroy(Field,RC)
     type(ESMF_TypeKind_Flag)     :: tk
     logical :: esmf_allocated
 
-    call ESMF_FieldGet(Field,typekind=tk,dimCount=rank,isESMFAllocated=esmf_allocated,_RC)
+    call ESMF_FieldGet(Field,typekind=tk,dimCount=rank,isESMFAllocated=esmf_allocated,_rc)
     if (.not. esmf_allocated) then
        if (tk == ESMF_TYPEKIND_R4 .and. rank == 1) then
-          call ESMF_FieldGet(Field,0,VR4_1d,_RC)
+          call ESMF_FieldGet(Field,0,VR4_1d,_rc)
           deallocate(VR4_1d,_STAT)
        else if (tk == ESMF_TYPEKIND_R8 .and. rank == 1) then
-          call ESMF_FieldGet(Field,0,VR8_1d,_RC)
+          call ESMF_FieldGet(Field,0,VR8_1d,_rc)
           deallocate(VR8_1d,_STAT)
        else if (tk == ESMF_TYPEKIND_R4 .and. rank == 2) then
-          call ESMF_FieldGet(Field,0,VR4_2d,_RC)
+          call ESMF_FieldGet(Field,0,VR4_2d,_rc)
           deallocate(VR4_2d,_STAT)
        else if (tk == ESMF_TYPEKIND_R8 .and. rank == 2) then
-          call ESMF_FieldGet(Field,0,VR8_2d,_RC)
+          call ESMF_FieldGet(Field,0,VR8_2d,_rc)
           deallocate(VR8_2d,_STAT)
        else if (tk == ESMF_TYPEKIND_R4 .and. rank == 3) then
-          call ESMF_FieldGet(Field,0,VR4_3D,_RC)
+          call ESMF_FieldGet(Field,0,VR4_3D,_rc)
           deallocate(VR4_3d,_STAT)
        else if (tk == ESMF_TYPEKIND_R8 .and. rank == 3) then
-          call ESMF_FieldGet(Field,0,VR8_3D,_RC)
+          call ESMF_FieldGet(Field,0,VR8_3D,_rc)
           deallocate(VR8_3d,_STAT)
        else if (tk == ESMF_TYPEKIND_R4 .and. rank == 4) then
-          call ESMF_FieldGet(Field,0,VR4_4D,_RC)
+          call ESMF_FieldGet(Field,0,VR4_4D,_rc)
           deallocate(VR4_3d,_STAT)
        else if (tk == ESMF_TYPEKIND_R8 .and. rank == 4) then
-          call ESMF_FieldGet(Field,0,VR8_4D,_RC)
+          call ESMF_FieldGet(Field,0,VR8_4D,_rc)
           deallocate(VR8_3d,_STAT)
        else
           _FAIL( 'unsupported typekind+rank')

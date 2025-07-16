@@ -271,11 +271,11 @@ contains
      enddo
 
      if ( index(s_name, 'o_server') /=0 ) then
-        call this%o_server%start(_RC)
+        call this%o_server%start(_rc)
      endif
 
      if ( index(s_name, 'i_server') /=0 ) then
-        call this%i_server%start(_RC)
+        call this%i_server%start(_rc)
      endif
 
      if ( index(s_name, 'model') /=0 ) then
@@ -295,12 +295,12 @@ contains
       ! reporting here is for client_server in the same process which don't call start()
       ! problem here: all servers should coordinate to report one by one to avoid messy output
       if (associated(this%i_server)) then
-         call this%i_server%report_profile(_RC)
+         call this%i_server%report_profile(_rc)
          deallocate(this%i_server)
       endif
 
       if (associated(this%o_server)) then
-         call this%o_server%report_profile(_RC)
+         call this%o_server%report_profile(_rc)
          deallocate(this%o_server)
       endif
       call this%directory_service%free_directory_resources()

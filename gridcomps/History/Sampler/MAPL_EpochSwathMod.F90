@@ -139,18 +139,18 @@ contains
 
     hq%clock= clock
     hq%arr(1:2) = -2.d0
-    call ESMF_ClockGet ( clock, CurrTime=currTime, _RC )
-    call ESMF_ClockGet ( clock, timestep=timestep, _RC )
-    call ESMF_ClockGet ( clock, startTime=startTime, _RC )
-    call ESMF_ConfigGetAttribute(config, value=time_integer, label=trim(key)//'.Epoch:', default=0, _RC)
-    call ESMF_ConfigGetAttribute(config, value=hq%tunit,     label=trim(key)//'.tunit:', default="", _RC)
+    call ESMF_ClockGet ( clock, CurrTime=currTime, _rc )
+    call ESMF_ClockGet ( clock, timestep=timestep, _rc )
+    call ESMF_ClockGet ( clock, startTime=startTime, _rc )
+    call ESMF_ConfigGetAttribute(config, value=time_integer, label=trim(key)//'.Epoch:', default=0, _rc)
+    call ESMF_ConfigGetAttribute(config, value=hq%tunit,     label=trim(key)//'.tunit:', default="", _rc)
     _ASSERT(time_integer /= 0, 'Epoch value in config wrong')
     second = hms_2_s (time_integer)
-    call ESMF_TimeIntervalSet(frequency_epoch, s=second, _RC)
+    call ESMF_TimeIntervalSet(frequency_epoch, s=second, _rc)
     hq%frequency_epoch = frequency_epoch
     hq%RingTime  = currTime
     hq%alarm = ESMF_AlarmCreate( clock=clock, RingInterval=Frequency_epoch, &
-         RingTime=hq%RingTime, sticky=.false., _RC )
+         RingTime=hq%RingTime, sticky=.false., _rc )
 
     _RETURN(_SUCCESS)
 
@@ -208,11 +208,11 @@ contains
     integer :: status
     type(Logger), pointer          :: lgr
 
-    call ESMF_TimeIntervalGet(this%Frequency_epoch, s=hq_epoch_sec, _RC)
+    call ESMF_TimeIntervalGet(this%Frequency_epoch, s=hq_epoch_sec, _rc)
     freq_sec = MAPL_nsecf( frequency_from_list )
     config_grid = this%find_config( swath_grid_label )
     call ESMF_ConfigGetAttribute(config_grid, value=time_integer, &
-         label=trim(swath_grid_label)//'.Epoch:', default=0, _RC)
+         label=trim(swath_grid_label)//'.Epoch:', default=0, _rc)
     local_swath_epoch_sec = MAPL_nsecf( time_integer )
 
     lgr => logging%get_logger('HISTORY.sampler')
@@ -249,15 +249,15 @@ contains
 
     if (present(grid_type)) this%grid_type = trim(grid_type)
     config_grid = this%find_config(key)
-    call ESMF_TimeGet(currTime, timeString=time_string, _RC)
+    call ESMF_TimeGet(currTime, timeString=time_string, _rc)
 
     !
     ! -- the `ESMF_ConfigSetAttribute` shows a risk
     !    to overwrite the nextline in config
     !
-    call ESMF_ConfigSetAttribute( config_grid, trim(time_string), label=trim(key)//'.Epoch_init:', _RC)
+    call ESMF_ConfigSetAttribute( config_grid, trim(time_string), label=trim(key)//'.Epoch_init:', _rc)
 
-    ogrid = grid_manager%make_grid(config_grid, prefix=trim(key)//'.', _RC )
+    ogrid = grid_manager%make_grid(config_grid, prefix=trim(key)//'.', _rc )
     !!    call grid_validate (ogrid,)
 
     _RETURN(_SUCCESS)
@@ -279,17 +279,17 @@ contains
 
     ! __ s1.  get xy_subset
 
-    call ESMF_ClockGet(this%clock,currTime=current_time,_RC)
-    call ESMF_ClockGet(this%clock,timeStep=dur, _RC )
+    call ESMF_ClockGet(this%clock,currTime=current_time,_rc)
+    call ESMF_ClockGet(this%clock,timeStep=dur, _rc )
     timeset(1) = current_time - dur
     timeset(2) = current_time
 
-    factory => grid_manager%get_factory(sp%output_grid,_RC)
-    call factory%get_xy_subset( timeset, xy_subset, _RC)
+    factory => grid_manager%get_factory(sp%output_grid,_rc)
+    call factory%get_xy_subset( timeset, xy_subset, _rc)
 
     ! __ s2.  interpolate then save data using xy_mask
 
-    call sp%interp_accumulate_fields (xy_subset, _RC)
+    call sp%interp_accumulate_fields (xy_subset, _rc)
 
     _RETURN(ESMF_SUCCESS)
 
@@ -326,14 +326,14 @@ contains
     key_str = trim(key_grid_label)
     pgrid => output_grids%at(key_str)
 
-    call grid_manager%destroy(pgrid,_RC)
+    call grid_manager%destroy(pgrid,_rc)
 
-    call ESMF_ClockGet (this%clock, CurrTime=currTime, _RC )
+    call ESMF_ClockGet (this%clock, CurrTime=currTime, _rc )
     iter = output_grids%begin()
     do while (iter /= output_grids%end())
        key => iter%key()
        if (trim(key)==trim(key_str)) then
-          ogrid = this%create_grid (key_str, currTime, _RC)
+          ogrid = this%create_grid (key_str, currTime, _rc)
           call output_grids%set(key, ogrid)
        endif
        call iter%next()
@@ -341,30 +341,30 @@ contains
 
 
     !__ s2. destroy RH
-    call sp%regrid_handle%destroy(_RC)
+    call sp%regrid_handle%destroy(_rc)
 
 
 
     !__ s3. destroy acc_bundle / output_bundle
 
-   call ESMF_FieldBundleGet(sp%acc_bundle,fieldCount=numVars,_RC)
+   call ESMF_FieldBundleGet(sp%acc_bundle,fieldCount=numVars,_rc)
    allocate(names(numVars),_STAT)
-   call ESMF_FieldBundleGet(sp%acc_bundle,fieldNameList=names,_RC)
+   call ESMF_FieldBundleGet(sp%acc_bundle,fieldNameList=names,_rc)
    do i=1,numVars
-      call ESMF_FieldBundleGet(sp%acc_bundle,trim(names(i)),field=field,_RC)
-      call ESMF_FieldDestroy(field,noGarbage=.true., _RC)
+      call ESMF_FieldBundleGet(sp%acc_bundle,trim(names(i)),field=field,_rc)
+      call ESMF_FieldDestroy(field,noGarbage=.true., _rc)
    enddo
-   call ESMF_FieldBundleDestroy(sp%acc_bundle,noGarbage=.true.,_RC)
+   call ESMF_FieldBundleDestroy(sp%acc_bundle,noGarbage=.true.,_rc)
    deallocate(names,_STAT)
 
-   call ESMF_FieldBundleGet(sp%output_bundle,fieldCount=numVars,_RC)
+   call ESMF_FieldBundleGet(sp%output_bundle,fieldCount=numVars,_rc)
    allocate(names(numVars),_STAT)
-   call ESMF_FieldBundleGet(sp%output_bundle,fieldNameList=names,_RC)
+   call ESMF_FieldBundleGet(sp%output_bundle,fieldNameList=names,_rc)
    do i=1,numVars
-      call ESMF_FieldBundleGet(sp%output_bundle,trim(names(i)),field=field,_RC)
-      call ESMF_FieldDestroy(field,noGarbage=.true., _RC)
+      call ESMF_FieldBundleGet(sp%output_bundle,trim(names(i)),field=field,_rc)
+      call ESMF_FieldDestroy(field,noGarbage=.true., _rc)
    enddo
-   call ESMF_FieldBundleDestroy(sp%output_bundle,noGarbage=.true.,_RC)
+   call ESMF_FieldBundleDestroy(sp%output_bundle,noGarbage=.true.,_rc)
    deallocate(names,_STAT)
 
    _RETURN(ESMF_SUCCESS)
@@ -386,12 +386,12 @@ contains
     real(kind=ESMF_KIND_R4), pointer :: ptr2d(:,:)
 
     ! __ get field xname='time'
-    call ESMF_FieldBundleGet (bundle, xname, field=field, _RC)
-    call ESMF_FieldGet (field, farrayptr=ptr2d, _RC)
+    call ESMF_FieldBundleGet (bundle, xname, field=field, _rc)
+    call ESMF_FieldGet (field, farrayptr=ptr2d, _rc)
 
     ! __ obs_time from swath factory
-    factory => grid_manager%get_factory(ogrid,_RC)
-    call factory%get_obs_time (ogrid, ptr2d, _RC)
+    factory => grid_manager%get_factory(ogrid,_rc)
+    call factory%get_obs_time (ogrid, ptr2d, _rc)
 
     _RETURN(ESMF_SUCCESS)
 
@@ -498,10 +498,10 @@ contains
         do while (iter /= this%items%end())
            item => iter%get()
            if (item%itemType == ItemTypeScalar) then
-              call this%CreateVariable(item%xname,_RC)
+              call this%CreateVariable(item%xname,_rc)
            else if (item%itemType == ItemTypeVector) then
-              call this%CreateVariable(item%xname,_RC)
-              call this%CreateVariable(item%yname,_RC)
+              call this%CreateVariable(item%xname,_rc)
+              call this%CreateVariable(item%yname,_rc)
            end if
            call iter%next()
         enddo
@@ -509,14 +509,14 @@ contains
 
         ! __ add field to acc_bundle
         !
-        this%acc_bundle = ESMF_FieldBundleCreate(_RC)
-        call ESMF_FieldBundleSet(this%acc_bundle,grid=this%output_grid,_RC)
+        this%acc_bundle = ESMF_FieldBundleCreate(_rc)
+        call ESMF_FieldBundleSet(this%acc_bundle,grid=this%output_grid,_rc)
         iter = this%items%begin()
         do while (iter /= this%items%end())
            item => iter%get()
-           call this%addVariable_to_acc_bundle(item%xname,_RC)
+           call this%addVariable_to_acc_bundle(item%xname,_rc)
            if (item%itemType == ItemTypeVector) then
-              call this%addVariable_to_acc_bundle(item%yname,_RC)
+              call this%addVariable_to_acc_bundle(item%yname,_rc)
            end if
            call iter%next()
         enddo
@@ -525,12 +525,12 @@ contains
         ! __ add time to acc_bundle
         !
         new_field = ESMF_FieldCreate(this%output_grid ,name='time', &
-               typekind=ESMF_TYPEKIND_R4,_RC)
+               typekind=ESMF_TYPEKIND_R4,_rc)
         !
         ! add attribute
         !
-        call ESMF_AttributeSet(new_field,'UNITS',trim(tunit),_RC)
-        call MAPL_FieldBundleAdd( this%acc_bundle, new_field, _RC )
+        call ESMF_AttributeSet(new_field,'UNITS',trim(tunit),_rc)
+        call MAPL_FieldBundleAdd( this%acc_bundle, new_field, _rc )
 
         _RETURN(_SUCCESS)
       end subroutine Create_Bundle_RH
@@ -602,7 +602,7 @@ contains
         integer :: status
         character(len=5) :: c1,c2
 
-        call MAPL_GridGet(this%output_grid,globalCellCountPerDim=global_dim,_RC)
+        call MAPL_GridGet(this%output_grid,globalCellCountPerDim=global_dim,_rc)
         if (global_dim(1)*6 == global_dim(2)) then
            write(c2,'(I5)')global_dim(1)
            write(c1,'(I5)')this%chunking(1)
@@ -1040,14 +1040,14 @@ contains
     integer :: fieldRank
     integer :: status
 
-    call ESMF_FieldBundleGet(this%input_bundle,itemName,field=field,_RC)
+    call ESMF_FieldBundleGet(this%input_bundle,itemName,field=field,_rc)
     call ESMF_FieldGet(field,rank=fieldRank,rc=status)
     if (this%doVertRegrid .and. (fieldRank ==3) ) then
-       newField = MAPL_FieldCreate(field,this%output_grid,lm=this%vData%lm,_RC)
+       newField = MAPL_FieldCreate(field,this%output_grid,lm=this%vData%lm,_rc)
     else
-       newField = MAPL_FieldCreate(field,this%output_grid,_RC)
+       newField = MAPL_FieldCreate(field,this%output_grid,_rc)
     end if
-    call MAPL_FieldBundleAdd(this%acc_bundle,newField,_RC)
+    call MAPL_FieldBundleAdd(this%acc_bundle,newField,_rc)
 
     _RETURN(_SUCCESS)
 
@@ -1101,8 +1101,8 @@ contains
        _VERIFY(status)
     end if
 
-    call ESMF_FieldBundleGet(this%output_bundle, grid=grid, _RC)
-    call ESMF_GridGet(grid, localDECount=localDECount, dimCount=dimCount, _RC)
+    call ESMF_FieldBundleGet(this%output_bundle, grid=grid, _rc)
+    call ESMF_GridGet(grid, localDECount=localDECount, dimCount=dimCount, _rc)
     allocate ( LB(dimCount), UB(dimCount), exclusiveCount(dimCount) ,_STAT)
     allocate ( compLB(dimCount), compUB(dimCount), compCount(dimCount) ,_STAT)
 
@@ -1156,20 +1156,20 @@ contains
     do while (iter /= this%items%end())
        item => iter%get()
        if (item%itemType == ItemTypeScalar) then
-          call this%RegridScalar(item%xname,_RC)
-          call ESMF_FieldBundleGet(this%output_bundle,item%xname,field=outField, _RC)
+          call this%RegridScalar(item%xname,_rc)
+          call ESMF_FieldBundleGet(this%output_bundle,item%xname,field=outField, _rc)
           if (this%vdata%regrid_type==VERTICAL_METHOD_ETA2LEV) then
-             call this%vdata%correct_topo(outField,_RC)
+             call this%vdata%correct_topo(outField,_rc)
           end if
        elseif (item%itemType == ItemTypeVector) then
-          call this%RegridVector(item%xname,item%yname,_RC)
-          call ESMF_FieldBundleGet(this%output_bundle,item%xname,field=outField, _RC)
+          call this%RegridVector(item%xname,item%yname,_rc)
+          call ESMF_FieldBundleGet(this%output_bundle,item%xname,field=outField, _rc)
           if (this%vdata%regrid_type==VERTICAL_METHOD_ETA2LEV) then
-             call this%vdata%correct_topo(outField,_RC)
+             call this%vdata%correct_topo(outField,_rc)
           end if
-          call ESMF_FieldBundleGet(this%output_bundle,item%yname,field=outField2, _RC)
+          call ESMF_FieldBundleGet(this%output_bundle,item%yname,field=outField2, _rc)
           if (this%vdata%regrid_type==VERTICAL_METHOD_ETA2LEV) then
-             call this%vdata%correct_topo(outField2,_RC)
+             call this%vdata%correct_topo(outField2,_rc)
           end if
        end if
 
@@ -1177,13 +1177,13 @@ contains
        ! -- mask the time interval
        !    store the time interval fields into new bundle
        !    xname
-       call ESMF_FieldGet(outField, Array=array1, _RC)
-       call ESMF_FieldBundleGet(this%acc_bundle,item%xname,field=new_outField,_RC)
-       call ESMF_FieldGet(new_outField, Array=array2, _RC)
-       call ESMF_ArrayGet(array1, rank=rank, _RC)
+       call ESMF_FieldGet(outField, Array=array1, _rc)
+       call ESMF_FieldBundleGet(this%acc_bundle,item%xname,field=new_outField,_rc)
+       call ESMF_FieldGet(new_outField, Array=array2, _rc)
+       call ESMF_ArrayGet(array1, rank=rank, _rc)
        if (rank==2) then
-          call ESMF_ArrayGet(array1, farrayptr=pt2d, _RC)
-          call ESMF_ArrayGet(array2, farrayptr=pt2d_, _RC)
+          call ESMF_ArrayGet(array1, farrayptr=pt2d, _rc)
+          call ESMF_ArrayGet(array2, farrayptr=pt2d_, _rc)
           localDe=0
           if (j1(localDe)>0) then
              do j= j1(localDe), j2(localDe)
@@ -1193,8 +1193,8 @@ contains
              enddo
           endif
        elseif (rank==3) then
-          call ESMF_ArrayGet(array1, farrayptr=pt3d, _RC)
-          call ESMF_ArrayGet(array2, farrayptr=pt3d_, _RC)
+          call ESMF_ArrayGet(array1, farrayptr=pt3d, _rc)
+          call ESMF_ArrayGet(array2, farrayptr=pt3d_, _rc)
           do localDe=0, localDEcount-1
              if (j1(localDe)>0) then
                 do j= j1(localDe), j2(localDe)
@@ -1214,13 +1214,13 @@ contains
           !
           ! add yname
           !
-          call ESMF_FieldGet(outField2, Array=array1, _RC)
-          call ESMF_FieldBundleGet(this%acc_bundle,item%yname,field=new_outField,_RC)
-          call ESMF_FieldGet(new_outField, Array=array2, _RC)
-          call ESMF_ArrayGet(array1, rank=rank, _RC)
+          call ESMF_FieldGet(outField2, Array=array1, _rc)
+          call ESMF_FieldBundleGet(this%acc_bundle,item%yname,field=new_outField,_rc)
+          call ESMF_FieldGet(new_outField, Array=array2, _rc)
+          call ESMF_ArrayGet(array1, rank=rank, _rc)
           if (rank==2) then
-             call ESMF_ArrayGet(array1, farrayptr=pt2d, _RC)
-             call ESMF_ArrayGet(array2, farrayptr=pt2d_, _RC)
+             call ESMF_ArrayGet(array1, farrayptr=pt2d, _rc)
+             call ESMF_ArrayGet(array2, farrayptr=pt2d_, _rc)
              localDe=0
                 if (j1(localDe)>0) then
                    do j= j1(localDe), j2(localDe)
@@ -1230,8 +1230,8 @@ contains
                    enddo
                 endif
           elseif (rank==3) then
-             call ESMF_ArrayGet(array1, farrayptr=pt3d, _RC)
-             call ESMF_ArrayGet(array2, farrayptr=pt3d_, _RC)
+             call ESMF_ArrayGet(array1, farrayptr=pt3d, _rc)
+             call ESMF_ArrayGet(array2, farrayptr=pt3d_, _rc)
              do localDe=0, localDEcount-1
                 if (j1(localDe)>0) then
                    do j= j1(localDe), j2(localDe)

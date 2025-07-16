@@ -274,7 +274,7 @@ contains
       type(Attribute), pointer :: attr
       class(*), pointer :: attr_val
 
-      attr => this%get_attribute(attr_name,_RC)
+      attr => this%get_attribute(attr_name,_rc)
       _ASSERT(associated(attr),"no such attribute "//attr_name)
       attr_val => attr%get_value()
       select type(attr_val)
@@ -299,7 +299,7 @@ contains
       type(Attribute), pointer :: attr
       class(*), pointer :: attr_val(:)
 
-      attr => this%get_attribute(attr_name,_RC)
+      attr => this%get_attribute(attr_name,_rc)
       _ASSERT(associated(attr),"no attribute named "//attr_name)
       attr_val => attr%get_values()
       select type(attr_val)
@@ -327,7 +327,7 @@ contains
       type(Attribute), pointer :: attr
       class(*), pointer :: attr_val(:)
 
-      attr => this%get_attribute(attr_name,_RC)
+      attr => this%get_attribute(attr_name,_rc)
       _ASSERT(associated(attr),"no such attribute "//attr_name)
       attr_val => attr%get_values()
       select type(attr_val)
@@ -352,7 +352,7 @@ contains
       type(Attribute), pointer :: attr
       class(*), pointer :: attr_val(:)
 
-      attr => this%get_attribute(attr_name,_RC)
+      attr => this%get_attribute(attr_name,_rc)
       _ASSERT(associated(attr),"no attribute named "//attr_name)
       attr_val => attr%get_values()
       select type(attr_val)
@@ -377,7 +377,7 @@ contains
       type(Attribute), pointer :: attr
       class(*), pointer :: attr_val(:)
 
-      attr => this%get_attribute(attr_name,_RC)
+      attr => this%get_attribute(attr_name,_rc)
       _ASSERT(associated(attr),"no attribute named "//attr_name)
       attr_val => attr%get_values()
       select type(attr_val)

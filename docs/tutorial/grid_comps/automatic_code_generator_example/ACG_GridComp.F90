@@ -35,15 +35,15 @@ module ACG_GridComp
 
      integer :: status
 
-     call MAPL_GridCompSetEntryPoint ( gc, ESMF_METHOD_INITIALIZE,  initialize, _RC)
-     call MAPL_GridCompSetEntryPoint ( gc, ESMF_METHOD_RUN,  run, _RC)
+     call MAPL_GridCompSetEntryPoint ( gc, ESMF_METHOD_INITIALIZE,  initialize, _rc)
+     call MAPL_GridCompSetEntryPoint ( gc, ESMF_METHOD_RUN,  run, _rc)
 
 #include "ACG_Export___.h"
 #include "ACG_Import___.h"
 
 !   Set generic services
 !   ----------------------------------
-     call MAPL_GenericSetServices(GC, _RC)
+     call MAPL_GenericSetServices(GC, _rc)
 
      _RETURN(_SUCCESS)
 
@@ -65,11 +65,11 @@ module ACG_GridComp
 ! Locals
      integer :: status
 
-     call MAPL_GridCreate(GC, _RC)
+     call MAPL_GridCreate(GC, _rc)
 
 !   Call Generic Initialize
 !   ----------------------------------------
-     call MAPL_GenericInitialize(GC, import, export, clock, _RC)
+     call MAPL_GenericInitialize(GC, import, export, clock, _rc)
 
      _RETURN(_SUCCESS)
 
@@ -98,7 +98,7 @@ module ACG_GridComp
 
      !   Get my internal MAPL_Generic state
      !   -----------------------------------
-     call MAPL_GetObjectFromGC ( GC, MAPL, _RC)
+     call MAPL_GetObjectFromGC ( GC, MAPL, _rc)
 
 #include "ACG_GetPointer___.h"
 

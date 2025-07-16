@@ -40,34 +40,34 @@ contains
 
       TimeSample%extrap_outside = "none"
       if (ESMF_HConfigIsDefined(config,keyString="extrapolation")) then
-         TimeSample%extrap_outside=ESMF_HConfigAsString(config,keyString="extrapolation",_RC)
+         TimeSample%extrap_outside=ESMF_HConfigAsString(config,keyString="extrapolation",_rc)
       end if
 
       TimeSample%time_interpolation = .true.
       if (ESMF_HConfigIsDefined(config,keyString="time_interpolation")) then
-         TimeSample%time_interpolation = ESMF_HConfigAsLogical(config,keyString="time_interpolation",_RC)
+         TimeSample%time_interpolation = ESMF_HConfigAsLogical(config,keyString="time_interpolation",_rc)
       end if
 
       if (ESMF_HConfigIsDefined(config,keyString="exact")) then
-         TimeSample%exact = ESMF_HConfigAsLogical(config,keyString="exact",_RC)
+         TimeSample%exact = ESMF_HConfigAsLogical(config,keyString="exact",_rc)
       else
          TimeSample%exact = .false.
       end if
 
       if (ESMF_HConfigIsDefined(config,keyString="update_reference_time")) then
-         TimeSample%refresh_time = ESMF_HConfigAsString(config,keyString="update_reference_time",_RC)
+         TimeSample%refresh_time = ESMF_HConfigAsString(config,keyString="update_reference_time",_rc)
       end if
 
       if (ESMF_HConfigIsDefined(config,keyString="update_frequency")) then
-         TimeSample%refresh_frequency = ESMF_HConfigAsString(config,keyString="update_frequency",_RC)
+         TimeSample%refresh_frequency = ESMF_HConfigAsString(config,keyString="update_frequency",_rc)
       end if
 
       if (ESMF_HConfigIsDefined(config,keyString="update_offset")) then
-         TimeSample%refresh_offset = ESMF_HConfigAsString(config,keyString="update_offset",_RC)
+         TimeSample%refresh_offset = ESMF_HConfigAsString(config,keyString="update_offset",_rc)
       end if
 
       if (ESMF_HConfigIsDefined(config,keyString="source_time")) then
-         source_str = ESMF_HConfigAsString(config,keyString="source_time",_RC)
+         source_str = ESMF_HConfigAsString(config,keyString="source_time",_rc)
          if (allocated(TimeSample%source_time)) deallocate(TimeSample%source_time)
          idx = index(source_str,'/')
          _ASSERT(idx/=0,'invalid specification of source_time')

@@ -59,7 +59,7 @@ contains
       if (allocated(tempc)) deallocate(tempc)
       collection_present = ESMF_HConfigIsDefined(config,keyString="collection")
       _ASSERT(collection_present,"no collection present in ExtData export")
-      rule%collection = ESMF_HConfigAsString(config,keyString="collection",_RC)
+      rule%collection = ESMF_HConfigAsString(config,keyString="collection",_rc)
 
       if (allocated(tempc)) deallocate(tempc)
       variable_present = ESMF_HConfigIsDefined(config,keyString="variable")
@@ -67,7 +67,7 @@ contains
          _ASSERT(variable_present,"no variable present in ExtData export")
       end if
       if (variable_present) then
-         tempc = ESMF_HConfigAsString(config,keyString="variable",_RC)
+         tempc = ESMF_HConfigAsString(config,keyString="variable",_rc)
          rule%file_var=tempc
       else
          rule%file_var='null'
@@ -75,13 +75,13 @@ contains
 
       if (ESMF_HConfigIsDefined(config,keyString="sample")) then
 
-         config1 = ESMF_HConfigCreateAt(config,keyString="sample",_RC)
+         config1 = ESMF_HConfigCreateAt(config,keyString="sample",_rc)
          if (ESMF_HConfigIsMap(config1)) then
-            ts = ExtDataTimeSample(config1,_RC)
+            ts = ExtDataTimeSample(config1,_rc)
             call sample_map%insert(trim(key)//"_sample",ts)
             rule%sample_key=trim(key)//"_sample"
          else
-            rule%sample_key=ESMF_HConfigAsString(config1,_RC)
+            rule%sample_key=ESMF_HConfigAsString(config1,_rc)
          end if
       else
          rule%sample_key = ""
@@ -90,30 +90,30 @@ contains
       if (allocated(rule%linear_trans)) deallocate(rule%linear_trans)
       if (ESMF_HConfigIsDefined(config,keyString="linear_transformation")) then
          allocate(rule%linear_trans(2))
-         rule%linear_trans = ESMF_HConfigAsR4Seq(config,keyString="linear_transformation",_RC)
+         rule%linear_trans = ESMF_HConfigAsR4Seq(config,keyString="linear_transformation",_rc)
       else
          allocate(rule%linear_trans,source=[0.0,0.0])
       end if
 
       if (allocated(tempc)) deallocate(tempc)
       if (ESMF_HConfigIsDefined(config,keyString="regrid")) then
-         tempc = ESMF_HConfigAsString(config,keyString="regrid",_RC)
+         tempc = ESMF_HConfigAsString(config,keyString="regrid",_rc)
          rule%regrid_method=tempc
       else
          rule%regrid_method="BILINEAR"
       end if
 
       if (ESMF_HConfigIsDefined(config,keyString="starting")) then
-         tempc = ESMF_HConfigAsString(config,keyString="starting",_RC)
+         tempc = ESMF_HConfigAsString(config,keyString="starting",_rc)
          rule%start_time = tempc
       end if
 
       if (ESMF_HConfigIsDefined(config,keyString="fail_on_missing_file")) then
-         rule%fail_on_missing_file = ESMF_HConfigAsLogical(config,keyString="fail_on_missing_file",_RC)
+         rule%fail_on_missing_file = ESMF_HConfigAsLogical(config,keyString="fail_on_missing_file",_rc)
       end if
 
       if (ESMF_HConfigIsDefined(config,keyString="enable_vertical_regrid")) then
-         rule%enable_vertical_regrid = ESMF_HConfigAsLogical(config,keyString="enable_vertical_regrid",_RC)
+         rule%enable_vertical_regrid = ESMF_HConfigAsLogical(config,keyString="enable_vertical_regrid",_rc)
       else
          rule%enable_vertical_regrid = .false.
       end if

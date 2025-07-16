@@ -16,7 +16,7 @@ program main
    _VERIFY(status)
    spec = make_ComboSpec() ! CLI
 
-   call run(spec, _RC)
+   call run(spec, _rc)
 
    call MPI_Barrier(MPI_COMM_WORLD, status)
    _VERIFY(status)
@@ -66,21 +66,21 @@ contains
          writer_comm = MPI_COMM_NULL
       end if
 
-      kernel = make_GathervKernel(spec, gather_comm, _RC)
+      kernel = make_GathervKernel(spec, gather_comm, _rc)
       if (rank == 0) then
-         benchmark = make_BW_Benchmark(spec, writer_comm, _RC)
+         benchmark = make_BW_Benchmark(spec, writer_comm, _rc)
       end if
 
-      call write_header(MPI_COMM_WORLD, _RC)
+      call write_header(MPI_COMM_WORLD, _rc)
 
       tot_time = 0
       tot_time_gather = 0
       tot_time_write = 0
       associate (n => spec%n_tries)
         do i = 1, n
-           ta = time(kernel, gather_comm, _RC)
+           ta = time(kernel, gather_comm, _rc)
            if (writer_comm /= MPI_COMM_NULL) then
-              tb = time(benchmark, writer_comm, _RC)
+              tb = time(benchmark, writer_comm, _rc)
            end if
            tot_time_gather = tot_time_gather + ta
            tot_time_write = tot_time_write + tb
@@ -92,7 +92,7 @@ contains
 
       end associate
 
-      call report(spec, avg_time, avg_time_gather, avg_time_write, MPI_COMM_WORLD, _RC)
+      call report(spec, avg_time, avg_time_gather, avg_time_write, MPI_COMM_WORLD, _rc)
 
       _RETURN(_SUCCESS)
    end subroutine run
@@ -109,7 +109,7 @@ contains
       call MPI_Barrier(comm, status)
       _VERIFY(status)
       t0 = MPI_Wtime()
-      call kernel%run(_RC)
+      call kernel%run(_rc)
       call MPI_Barrier(comm, status)
       _VERIFY(status)
       t1 = MPI_Wtime()

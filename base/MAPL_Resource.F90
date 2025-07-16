@@ -148,7 +148,7 @@ contains
       integer :: status
 
       if (MAPL_AM_I_Root()) then
-         call ESMF_ConfigGetAttribute(config, printrc, label = 'PRINTRC:', default = 0, _RC)
+         call ESMF_ConfigGetAttribute(config, printrc, label = 'PRINTRC:', default = 0, _rc)
          do_print = (printrc == PRINT_ALL) .or. (printrc == PRINT_DIFFERENT)
          print_nondefault_only = (printrc == PRINT_DIFFERENT) .and. default_is_present
       else
@@ -251,7 +251,7 @@ contains
       do i = 1, size(labels_to_try)
          actual_label = trim(labels_to_try(i))
          if (len_trim(actual_label) == 0 ) cycle
-         call ESMF_ConfigFindLabel(config, label = actual_label, isPresent = label_is_present, _RC)
+         call ESMF_ConfigFindLabel(config, label = actual_label, isPresent = label_is_present, _rc)
          if (label_is_present) exit
       end do
 
@@ -320,7 +320,7 @@ contains
          _ASSERT(same_type_as(val, default), "Value and default must have same type")
       end if
 
-      call get_actual_label(config, label, label_is_present, actual_label, component_name = component_name, _RC)
+      call get_actual_label(config, label, label_is_present, actual_label, component_name = component_name, _rc)
 
       if(.not. (label_is_present .or. default_is_present)) then
          ! label or default must be present
@@ -328,7 +328,7 @@ contains
          return
       end if
 
-      call get_print_settings(config, default_is_present, do_print, print_nondefault_only, _RC)
+      call get_print_settings(config, default_is_present, do_print, print_nondefault_only, _rc)
 
       select type(val)
 
@@ -396,7 +396,7 @@ contains
       end select
 
       if(do_print) then
-         call print_resource(type_string, actual_label, formatted_value, value_is_default, iunit=iunit, _RC)
+         call print_resource(type_string, actual_label, formatted_value, value_is_default, iunit=iunit, _rc)
       end if
 
       _RETURN(ESMF_SUCCESS)
@@ -473,7 +473,7 @@ contains
          _ASSERT(same_type_as(val, default), "Value and default must have same type")
       end if
 
-      call get_actual_label(config, label, label_is_present, actual_label, component_name = component_name, _RC)
+      call get_actual_label(config, label, label_is_present, actual_label, component_name = component_name, _rc)
 
       ! label or default must be present
       if (.not. label_is_present .and. .not. default_is_present) then
@@ -482,7 +482,7 @@ contains
       end if
 
       ! only print if root
-      call get_print_settings(config, default_is_present, do_print, print_nondefault_only, _RC)
+      call get_print_settings(config, default_is_present, do_print, print_nondefault_only, _rc)
 
       count = size(val)
 
@@ -553,7 +553,7 @@ contains
       end select
 
       if(do_print) then
-         call print_resource(type_string, actual_label, formatted_value, value_is_default, iunit=iunit, _RC)
+         call print_resource(type_string, actual_label, formatted_value, value_is_default, iunit=iunit, _rc)
       end if
 
       _RETURN(ESMF_SUCCESS)

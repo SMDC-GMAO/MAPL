@@ -75,25 +75,25 @@ contains
     integer :: status
     character(len=ESMF_MAXSTR) :: lon_name, lat_name, time_name
 
-    call check_nc_status(nf90_open(trim(fileName), NF90_NOWRITE, ncid), _RC)
+    call check_nc_status(nf90_open(trim(fileName), NF90_NOWRITE, ncid), _rc)
     if(present(key_lon)) then
        lon_name=trim(key_lon)
-       call check_nc_status(nf90_inq_dimid(ncid, trim(lon_name), dimid), _RC)
-       call check_nc_status(nf90_inquire_dimension(ncid, dimid, len=nlon), _RC)
+       call check_nc_status(nf90_inq_dimid(ncid, trim(lon_name), dimid), _rc)
+       call check_nc_status(nf90_inquire_dimension(ncid, dimid, len=nlon), _rc)
     endif
 
     if(present(key_lat)) then
        lat_name=trim(key_lat)
-       call check_nc_status(nf90_inq_dimid(ncid, trim(lat_name), dimid), _RC)
-       call check_nc_status(nf90_inquire_dimension(ncid, dimid, len=nlat), _RC)
+       call check_nc_status(nf90_inq_dimid(ncid, trim(lat_name), dimid), _rc)
+       call check_nc_status(nf90_inquire_dimension(ncid, dimid, len=nlat), _rc)
     endif
 
     if(present(key_time)) then
        time_name=trim(key_time)
-       call check_nc_status(nf90_inq_dimid(ncid, trim(time_name), dimid), _RC)
-       call check_nc_status(nf90_inquire_dimension(ncid, dimid, len=tdim), _RC)
+       call check_nc_status(nf90_inq_dimid(ncid, trim(time_name), dimid), _rc)
+       call check_nc_status(nf90_inquire_dimension(ncid, dimid, len=tdim), _rc)
     endif
-    call check_nc_status(nf90_close(ncid), _RC)
+    call check_nc_status(nf90_close(ncid), _rc)
 
     _RETURN(_SUCCESS)
 
@@ -115,14 +115,14 @@ contains
     integer(kind=C_INT) :: c_ncid, c_varid
     character(len=100) :: str2
 
-    call check_nc_status(nf90_open(fileName, NF90_NOWRITE, ncid2), _RC)
+    call check_nc_status(nf90_open(fileName, NF90_NOWRITE, ncid2), _rc)
     if (group_name/='') then
-       call check_nc_status(nf90_inq_ncid(ncid2, group_name, ncid), _RC)
+       call check_nc_status(nf90_inq_ncid(ncid2, group_name, ncid), _rc)
     else
        ncid = ncid2
     end if
-    call check_nc_status(nf90_inq_varid(ncid, var_name, varid), _RC)
-    call check_nc_status(nf90_inquire_attribute(ncid, varid, attr_name, xtype, len=len), _RC)
+    call check_nc_status(nf90_inq_varid(ncid, var_name, varid), _rc)
+    call check_nc_status(nf90_inquire_attribute(ncid, varid, attr_name, xtype, len=len), _rc)
     c_ncid= ncid
     c_varid= varid
     select case (xtype)
@@ -130,7 +130,7 @@ contains
        _ASSERT(is_success(pfio_get_att_string(c_ncid, c_varid, attr_name, str)), 'Error return from pfio_get_att_string')
     case(NF90_CHAR)
        allocate(character(len=len) :: str)
-       call check_nc_status(nf90_get_att(ncid, varid, trim(attr_name), str), _RC)
+       call check_nc_status(nf90_get_att(ncid, varid, trim(attr_name), str), _rc)
     case default
        _FAIL('code works only with string attribute')
     end select
@@ -144,7 +144,7 @@ contains
     endif
     attr = str(1:i+5)//trim(str2)
     deallocate(str)
-    call check_nc_status(nf90_close(ncid2), _RC)
+    call check_nc_status(nf90_close(ncid2), _rc)
 
     _RETURN(_SUCCESS)
 
@@ -163,9 +163,9 @@ contains
     real    :: scale_factor, add_offset
     integer :: iret
 
-    call check_nc_status(nf90_open(trim(fileName), NF90_NOWRITE, ncid), _RC)
-    call check_nc_status(nf90_inq_varid(ncid, name, varid), _RC)
-    call check_nc_status(nf90_get_var(ncid, varid, array), _RC)
+    call check_nc_status(nf90_open(trim(fileName), NF90_NOWRITE, ncid), _rc)
+    call check_nc_status(nf90_inq_varid(ncid, name, varid), _rc)
+    call check_nc_status(nf90_get_var(ncid, varid, array), _rc)
 
     iret = nf90_get_att(ncid, varid, 'scale_factor', scale_factor)
     if(iret .eq. 0) array = array * scale_factor
@@ -173,7 +173,7 @@ contains
     iret = nf90_get_att(ncid, varid, 'add_offset', add_offset)
     if(iret .eq. 0) array = array + add_offset
     !
-    call check_nc_status(nf90_close(ncid), _RC)
+    call check_nc_status(nf90_close(ncid), _rc)
 
     _RETURN(_SUCCESS)
 
@@ -192,9 +192,9 @@ contains
     real    :: scale_factor, add_offset
     integer :: iret
 
-    call check_nc_status(nf90_open(trim(fileName), NF90_NOWRITE, ncid), _RC)
-    call check_nc_status(nf90_inq_varid(ncid, name, varid), _RC)
-    call check_nc_status(nf90_get_var(ncid, varid, array), _RC)
+    call check_nc_status(nf90_open(trim(fileName), NF90_NOWRITE, ncid), _rc)
+    call check_nc_status(nf90_inq_varid(ncid, name, varid), _rc)
+    call check_nc_status(nf90_get_var(ncid, varid, array), _rc)
 
     iret = nf90_get_att(ncid, varid, 'scale_factor', scale_factor)
     if(iret .eq. 0) array = array * scale_factor
@@ -202,7 +202,7 @@ contains
     iret = nf90_get_att(ncid, varid, 'add_offset', add_offset)
     if(iret .eq. 0) array = array + add_offset
     !
-    call check_nc_status(nf90_close(ncid), _RC)
+    call check_nc_status(nf90_close(ncid), _rc)
 
     _RETURN(_SUCCESS)
 
@@ -220,19 +220,19 @@ contains
     integer :: status
     integer :: ncid, varid, ncid2, ncid_sv
 
-    call check_nc_status(nf90_open(trim(fileName), NF90_NOWRITE, ncid), _RC)
+    call check_nc_status(nf90_open(trim(fileName), NF90_NOWRITE, ncid), _rc)
     ncid_sv = ncid
 
     if(present(group_name)) then
        if(group_name/='') then
           ncid2= ncid
-          call check_nc_status(nf90_inq_ncid(ncid2, group_name, ncid), _RC)
+          call check_nc_status(nf90_inq_ncid(ncid2, group_name, ncid), _rc)
        end if
     end if
-    call check_nc_status(nf90_inq_varid(ncid, name, varid), _RC)
-    call check_nc_status(nf90_get_var(ncid, varid, array), _RC)
+    call check_nc_status(nf90_inq_varid(ncid, name, varid), _rc)
+    call check_nc_status(nf90_get_var(ncid, varid, array), _rc)
 
-    call check_nc_status(nf90_close(ncid_sv), _RC)
+    call check_nc_status(nf90_close(ncid_sv), _rc)
     _RETURN(_SUCCESS)
 
   end subroutine get_v1d_netcdf_R8
@@ -254,17 +254,17 @@ contains
     integer :: varid
     real(REAL32) :: scale_factor, add_offset
 
-    call check_nc_status(nf90_open(trim(fileName), NF90_NOWRITE, ncid), _RC)
+    call check_nc_status(nf90_open(trim(fileName), NF90_NOWRITE, ncid), _rc)
     ncid_sv = ncid
     if(present(group_name)) then
        if(group_name/='') then
-          call check_nc_status(nf90_inq_ncid(ncid, group_name, ncid_grp), _RC)
+          call check_nc_status(nf90_inq_ncid(ncid, group_name, ncid_grp), _rc)
           ! mod
           ncid = ncid_grp
        end if
     end if
-    call check_nc_status(nf90_inq_varid(ncid, varname, varid), _RC)
-    call check_nc_status(nf90_get_var(ncid, varid, array), _RC)
+    call check_nc_status(nf90_inq_varid(ncid, varname, varid), _rc)
+    call check_nc_status(nf90_get_var(ncid, varid, array), _rc)
 
     iret = nf90_get_att(ncid, varid, 'scale_factor', scale_factor)
     if(iret .eq. 0) array = array * scale_factor
@@ -273,10 +273,10 @@ contains
     if(iret .eq. 0) array = array + add_offset
 
     if(present(att_name)) then
-       call check_nc_status(nf90_get_att(ncid, varid, att_name, att_value), _RC)
+       call check_nc_status(nf90_get_att(ncid, varid, att_name, att_value), _rc)
     end if
 
-    call check_nc_status(nf90_close(ncid_sv), _RC)
+    call check_nc_status(nf90_close(ncid_sv), _rc)
 
     _RETURN(_SUCCESS)
 
@@ -296,18 +296,18 @@ contains
     integer :: ncid, ncid_grp, ncid_sv
     integer :: varid
 
-    call check_nc_status(nf90_open(trim(fileName), NF90_NOWRITE, ncid), _RC)
+    call check_nc_status(nf90_open(trim(fileName), NF90_NOWRITE, ncid), _rc)
     ncid_sv = ncid
     if(present(group_name)) then
        if(group_name/='') then
-          call check_nc_status(nf90_inq_ncid(ncid, group_name, ncid_grp), _RC)
+          call check_nc_status(nf90_inq_ncid(ncid, group_name, ncid_grp), _rc)
           ! overwrite
           ncid = ncid_grp
        end if
     end if
-    call check_nc_status(nf90_inq_varid(ncid, varname, varid), _RC)
-    call check_nc_status(nf90_get_att(ncid, varid, att_name, att_value), _RC)
-    call check_nc_status(nf90_close(ncid_sv), _RC)
+    call check_nc_status(nf90_inq_varid(ncid, varname, varid), _rc)
+    call check_nc_status(nf90_get_att(ncid, varid, att_name, att_value), _rc)
+    call check_nc_status(nf90_close(ncid_sv), _rc)
 
     _RETURN(_SUCCESS)
 
@@ -326,18 +326,18 @@ contains
     integer :: ncid, ncid_grp, ncid_sv
     integer :: varid
 
-    call check_nc_status(nf90_open(trim(fileName), NF90_NOWRITE, ncid), _RC)
+    call check_nc_status(nf90_open(trim(fileName), NF90_NOWRITE, ncid), _rc)
     ncid_sv = ncid
     if(present(group_name)) then
        if(group_name/='') then
-          call check_nc_status(nf90_inq_ncid(ncid, group_name, ncid_grp), _RC)
+          call check_nc_status(nf90_inq_ncid(ncid, group_name, ncid_grp), _rc)
           ! overwrite
           ncid = ncid_grp
        end if
     end if
-    call check_nc_status(nf90_inq_varid(ncid, varname, varid), _RC)
-    call check_nc_status(nf90_get_att(ncid, varid, att_name, att_value), _RC)
-    call check_nc_status(nf90_close(ncid_sv), _RC)
+    call check_nc_status(nf90_inq_varid(ncid, varname, varid), _rc)
+    call check_nc_status(nf90_get_att(ncid, varid, att_name, att_value), _rc)
+    call check_nc_status(nf90_close(ncid_sv), _rc)
 
     _RETURN(_SUCCESS)
 
@@ -370,12 +370,12 @@ contains
     type(ESMF_TimeInterval) :: dt
     integer :: iyy,imm,idd,ih,im,is
 
-    call parse_timeunit(tunit, n, time0, dt, _RC)
+    call parse_timeunit(tunit, n, time0, dt, _rc)
     time = time0 + dt
 
     ! check
     ! -----
-    call ESMF_timeGet(time, yy=iyy, mm=imm, dd=idd, h=ih, m=im, s=is, _RC)
+    call ESMF_timeGet(time, yy=iyy, mm=imm, dd=idd, h=ih, m=im, s=is, _rc)
     write(6, *) 'obs_start: iyy,imm,idd,ih,im,is', iyy,imm,idd,ih,im,is
 
     _RETURN(_SUCCESS)
@@ -397,12 +397,12 @@ contains
     type(ESMF_TimeInterval) :: dt
 
     n=0
-    call parse_timeunit(tunit, n, time0, dt, _RC)
+    call parse_timeunit(tunit, n, time0, dt, _rc)
     dt = time - time0
 
     ! assume unit is second
     !
-    call ESMF_TimeIntervalGet(dt, s_i8=n, _RC)
+    call ESMF_TimeIntervalGet(dt, s_i8=n, _rc)
 
     _RETURN(_SUCCESS)
 
@@ -426,7 +426,7 @@ contains
     integer(ESMF_KIND_I8) :: n8
 
     n8 = n
-    call parse_timeunit(tunit, n8, t0, dt, _RC)
+    call parse_timeunit(tunit, n8, t0, dt, _rc)
    _RETURN(_SUCCESS)
 
   end subroutine parse_timeunit_i4
@@ -469,8 +469,8 @@ contains
        _FAIL ('time_unit not implemented')
     end if
 
-    call ESMF_timeSet(t0, yy=y,mm=m,dd=d,h=hour,m=min,s=sec, _RC)
-    call ESMF_timeintervalSet(dt, d=0, h=0, m=0, s_i8=isec, _RC)
+    call ESMF_timeSet(t0, yy=y,mm=m,dd=d,h=hour,m=min,s=sec, _rc)
+    call ESMF_timeintervalSet(dt, d=0, h=0, m=0, s_i8=isec, _rc)
     _RETURN(_SUCCESS)
 
   end subroutine parse_timeunit_i8
@@ -494,15 +494,15 @@ contains
     integer :: i, status, sec
 
     n1=0; n2=0
-    call parse_timeunit (tunit1, n1, t1_base, dt1, _RC)
-    call parse_timeunit (tunit2, n2, t2_base, dt2, _RC)
+    call parse_timeunit (tunit1, n1, t1_base, dt1, _rc)
+    call parse_timeunit (tunit2, n2, t2_base, dt2, _rc)
     deltaT_base = t2_base - t1_base
     if (present(dt_esmf)) dt_esmf = deltaT_base
 
     i=index(trim(tunit1), 'since')
     s_unit=trim(tunit1(1:i-1))
 
-    call ESMF_TimeIntervalGet(deltaT_base, s=sec, _RC)
+    call ESMF_TimeIntervalGet(deltaT_base, s=sec, _rc)
     if (trim(s_unit) == 'seconds') then
        x = sec
     elseif (trim(s_unit) == 'minutes') then
@@ -530,7 +530,7 @@ contains
     integer :: yy, mm, dd, h, m, s
     integer :: status
 
-    call ESMF_TimeGet(time, yy=yy, mm=mm, dd=dd, h=h, m=m, s=s, _RC)
+    call ESMF_TimeGet(time, yy=yy, mm=mm, dd=dd, h=h, m=m, s=s, _rc)
 
     i2=h*10000 + m*100 + s
     i1=yy*10000 + mm*100 + dd
@@ -560,7 +560,7 @@ contains
     m= mod(i2, 10000)/100
     s= mod(i2, 100)
 
-    call ESMF_TimeSet(time, yy=yy, mm=mm, dd=dd, h=h, m=m, s=s, _RC)
+    call ESMF_TimeSet(time, yy=yy, mm=mm, dd=dd, h=h, m=m, s=s, _rc)
 
     _RETURN(_SUCCESS)
 
@@ -653,7 +653,7 @@ contains
     s2=trim(shms)
     read(s2, '(3i2)') hh, mm, ss
 
-    call ESMF_TimeIntervalSet(interval, yy=y, mm=m, d=d, h=hh, m=mm, s=ss, _RC)
+    call ESMF_TimeIntervalSet(interval, yy=y, mm=m, d=d, h=hh, m=mm, s=ss, _rc)
 
     _RETURN(_SUCCESS)
 

@@ -188,9 +188,9 @@ contains
     call MAPL_Set(MAPLOBJ, name = cap%name, cf = cap%config, rc = status)
     _VERIFY(status)
 
-    call MAPL_GetResource(MAPLOBJ, useShmem,  label = 'USE_SHMEM:',  default = 0, _RC)
+    call MAPL_GetResource(MAPLOBJ, useShmem,  label = 'USE_SHMEM:',  default = 0, _rc)
     if (useShmem /= 0) then
-       call MAPL_InitializeShmem (_RC)
+       call MAPL_InitializeShmem (_rc)
     end if
 
     call ESMF_ConfigGetAttribute(cap%config,cap%run_fbf,label="RUN_FBF:",default=.false.)
@@ -225,7 +225,7 @@ contains
     !EOR
     enableTimers = ESMF_UtilStringUpperCase(enableTimers, rc = status)
     _VERIFY(status)
-    call MAPL_GetResource(maplobj,use_extdata2g,"USE_EXTDATA2G:",default=.true.,_RC)
+    call MAPL_GetResource(maplobj,use_extdata2g,"USE_EXTDATA2G:",default=.true.,_rc)
 
     if (enableTimers /= 'YES') then
        call MAPL_ProfDisable(rc = status)
@@ -335,12 +335,12 @@ contains
        _VERIFY(STATUS)
        if (use_extdata2g) then
 #if defined(BUILD_WITH_EXTDATA2G)
-          cap%extdata_id = MAPL_AddChild (MAPLOBJ, name = 'EXTDATA', SS = ExtData2G_SetServices, _RC)
+          cap%extdata_id = MAPL_AddChild (MAPLOBJ, name = 'EXTDATA', SS = ExtData2G_SetServices, _rc)
 #else
           _FAIL('ExtData2G requested but not built')
 #endif
        else
-          cap%extdata_id = MAPL_AddChild (MAPLOBJ, name = 'EXTDATA', SS = ExtData1G_SetServices, _RC)
+          cap%extdata_id = MAPL_AddChild (MAPLOBJ, name = 'EXTDATA', SS = ExtData1G_SetServices, _rc)
        end if
 
     end if
@@ -405,10 +405,10 @@ contains
           end if
        END DO
        ! now add PS from Root if available
-       call ESMF_StateGet(cap%exports(cap%root_id), 'PLE', item_type, _RC)
+       call ESMF_StateGet(cap%exports(cap%root_id), 'PLE', item_type, _rc)
        if (item_type == ESMF_STATEITEM_FIELD) then
-          call ESMF_StateGet(cap%exports(cap%root_id), 'PLE', field, _RC)
-          call MAPL_StateAdd(cap%imports(cap%extdata_id), field, _RC)
+          call ESMF_StateGet(cap%exports(cap%root_id), 'PLE', field, _rc)
+          call MAPL_StateAdd(cap%imports(cap%extdata_id), field, _rc)
        end if
        deallocate(itemtypes)
        deallocate(itemnames)
@@ -498,7 +498,7 @@ contains
     call ESMF_ConfigDestroy(cap%config, rc = status)
     _VERIFY(status)
 
-    call MAPL_FinalizeSHMEM (_RC)
+    call MAPL_FinalizeSHMEM (_rc)
 
     _RETURN(ESMF_SUCCESS)
   end subroutine finalize_gc
@@ -551,7 +551,7 @@ contains
     integer :: status
     integer :: userRc
 
-    call ESMF_GridCompRun(this%gc, userRC=userRC,_RC)
+    call ESMF_GridCompRun(this%gc, userRC=userRC,_rc)
     _VERIFY(userRC)
     _RETURN(ESMF_SUCCESS)
 
@@ -631,11 +631,11 @@ contains
           _VERIFY(status)
        enddo
        if (mapl_am_i_root()) write(*,*)"Rewinding Clock"
-       call ESMF_ClockSet(cap%clock,direction=ESMF_DIRECTION_REVERSE,_RC)
+       call ESMF_ClockSet(cap%clock,direction=ESMF_DIRECTION_REVERSE,_rc)
        do n=1,cap%nsteps
           call ESMF_ClockAdvance(cap%clock,rc=status)
        enddo
-       call ESMF_ClockSet(cap%clock,direction=ESMF_DIRECTION_FORWARD,_RC)
+       call ESMF_ClockSet(cap%clock,direction=ESMF_DIRECTION_FORWARD,_rc)
        do n=1,cap%nsteps
           call ESMF_ClockAdvance(cap%clock,rc=status)
           _VERIFY(status)

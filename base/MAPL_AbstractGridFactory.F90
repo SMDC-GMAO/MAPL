@@ -341,12 +341,12 @@ contains
       new_grid = .false.
       if (present(force_new_grid)) new_grid = force_new_grid
       if (new_grid) then
-         grid = this%make_new_grid(_RC)
+         grid = this%make_new_grid(_rc)
       else
          if (allocated(this%grid)) then
             grid = this%grid
          else
-            this%grid = this%make_new_grid(_RC)
+            this%grid = this%make_new_grid(_rc)
             grid = this%grid
          end if
       end if
@@ -1075,7 +1075,7 @@ contains
       integer, optional, intent(out) :: rc
       integer :: status
 
-      call ESMF_GridDestroy(this%grid, noGarbage=.true., _RC)      
+      call ESMF_GridDestroy(this%grid, noGarbage=.true., _rc)      
       _RETURN(_SUCCESS)
    end subroutine destroy
 

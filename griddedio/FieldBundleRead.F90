@@ -58,7 +58,7 @@ module MAPL_ESMFFieldBundleRead
          character(len=:), allocatable :: units,long_name
 
          collection => DataCollections%at(metadata_id)
-         metadata => collection%find(trim(file_name), _RC)
+         metadata => collection%find(trim(file_name), _rc)
          file_grid=collection%src_grid
          lev_name = metadata%get_level_name(rc=status)
          _VERIFY(status)
@@ -139,8 +139,8 @@ module MAPL_ESMFFieldBundleRead
                _VERIFY(status)
                call ESMF_AttributeSet(field,name='VLOCATION',value=location,rc=status)
                _VERIFY(status)
-               units = metadata%get_var_attr_string(var_name_ptr,'units',_RC)
-               long_name = metadata%get_var_attr_string(var_name_ptr,'long_name',_RC)
+               units = metadata%get_var_attr_string(var_name_ptr,'units',_rc)
+               long_name = metadata%get_var_attr_string(var_name_ptr,'long_name',_rc)
                call ESMF_AttributeSet(field,name='UNITS',value=units,rc=status)
                _VERIFY(status)
                call ESMF_AttributeSet(field,name='LONG_NAME',value=long_name,rc=status)
@@ -182,7 +182,7 @@ module MAPL_ESMFFieldBundleRead
 
          lgr => logging%get_logger('MAPL.GRIDDEDIO')
 
-         call ESMF_TimeGet(time, timeString=timestring, _RC)
+         call ESMF_TimeGet(time, timeString=timestring, _rc)
          call lgr%info('MAPL_read_bundle: Reading file '//trim(file_tmpl)//' for time '//trim(timestring))
 
          call fill_grads_template(file_name,file_tmpl,time=time,rc=status)
@@ -194,7 +194,7 @@ module MAPL_ESMFFieldBundleRead
          collection => DataCollections%at(metadata_id)
          if (present(file_override)) file_name = file_override
 
-         metadata => collection%find(trim(file_name), _RC)
+         metadata => collection%find(trim(file_name), _rc)
          call metadata%get_time_info(timeVector=time_series,rc=status)
          _VERIFY(status)
          time_index=-1
@@ -242,8 +242,8 @@ module MAPL_ESMFFieldBundleRead
          end if
          call cfio%request_data_from_file(trim(file_name),timeindex=time_index,rc=status)
          _VERIFY(status)
-         call i_clients%done_collective_prefetch(_RC)
-         call i_clients%wait(_RC)
+         call i_clients%done_collective_prefetch(_rc)
+         call i_clients%wait(_rc)
          call cfio%process_data_from_file(rc=status)
          _VERIFY(status)
 

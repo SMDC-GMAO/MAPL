@@ -219,8 +219,8 @@ contains
                gregorianCalendar = ESMF_CalendarCreate(ESMF_CALKIND_GREGORIAN, &
                     name='Gregorian_obs' , rc=rc)
                call ESMF_TimeSet(time, yy=year, mm=month, dd=day, &
-                    calendar=gregorianCalendar, _RC)
-               call ESMF_TimeGet(time, dayOfYear=doy, _RC)
+                    calendar=gregorianCalendar, _rc)
+               call ESMF_TimeGet(time, dayOfYear=doy, _rc)
                call ESMF_CalendarDestroy(gregorianCalendar)
                write(buffer,'(i3.3)')doy
             else
