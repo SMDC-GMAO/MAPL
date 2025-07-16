@@ -151,6 +151,7 @@ module MAPL_GenericMod
    public MAPL_AddInternalSpec
    public MAPL_AddImportSpec
    public MAPL_AddExportSpec
+   public MAPL_GridCompAddVarSpec
 
    public MAPL_DoNotDeferExport
 
@@ -263,6 +264,19 @@ module MAPL_GenericMod
       module procedure MAPL_StateAddExportSpecFrmChld_all
       module procedure MAPL_StateAddExportSpecFrmAll
    end interface MAPL_AddExportSpec
+
+   interface MAPL_GridCompAddVarSpec
+      ! Import specifications
+      module procedure MAPL_StateAddImportSpec_
+      module procedure MAPL_StateAddImportSpecFrmChld
+      ! Internal specifications  
+      module procedure MAPL_StateAddInternalSpec
+      ! Export specifications
+      module procedure MAPL_StateAddExportSpec_
+      module procedure MAPL_StateAddExportSpecFrmChld
+      module procedure MAPL_StateAddExportSpecFrmChld_all
+      module procedure MAPL_StateAddExportSpecFrmAll
+   end interface MAPL_GridCompAddVarSpec
 
    interface MAPL_Get
       module procedure MAPL_GenericStateGet
