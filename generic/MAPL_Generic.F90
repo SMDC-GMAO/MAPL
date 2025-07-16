@@ -32,11 +32,22 @@
 !
 ! Author: GMAO SI-Team
 !
+! ## Overview
+! 
+! `MAPL_GenericMod` provides the core functionality for building and managing
+! ESMF gridded components within the MAPL (Modeling Analysis and Prediction Layer)
+! framework. This module serves as the foundation layer that supplements ESMF
+! capabilities and provides higher-level interfaces for common component operations.
+!
+! ## Main Features
+!
 ! `MAPLGeneric` allows the user to easily build ESMF gridded
 ! components.  It has its own SetServices, Initialize, Run, and Finalize
 ! (IRF) methods, and thus is itself a valid gridded component, although somewhat
 ! non-standard since it makes its IRF methods public. An instance of
 ! `MAPL_Generic` does no useful work, but can be used as a null `MAPL_Generic` component.
+!
+! ## Usage Patterns
 !
 ! The standard way to use MAPL_Generic is as an aid in building ESMF gridded
 ! components. A MAPL/ESMF gridded component built in this way will always have
@@ -50,6 +61,8 @@
 ! three IRF methods the default version is inadequate, it can simply be overrided
 ! by having the component register its own method after the call to MAPL_GenericSetServices.
 !
+! ## Generic IRF Methods
+!
 ! The generic IRF methods perform a number of useful functions, including
 ! creating, allocating, and initializing the components Import, Export,
 ! and Internal states. It would be a shame to waste this capability when a component
@@ -62,6 +75,8 @@
 ! IRF methods public and why we added the `Generic` modifier (i.e., MAPL_GenericInitialize,
 ! rather than MAPL_Initialize), to emphasize that they are directly callable IRF methods.
 !
+! ## MAPL_Generic State Object
+!
 ! MAPL_Generic may also be viewed as a fairly standard Fortran 90 `class`, which
 ! defines and makes public an opaque object that we refer to as a `MAPL_Generic State`.
 ! This object can be created only in association with a standard ESMF Gridded Component (GC),
@@ -72,6 +87,8 @@
 ! MAPL_Generic methods (Get, Set, etc). The bulk of MAPL_Generic consists of methods that act
 ! on this object.
 !
+! ## Grid and Configuration Requirements
+!
 ! MAPL_GenericSetServices and MAPL_Generic IRF methods cannot create their own ESMF grid.
 ! The grid must be inherited from the parent or created by the component
 ! either in its own SetServices or in its Initialize, if it is writing one.
@@ -79,10 +96,12 @@
 ! *present in the component and initialized* when MAPL_GenericSetServices is invoked.
 ! The same is true of the configuration.
 !
+! ## Component Types and Services
+!
 ! In MAPL_Generic, we distinguish between *simple (leaf)*
 ! gridded compnents and *composite* gridded components, which contain other
-! (*child*) gridded components.  We also define three types of services,
-! which can be registered by the component's SetServices routine.
+! (*child*) gridded components.  We also define four types of services,
+! which can be registered by the component's SetServices routine:
 !
 !- **Functional services:** These are the standard EMSF callable IRF methods for
 !   the component.
@@ -94,6 +113,31 @@
 !   by the component and are automatically reported by generic finalize.
 !
 ! MAPL_GenericSetServices provides generic versions of all these, as described below.
+!
+! ## Key Public Interfaces
+!
+! ### Core IRF Methods
+! - `MAPL_GenericSetServices`: Set up component services and initialize metadata
+! - `MAPL_GenericInitialize`: Initialize component and its children
+! - `MAPL_GenericRunChildren`: Execute run methods for all child components  
+! - `MAPL_GenericFinalize`: Finalize component and clean up resources
+!
+! ### State Management
+! - `MAPL_AddImportSpec`, `MAPL_AddExportSpec`, `MAPL_AddInternalSpec`: Define component data interfaces
+! - `MAPL_Get`, `MAPL_Set`: Access and modify component metadata
+! - `MAPL_StateCreateFromSpec`: Create ESMF states from specifications
+!
+! ### Child Component Management
+! - `MAPL_AddChild`: Add child components to composite components
+! - `MAPL_AddConnectivity`: Define data connections between components
+! - `MAPL_GetChildLocstream`: Access child component location streams
+!
+! ### Utility Functions
+! - `MAPL_GetResource`: Retrieve configuration values
+! - `MAPL_TimerOn`, `MAPL_TimerOff`: Performance profiling
+! - `MAPL_GetLogger`: Access logging functionality
+! - `MAPL_CheckpointState`: Save/restore component state
+!
 !
 module MAPL_GenericMod
 
@@ -377,30 +421,47 @@ module MAPL_GenericMod
    type (ESMF_Method_Flag), public :: MAPL_Method_Refresh = ESMF_Method_None
    integer, parameter, public :: MAPL_CustomRefreshPhase = 99
 
+   !> @brief Wrapper type for MAPL_MetaComp objects
+   !>
+   !> Simple wrapper type that holds a pointer to a MAPL_MetaComp object.
+   !> Used for managing collections of MAPL components.
    type MAPL_GenericWrap
       type(MAPL_MetaComp       ), pointer :: MAPLOBJ
    end type MAPL_GenericWrap
 
+   !> @brief Data type for managing component recording/checkpointing
+   !>
+   !> This type contains information needed for recording component states
+   !> to files at specified intervals, including alarm configurations and
+   !> file naming patterns for import and internal states.
    type MAPL_GenericRecordType
-      type(ESMF_Alarm), pointer                :: ALARM(:)
-      integer, pointer                         :: FILETYPE(:)
-      character (len=ESMF_MAXSTR)              :: IMP_FNAME
-      integer                                  :: IMP_LEN
-      character (len=ESMF_MAXSTR)              :: INT_FNAME
-      integer                                  :: INT_LEN
+      type(ESMF_Alarm), pointer                :: ALARM(:)     !< Alarms that trigger recording
+      integer, pointer                         :: FILETYPE(:)  !< File format types for each alarm
+      character (len=ESMF_MAXSTR)              :: IMP_FNAME    !< Import state filename pattern
+      integer                                  :: IMP_LEN      !< Import filename length
+      character (len=ESMF_MAXSTR)              :: INT_FNAME    !< Internal state filename pattern
+      integer                                  :: INT_LEN      !< Internal filename length
    end type  MAPL_GenericRecordType
 
+   !> @brief Data type for managing initial state information
+   !>
+   !> Contains configuration for how component states should be saved
+   !> and restored, including file format and naming information.
    type MAPL_InitialState
-      integer                                  :: FILETYPE = MAPL_Write2Ram
-      character(len=:), allocatable            :: IMP_FNAME
-      character(len=:), allocatable            :: INT_FNAME
+      integer                                  :: FILETYPE = MAPL_Write2Ram  !< Default file format
+      character(len=:), allocatable            :: IMP_FNAME                 !< Import state filename
+      character(len=:), allocatable            :: INT_FNAME                 !< Internal state filename
    end type  MAPL_InitialState
 
-
+   !> @brief Data type for managing component connectivity
+   !>
+   !> Contains information about how components are connected to each other,
+   !> including which variables are connected and which are not, as well as
+   !> service-to-service connections.
    type MAPL_Connectivity
-      type (VarConn) :: CONNECT
-      type (VarConn) :: DONOTCONN
-      type (ServiceConnectionItemVector) :: ServiceConnectionItems
+      type (VarConn) :: CONNECT                        !< Variables that should be connected
+      type (VarConn) :: DONOTCONN                      !< Variables that should not be connected
+      type (ServiceConnectionItemVector) :: ServiceConnectionItems  !< Service connection definitions
    end type MAPL_Connectivity
 
    type MAPL_LinkType
@@ -420,6 +481,22 @@ module MAPL_GenericMod
 
    !BOP
    !BOC
+   !>
+   !> @brief Main MAPL Generic Component metadata container
+   !>
+   !> The MAPL_MetaComp type contains all the metadata and state information
+   !> for a MAPL generic component. This extends the MaplGenericComponent
+   !> and provides the core functionality for managing ESMF gridded components
+   !> within the MAPL framework.
+   !>
+   !> This type manages:
+   !> - Component configuration and grid information
+   !> - Child component relationships and connectivity
+   !> - Import/Export state specifications
+   !> - Timing and profiling information
+   !> - Service-service interactions
+   !> - Checkpointing and restart capabilities
+   !>
    type, extends(MaplGenericComponent) ::  MAPL_MetaComp
       private
       ! Move to Base ?
@@ -8403,6 +8480,21 @@ contains
       _RETURN(ESMF_SUCCESS)
    end subroutine MAPL_GenericConnCheck
 
+   !>
+   !> @brief Pass-through routine for MAPL_GetResource interface (scalar version)
+   !>
+   !> This subroutine maintains the MAPL_GetResource interface for scalar values
+   !> while delegating the actual work to the resource management module.
+   !> It retrieves configuration values from the MAPL component's configuration.
+   !>
+   !> @param[inout] state - MAPL component metadata containing configuration
+   !> @param[inout] val - Variable to store the retrieved value
+   !> @param[in] label - Configuration label to search for
+   !> @param[in] unusable - Keyword enforcer (optional)
+   !> @param[in] default - Default value if label not found (optional)
+   !> @param[out] value_is_set - Flag indicating if value was found (optional)
+   !> @param[out] rc - Return code (optional)
+   !>
    ! This is a pass-through routine. It maintains the interface for
    ! MAPL_GetResource as-is instead of moving this subroutine to another module.
    subroutine MAPL_GetResourceFromMAPL_scalar(state, val, label, unusable, default, value_is_set, rc)
@@ -8491,6 +8583,21 @@ contains
 
    end subroutine MAPL_GetResourceFromConfig_scalar
 
+   !>
+   !> @brief Pass-through routine for MAPL_GetResource interface (array version)
+   !>
+   !> This subroutine maintains the MAPL_GetResource interface for array values
+   !> while delegating the actual work to the resource management module.
+   !> It retrieves configuration array values from the MAPL component's configuration.
+   !>
+   !> @param[inout] state - MAPL component metadata containing configuration
+   !> @param[inout] vals - Array variable to store the retrieved values
+   !> @param[in] label - Configuration label to search for
+   !> @param[in] unusable - Keyword enforcer (optional)
+   !> @param[in] default - Default array values if label not found (optional)
+   !> @param[out] value_is_set - Flag indicating if values were found (optional)
+   !> @param[out] rc - Return code (optional)
+   !>
    ! This is a pass-through routine. It maintains the interface for
    ! MAPL_GetResource as-is instead of moving this subroutine to another module.
    subroutine MAPL_GetResourceFromMAPL_array(state, vals, label, unusable, default, value_is_set, rc)
@@ -8577,6 +8684,17 @@ contains
 
    end subroutine MAPL_GetResourceFromConfig_array
 
+   !>
+   !> @brief Retrieves the number of subtiles for a MAPL component
+   !>
+   !> This function calculates and returns the number of subtiles configured
+   !> for a MAPL component. Subtiles are used for sub-grid scale processes
+   !> and spatial disaggregation within grid cells.
+   !>
+   !> @param[inout] STATE - MAPL component metadata
+   !> @param[out] RC - Return code (optional)
+   !> @return Number of subtiles configured for the component
+   !>
    integer function MAPL_GetNumSubtiles(STATE, RC)
       type (MAPL_MetaComp),       intent(INOUT)    :: STATE
       integer  , optional,        intent(  OUT)    :: RC
@@ -9036,6 +9154,19 @@ contains
       return
    end subroutine MAPL_InternalESMFStateGet
 
+   !>
+   !> @brief Recursively searches for a child component's location stream
+   !>
+   !> This subroutine searches through the component hierarchy to find
+   !> a child component with the specified name and returns its location
+   !> stream. The search is performed recursively through all child
+   !> components.
+   !>
+   !> @param[inout] GC - Parent gridded component to search within
+   !> @param[out] result - Location stream of the found child component
+   !> @param[in] name - Name of the child component to search for
+   !> @param[out] rc - Return code (ESMF_SUCCESS if found, ESMF_FAILURE if not)
+   !>
    recursive subroutine MAPL_GetChildLocstream(GC, result, name, rc)
       type(ESMF_GridComp),   intent(INout) :: GC
       type (MAPL_LocStream), intent(  OUT) :: result
@@ -10225,6 +10356,18 @@ contains
    end subroutine MAPL_GridCoordAdjustFromFile
 
 
+   !>
+   !> @brief Recursively retrieves the root gridded component
+   !>
+   !> This subroutine traverses the component hierarchy upward to find
+   !> the root gridded component (the one with no parent). This is useful
+   !> for accessing global information or performing operations that need
+   !> to be done at the top level of the component tree.
+   !>
+   !> @param[inout] GC - Input gridded component to start search from
+   !> @param[out] rootGC - The root gridded component found
+   !> @param[out] rc - Return code (optional)
+   !>
    recursive subroutine MAPL_GetRootGC(GC, rootGC, RC)
       type(ESMF_GridComp),    intent(INout) :: GC
       type(ESMF_GridComp),    intent(  OUT) :: rootGC
@@ -10779,6 +10922,19 @@ contains
    end function MAPL_GridGetSection
 
 
+   !>
+   !> @brief Checks if any record alarm is ringing for the specified mode
+   !>
+   !> This function examines all record alarms associated with a MAPL component
+   !> to determine if any are currently ringing. Record alarms are used to
+   !> trigger data recording operations at specified intervals.
+   !>
+   !> @param[inout] META - MAPL component metadata containing alarm information
+   !> @param[in] unusable - Keyword enforcer (optional)
+   !> @param[in] MODE - Writing file mode: disk or ram (optional)
+   !> @param[out] RC - Return code (optional)
+   !> @return .true. if any record alarm is ringing, .false. otherwise
+   !>
    logical function MAPL_RecordAlarmIsRinging(META, unusable, MODE, RC)
 
       ! !ARGUMENTS:
@@ -10835,6 +10991,17 @@ contains
       _RETURN(ESMF_SUCCESS)
    end function MAPL_RecordAlarmIsRinging
 
+   !>
+   !> @brief Recursively collects all exchange grid location stream addresses
+   !>
+   !> This subroutine traverses the component hierarchy to collect the addresses
+   !> of all exchange grid location streams. These addresses are used for managing
+   !> inter-component data exchange and regridding operations.
+   !>
+   !> @param[inout] GC - Gridded component to start collection from
+   !> @param[inout] LSADDR - Pointer to array of location stream addresses
+   !> @param[out] RC - Return code
+   !>
    recursive subroutine MAPL_GetAllExchangeGrids ( GC, LSADDR, RC )
 
 
@@ -11092,6 +11259,17 @@ contains
 
    end subroutine ArrDescrSetNCPar
 
+   !>
+   !> @brief Gets the logger associated with a MAPL component
+   !>
+   !> This subroutine retrieves the logger object associated with a MAPL
+   !> component's metadata. The logger can be used for structured logging
+   !> and debugging within the component.
+   !>
+   !> @param[in] meta - MAPL component metadata
+   !> @param[out] lgr - Pointer to the logger object
+   !> @param[out] rc - Return code (optional)
+   !>
    subroutine MAPL_GetLogger_meta(meta, lgr, rc)
       type (MAPL_MetaComp), intent(in) :: meta
       class(Logger), pointer :: lgr
@@ -11107,6 +11285,17 @@ contains
       _RETURN(_SUCCESS)
    end subroutine MAPL_GetLogger_meta
 
+   !>
+   !> @brief Gets the logger associated with a gridded component
+   !>
+   !> This subroutine retrieves the logger object associated with an ESMF
+   !> gridded component by first extracting its MAPL metadata and then
+   !> getting the logger from that metadata.
+   !>
+   !> @param[inout] gc - ESMF gridded component
+   !> @param[out] lgr - Pointer to the logger object
+   !> @param[out] rc - Return code (optional)
+   !>
    subroutine MAPL_GetLogger_gc(gc, lgr, rc)
       type(ESMF_GridComp), intent(inout) :: gc
       class(Logger), pointer :: lgr
