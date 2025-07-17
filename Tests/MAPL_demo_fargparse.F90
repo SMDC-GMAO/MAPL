@@ -19,7 +19,7 @@ program main
 
 !------------------------------------------------------------------------------
 
-      call run(_RC)
+      call run(_rc)
 
    contains
 
@@ -41,7 +41,7 @@ program main
          cli = MAPL_FargparseCLI(extra=extra_options)
 
          ! This does the casting of arguments into cap_options for CAP
-         cap_options = MAPL_CapOptions(cli, _RC)
+         cap_options = MAPL_CapOptions(cli, _rc)
 
          write(*,*) "done with MAPL_FargparseCLI"
          write(*,*) "  cap_options%with_esmf_moab = ", cap_options%with_esmf_moab
@@ -52,7 +52,7 @@ program main
          write(*,*) "  cap_options%egress_file = ", cap_options%egress_file
 
          ! For our extra options we have to explicitly cast them
-         call cast(cli%options%at('file'), input_file, _RC)
+         call cast(cli%options%at('file'), input_file, _rc)
 
          write(*,*) ""
          write(*,*) "Extra arguments"

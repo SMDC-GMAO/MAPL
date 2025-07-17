@@ -149,7 +149,7 @@ contains
 
        xr = x   ! compiled r8 this will convert to r4.
        xbits = 24 - nbits_to_keep
-       call compute_min_max(xr,min_value,max_value,undef_,useable_mpi_comm,_RC)
+       call compute_min_max(xr,min_value,max_value,undef_,useable_mpi_comm,_rc)
        if (useable_mpi_comm/=MPI_COMM_NULL) passed_minmax = 1
        rc = MAPL_ShaveMantissa32 ( xr, xr, size(x), xbits, has_undef, undef_, size(x), passed_minmax, min_value, max_value )
        return

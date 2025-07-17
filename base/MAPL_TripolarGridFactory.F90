@@ -248,9 +248,9 @@ contains
           _VERIFY(status)
        end if
 
-       call MAPL_AllocateShared(centers,[im_world,jm_world],transroot=.true.,_RC)
+       call MAPL_AllocateShared(centers,[im_world,jm_world],transroot=.true.,_rc)
 
-       call MAPL_SyncSharedMemory(_RC)
+       call MAPL_SyncSharedMemory(_rc)
 
        ! do longitudes
        if (MAPL_AmNodeRoot .or. (.not. MAPL_ShmInitialized)) then
@@ -260,7 +260,7 @@ contains
           _VERIFY(status)
           centers=centers*MAPL_DEGREES_TO_RADIANS_R8
        end if
-       call MAPL_SyncSharedMemory(_RC)
+       call MAPL_SyncSharedMemory(_rc)
 
        call ESMF_GridGetCoord(grid, coordDim=1, localDE=0, &
           staggerloc=ESMF_STAGGERLOC_CENTER, &
@@ -268,7 +268,7 @@ contains
        fptr=centers(i_1:i_n,j_1:j_n)
        ! do latitudes
 
-       call MAPL_SyncSharedMemory(_RC)
+       call MAPL_SyncSharedMemory(_rc)
        if (MAPL_AmNodeRoot .or. (.not. MAPL_ShmInitialized)) then
           status = nf90_inq_varid(ncid,lat_center_name,varid)
           _VERIFY(status)
@@ -276,25 +276,25 @@ contains
           _VERIFY(status)
            centers=centers*MAPL_DEGREES_TO_RADIANS_R8
        end if
-       call MAPL_SyncSharedMemory(_RC)
+       call MAPL_SyncSharedMemory(_rc)
 
        call ESMF_GridGetCoord(grid, coordDim=2, localDE=0, &
           staggerloc=ESMF_STAGGERLOC_CENTER, &
           farrayPtr=fptr, rc=status)
        fptr=centers(i_1:i_n,j_1:j_n)
 
-       call MAPL_SyncSharedMemory(_RC)
+       call MAPL_SyncSharedMemory(_rc)
        if(MAPL_ShmInitialized) then
-          call MAPL_DeAllocNodeArray(centers,_RC)
+          call MAPL_DeAllocNodeArray(centers,_rc)
        else
           deallocate(centers)
        end if
        ! now repeat for corners
-       call MAPL_AllocateShared(corners,[im_world+1,jm_world+1],transroot=.true.,_RC)
+       call MAPL_AllocateShared(corners,[im_world+1,jm_world+1],transroot=.true.,_rc)
 
        ! do longitudes
 
-       call MAPL_SyncSharedMemory(_RC)
+       call MAPL_SyncSharedMemory(_rc)
        if (MAPL_AmNodeRoot .or. (.not. MAPL_ShmInitialized)) then
           status = nf90_inq_varid(ncid,lon_corner_name,varid)
           _VERIFY(status)
@@ -302,15 +302,15 @@ contains
           _VERIFY(status)
           corners=corners*MAPL_DEGREES_TO_RADIANS_R8
        end if
-       call MAPL_SyncSharedMemory(_RC)
+       call MAPL_SyncSharedMemory(_rc)
 
        call ESMF_GridGetCoord(grid, coordDim=1, localDE=0, &
           staggerloc=ESMF_STAGGERLOC_CORNER, &
-          farrayPtr=fptr, _RC)
+          farrayPtr=fptr, _rc)
        fptr=corners(ic_1:ic_n,jc_1:jc_n)
        ! do latitudes
 
-       call MAPL_SyncSharedMemory(_RC)
+       call MAPL_SyncSharedMemory(_rc)
        if (MAPL_AmNodeRoot .or. (.not. MAPL_ShmInitialized)) then
           status = nf90_inq_varid(ncid,lat_corner_name,varid)
           _VERIFY(status)
@@ -318,16 +318,16 @@ contains
           _VERIFY(status)
           corners=corners*MAPL_DEGREES_TO_RADIANS_R8
        end if
-       call MAPL_SyncSharedMemory(_RC)
+       call MAPL_SyncSharedMemory(_rc)
 
        call ESMF_GridGetCoord(grid, coordDim=2, localDE=0, &
           staggerloc=ESMF_STAGGERLOC_CORNER, &
-          farrayPtr=fptr, _RC)
+          farrayPtr=fptr, _rc)
        fptr=corners(ic_1:ic_n,jc_1:jc_n)
 
-       call MAPL_SyncSharedMemory(_RC)
+       call MAPL_SyncSharedMemory(_rc)
        if(MAPL_ShmInitialized) then
-          call MAPL_DeAllocNodeArray(corners,_RC)
+          call MAPL_DeAllocNodeArray(corners,_rc)
        else
           deallocate(corners)
        end if
@@ -352,10 +352,10 @@ contains
 
       integer :: status
 
-      this%im_world = file_metadata%get_dimension('Xdim',_RC)
-      this%jm_world = file_Metadata%get_dimension('Ydim',_RC)
+      this%im_world = file_metadata%get_dimension('Xdim',_rc)
+      this%jm_world = file_Metadata%get_dimension('Ydim',_rc)
       if (file_metadata%has_dimension('lev')) then
-         this%lm = file_metadata%get_dimension('lev',_RC)
+         this%lm = file_metadata%get_dimension('lev',_rc)
       end if
 
       this%grid_file_name=file_metadata%get_source_file()

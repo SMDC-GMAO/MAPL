@@ -30,9 +30,9 @@ contains
       integer :: status
       integer :: unit
 
-      unit = open_file(this%filename, _RC)
-      call write_file(this%buffer, unit, _RC)
-      call delete_file(this%filename, _RC)
+      unit = open_file(this%filename, _rc)
+      call write_file(this%buffer, unit, _rc)
+      call delete_file(this%filename, _rc)
 
       _RETURN(_SUCCESS)
    end subroutine run

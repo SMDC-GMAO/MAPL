@@ -88,7 +88,7 @@ contains
 
        allocate(formatter)
 
-       call formatter%open(file_name, pFIO_READ, _RC)
+       call formatter%open(file_name, pFIO_READ, _rc)
        call this%formatters%push_back(formatter)
        deallocate(formatter)
        formatter => this%formatters%back()

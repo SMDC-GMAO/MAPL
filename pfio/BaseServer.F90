@@ -134,7 +134,7 @@ contains
               offset     = this%stage_offset%at(i_to_string(q%request_id))
               offset_address   = c_loc(i_ptr(offset+1))
              ! (2) write data
-              call threadPtr%put_DataToFile(q,offset_address, _RC)
+              call threadPtr%put_DataToFile(q,offset_address, _rc)
              ! (3) leave a mark, it has been written
               call this%stage_offset%insert(i_to_string(q%request_id)//'done',0_MPI_ADDRESS_KIND)
               !t1 = mpi_wtime()
@@ -234,7 +234,7 @@ contains
 
       do i = 1, n
          thread_ptr => this%threads%at(i)
-         call thread_ptr%clear_RequestHandle(_RC)
+         call thread_ptr%clear_RequestHandle(_rc)
       enddo
       _RETURN(_SUCCESS)
 

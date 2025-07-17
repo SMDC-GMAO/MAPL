@@ -15,7 +15,7 @@ program main
    _VERIFY(status)
    spec = make_BW_BenchmarkSpec() ! CLI
 
-   call run(spec, _RC)
+   call run(spec, _rc)
 
    call MPI_Barrier(MPI_COMM_WORLD, status)
    _VERIFY(status)
@@ -61,15 +61,15 @@ contains
       if (rank /= 0) writer_comm = MPI_COMM_NULL
       _RETURN_IF(writer_comm == MPI_COMM_NULL)
 
-      benchmark = make_BW_Benchmark(spec, writer_comm, _RC)
+      benchmark = make_BW_Benchmark(spec, writer_comm, _rc)
 
-      call write_header(writer_comm, spec%file_type, _RC)
+      call write_header(writer_comm, spec%file_type, _rc)
 
       tot_time = 0
       tot_time_sq = 0
       associate (n => spec%n_tries)
         do i = 1, n
-           t = time(benchmark, writer_comm, _RC)
+           t = time(benchmark, writer_comm, _rc)
            tot_time = tot_time + t
            tot_time_sq = tot_time_sq + t**2
         end do
@@ -81,7 +81,7 @@ contains
         end if
       end associate
 
-      call report(spec, avg_time, std_time, writer_comm, _RC)
+      call report(spec, avg_time, std_time, writer_comm, _rc)
 
       _RETURN(_SUCCESS)
    end subroutine run
@@ -100,7 +100,7 @@ contains
       _VERIFY(status)
 
       call system_clock(c0)
-      call benchmark%run(_RC)
+      call benchmark%run(_rc)
       call MPI_Barrier(comm, status)
       _VERIFY(status)
       call system_clock(c1, count_rate=count_rate)

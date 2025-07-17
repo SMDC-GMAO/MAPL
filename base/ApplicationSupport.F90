@@ -44,7 +44,7 @@ module MAPL_ApplicationSupport
       call initialize_profiler(comm=comm_world)
       call start_global_time_profiler(rc=status)
       _VERIFY(status)
-      call initialize_udunits(_RC)
+      call initialize_udunits(_rc)
       _RETURN(_SUCCESS)
 
    end subroutine MAPL_Initialize

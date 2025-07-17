@@ -231,7 +231,7 @@ contains
       ! status ==0, means the last server thread in the backlog
 
       call this%clear_DataReference()
-      call this%clear_RequestHandle(_RC)
+      call this%clear_RequestHandle(_rc)
       call this%set_status(UNALLOCATED)
       call this%set_AllBacklogIsEmpty(.true.)
 
@@ -260,7 +260,7 @@ contains
       if (associated(ioserver_profiler)) call ioserver_profiler%start("clean_up")
 
       call this%clear_DataReference()
-      Call this%clear_RequestHandle(_RC)
+      Call this%clear_RequestHandle(_rc)
       call this%set_AllBacklogIsEmpty(.true.)
       this%serverthread_done_msgs(:) = .false.
 
@@ -439,7 +439,7 @@ contains
          _RETURN(_SUCCESS)
       endif
 
-      call ioserver_profiler%stop(_RC)
+      call ioserver_profiler%stop(_rc)
       call ioserver_profiler%reduce()
 
       reporter = ProfileReporter(empty)

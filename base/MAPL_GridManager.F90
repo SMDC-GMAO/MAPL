@@ -99,7 +99,7 @@ contains
 
       ! Do not initialize prototypes more than once.
       if (.not. initialized) then
-         call initialize_prototypes(this, _RC)
+         call initialize_prototypes(this, _rc)
          initialized = .true.
       end if
 
@@ -183,7 +183,7 @@ contains
 
       ! Do not initialize prototypes more than once.
       if (.not. initialized) then
-           call initialize_prototypes(this, _RC)
+           call initialize_prototypes(this, _rc)
            initialized = .true.
       end if
 
@@ -418,9 +418,9 @@ contains
       class(AbstractGridFactory), pointer :: factory
       type(Integer64GridFactoryMapIterator) :: iter
 
-      call ESMF_AttributeGet(grid, factory_id_attribute, id, _RC)
+      call ESMF_AttributeGet(grid, factory_id_attribute, id, _rc)
       factory => this%factories%at(id)
-      call factory%destroy(_RC)
+      call factory%destroy(_rc)
       iter = this%factories%find(id)
       call this%factories%erase(iter)
 

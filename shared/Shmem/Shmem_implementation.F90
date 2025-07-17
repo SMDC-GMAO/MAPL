@@ -799,7 +799,7 @@ contains
     module procedure MAPL_AllocateShared_2DI4
       integer :: status
       if(MAPL_ShmInitialized) then
-         call MAPL_AllocNodeArray(Ptr, Shp, lbd, _RC)
+         call MAPL_AllocNodeArray(Ptr, Shp, lbd, _rc)
       else
          if (TransRoot) then
             allocate(Ptr(Shp(1),Shp(2)),stat=status)

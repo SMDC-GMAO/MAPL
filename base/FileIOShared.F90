@@ -306,11 +306,11 @@ module FileIOSharedMod
     type(ESMF_VM) :: vm
     logical :: amIRoot
 
-    call ESMF_GridGet(grid, dimCount=gridRank, distGrid=distGrid, _RC)
+    call ESMF_GridGet(grid, dimCount=gridRank, distGrid=distGrid, _rc)
     _ASSERT(gridRank == 1, 'gridRank must be 1')
 
     call MAPL_GridGet(grid, globalCellCountPerDim=gcount, &
-         localCellCountPerDim=lcount, _RC)
+         localCellCountPerDim=lcount, _rc)
 
     gsize = gcount(1)
     lsize = lcount(1)
@@ -320,27 +320,27 @@ module FileIOSharedMod
 
     allocate(tileIndex(lsize), _STAT)
 
-    call ESMF_DistGridGet(distgrid, localDe=0, seqIndexList=tileIndex, _RC)
+    call ESMF_DistGridGet(distgrid, localDe=0, seqIndexList=tileIndex, _rc)
 
-    call ESMF_DistGridGet(distGRID, delayout=layout, _RC)
-    call ESMF_DELayoutGet(layout, vm=vm, _RC)
-    call ESMF_VmGet(vm, localPet=deId, petCount=nDEs, _RC)
+    call ESMF_DistGridGet(distGRID, delayout=layout, _rc)
+    call ESMF_DELayoutGet(layout, vm=vm, _rc)
+    call ESMF_VmGet(vm, localPet=deId, petCount=nDEs, _rc)
 
     amIRoot = MAPL_AM_I_Root(vm)
 
-    call ESMF_VmBarrier(vm, _RC)
+    call ESMF_VmBarrier(vm, _rc)
 
     if (.not. MAPL_ShmInitialized) then
        allocate(mask(gsize), _STAT)
     else
-       call MAPL_AllocNodeArray(mask,(/gsize/),_RC)
+       call MAPL_AllocNodeArray(mask,(/gsize/),_rc)
     end if
 
     allocate (AL(gridRank,0:nDEs-1),  _STAT)
     allocate (AU(gridRank,0:nDEs-1),  _STAT)
 
     call MAPL_DistGridGet(distgrid, &
-         minIndex=AL, maxIndex=AU, _RC)
+         minIndex=AL, maxIndex=AU, _rc)
 
     allocate (recvcounts(0:nDEs-1), displs(0:nDEs), _STAT)
 
@@ -376,16 +376,16 @@ module FileIOSharedMod
        endif
        do II=I1,IN
           mmax=var(II)
-          call MAPL_CommsAllReduceMax(vm, mmax, var(II), 1, _RC)
+          call MAPL_CommsAllReduceMax(vm, mmax, var(II), 1, _rc)
        enddo
     end do
 #else
     if (MAPL_ShmInitialized) then
        call MAPL_CommsGatherV(layout, tileindex, sendcount, &
-                              var, recvcounts, displs, MAPL_Root, _RC)
+                              var, recvcounts, displs, MAPL_Root, _rc)
     else
        call MAPL_CommsAllGatherV(layout, tileindex, sendcount, &
-                                 var, recvcounts, displs, _RC)
+                                 var, recvcounts, displs, _rc)
     endif
 #endif
 
@@ -405,9 +405,9 @@ module FileIOSharedMod
     deallocate(tileIndex)
 
 ! mask is deallocated in the caller routine
-       call MAPL_BroadcastToNodes(MASK, N=gsize, ROOT=MAPL_Root, _RC)
+       call MAPL_BroadcastToNodes(MASK, N=gsize, ROOT=MAPL_Root, _rc)
 
-    call MAPL_SyncSharedMemory(_RC)
+    call MAPL_SyncSharedMemory(_rc)
 
     _RETURN(ESMF_SUCCESS)
   end subroutine MAPL_TileMaskGet
@@ -894,12 +894,12 @@ module FileIOSharedMod
 
     integer :: status
 
-    call MAPL_CommFree(arrdes%Xcomm, _RC)
-    call MAPL_CommFree(arrdes%Ycomm, _RC)
-    call MAPL_CommFree(arrdes%readers_comm, _RC)
-    call MAPL_CommFree(arrdes%writers_comm, _RC)
-    call MAPL_CommFree(arrdes%IOgathercomm, _RC)
-    call MAPL_CommFree(arrdes%IOscattercomm, _RC)
+    call MAPL_CommFree(arrdes%Xcomm, _rc)
+    call MAPL_CommFree(arrdes%Ycomm, _rc)
+    call MAPL_CommFree(arrdes%readers_comm, _rc)
+    call MAPL_CommFree(arrdes%writers_comm, _rc)
+    call MAPL_CommFree(arrdes%IOgathercomm, _rc)
+    call MAPL_CommFree(arrdes%IOscattercomm, _rc)
     
     _RETURN(ESMF_SUCCESS)
   end subroutine ArrDescrCommFree

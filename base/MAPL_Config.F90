@@ -538,7 +538,7 @@ contains
         _ASSERT(j + len_trim(newVal) <= LSZ,'not enough space to write')
         write(buffer(j+1:), *) trim(newVal)
      end do
-     call MAPL_ConfigSetAttribute(config, value=buffer, label=label, _RC)
+     call MAPL_ConfigSetAttribute(config, value=buffer, label=label, _rc)
 
      _RETURN(ESMF_SUCCESS)
    end subroutine MAPL_ConfigSetAttribute_ints32
@@ -582,7 +582,7 @@ contains
         _ASSERT(j + len_trim(newVal) <= LSZ,'not enough space to write')
         write(buffer(j+1:), *) trim(newVal)
      end do
-     call MAPL_ConfigSetAttribute(config, value=buffer, label=label, _RC)
+     call MAPL_ConfigSetAttribute(config, value=buffer, label=label, _rc)
 
      _RETURN(ESMF_SUCCESS)
    end subroutine MAPL_ConfigSetAttribute_reals32

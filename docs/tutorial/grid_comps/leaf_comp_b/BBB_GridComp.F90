@@ -19,15 +19,15 @@ module BBB_GridComp
 
      integer :: status
 
-     call MAPL_GridCompSetEntryPoint ( gc, ESMF_METHOD_INITIALIZE,  my_initialize, _RC)
-     call MAPL_GridCompSetEntryPoint ( gc, ESMF_METHOD_RUN,  my_run, _RC)
+     call MAPL_GridCompSetEntryPoint ( gc, ESMF_METHOD_INITIALIZE,  my_initialize, _rc)
+     call MAPL_GridCompSetEntryPoint ( gc, ESMF_METHOD_RUN,  my_run, _rc)
 
      call MAPL_AddImportSpec(gc,short_name='field1', long_name='NA',units='NA', &
                                  dims = MAPL_DimsHorzOnly, &
-                                 vlocation = MAPL_VLocationNone, _RC)
+                                 vlocation = MAPL_VLocationNone, _rc)
 
 
-     call MAPL_GenericSetServices(gc, _RC)
+     call MAPL_GenericSetServices(gc, _rc)
      _RETURN(_SUCCESS)
 
   end subroutine setservices
@@ -42,7 +42,7 @@ module BBB_GridComp
 
      integer :: status
 
-     call MAPL_GenericInitialize(gc, import, export, clock, _RC)
+     call MAPL_GenericInitialize(gc, import, export, clock, _rc)
 
      _RETURN(_SUCCESS)
 
@@ -59,7 +59,7 @@ module BBB_GridComp
      real, pointer :: ptr_2d(:,:)
      integer :: status
 
-     call MAPL_GetPointer(import,ptr_2d,'field1',_RC)
+     call MAPL_GetPointer(import,ptr_2d,'field1',_rc)
      write(*,*)"BBB import 1 maxval: ",maxval(ptr_2d)
 
      _RETURN(_SUCCESS)

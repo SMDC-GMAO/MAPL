@@ -60,7 +60,7 @@ contains
            collection_id, &
            file_name, &
            var_name, &
-           data_reference,unusable=unusable,start=start),_RC)
+           data_reference,unusable=unusable,start=start),_rc)
 
       handshake_msg => connection%receive()
       deallocate(handshake_msg)
@@ -111,7 +111,7 @@ contains
            file_name, &
            var_name, &
            data_reference,unusable=unusable, start=start,&
-           global_start=global_start,global_count=global_count),_RC)
+           global_start=global_start,global_count=global_count),_rc)
 
       handshake_msg => connection%receive()
       deallocate(handshake_msg)
@@ -157,7 +157,7 @@ contains
            collection_id, &
            file_name, &
            var_name, &
-           data_reference),_RC)
+           data_reference),_rc)
 
       handshake_msg => connection%receive()
       deallocate(handshake_msg)

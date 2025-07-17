@@ -49,7 +49,7 @@ module MAPL_ExtDataOldTypesCreator
 
          integer :: status
          
-         call ExtDataObj%ExtDataConfig%new_ExtDataConfig_from_yaml(config_file,current_time,_RC)
+         call ExtDataObj%ExtDataConfig%new_ExtDataConfig_from_yaml(config_file,current_time,_rc)
          
          _RETURN(_SUCCESS)
          _UNUSED_DUMMY(unusable)
@@ -126,7 +126,7 @@ module MAPL_ExtDataOldTypesCreator
       allocate(primary_item%source_time,source=time_sample%source_time)
       ! new refresh
       call primary_item%update_freq%create_from_parameters(time_sample%refresh_time, &
-           time_sample%refresh_frequency, time_sample%refresh_offset, time, clock, _RC)
+           time_sample%refresh_frequency, time_sample%refresh_offset, time, clock, _rc)
 
       disable_interpolation =  .not.time_sample%time_interpolation
       exact = time_sample%exact
@@ -146,7 +146,7 @@ module MAPL_ExtDataOldTypesCreator
 
          primary_item%file_template = dataset%file_template
          get_range = trim(time_sample%extrap_outside) /= "none"
-         call dataset%detect_metadata(primary_item%file_metadata,time,rule%multi_rule,get_range=get_range,_RC)
+         call dataset%detect_metadata(primary_item%file_metadata,time,rule%multi_rule,get_range=get_range,_rc)
       else
          primary_item%file_template = rule%collection
       end if
@@ -156,10 +156,10 @@ module MAPL_ExtDataOldTypesCreator
          primary_item%const=rule%linear_trans(1)
       else
          if (primary_item%cycling) then
-            call clim_handler%initialize(dataset,_RC)
+            call clim_handler%initialize(dataset,_rc)
             allocate(primary_item%filestream,source=clim_handler)
          else
-            call simple_handler%initialize(dataset,persist_closest=primary_item%persist_closest,_RC)
+            call simple_handler%initialize(dataset,persist_closest=primary_item%persist_closest,_rc)
             allocate(primary_item%filestream,source=simple_handler)
          end if
       end if
@@ -197,12 +197,12 @@ module MAPL_ExtDataOldTypesCreator
         time_sample=>default_time_sample
       end if
       call derived_item%update_freq%create_from_parameters(time_sample%refresh_time, &
-           time_sample%refresh_frequency, time_sample%refresh_offset, time, clock, _RC)
+           time_sample%refresh_frequency, time_sample%refresh_offset, time, clock, _rc)
       derived_item%masking=.false.
       if (index(derived_item%expression,"mask") /= 0 ) then
          derived_item%masking=.true.
          allocate(derived_item%mask_definition)
-         derived_item%mask_definition = StateMask(derived_item%expression,_RC)
+         derived_item%mask_definition = StateMask(derived_item%expression,_rc)
       end if
 
       _RETURN(_SUCCESS)

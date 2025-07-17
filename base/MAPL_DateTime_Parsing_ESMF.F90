@@ -27,33 +27,33 @@ contains
       ! Set ESMF_TimeInterval
 
       if(duration % year_is_set()) then
-         call ESMF_TimeIntervalSet(interval, yy = duration % year, _RC)
+         call ESMF_TimeIntervalSet(interval, yy = duration % year, _rc)
       end if
 
       if(duration % month_is_set()) then
-         call ESMF_TimeIntervalSet(interval, yy = duration % month, _RC)
+         call ESMF_TimeIntervalSet(interval, yy = duration % month, _rc)
       end if
 
       if(duration % day_is_set()) then
-         call ESMF_TimeIntervalSet(interval, yy = duration % day, _RC)
+         call ESMF_TimeIntervalSet(interval, yy = duration % day, _rc)
       end if
 
       if(duration % hour_is_real()) then
-         call ESMF_TimeIntervalSet(interval, h_r8 = duration % hour_real, _RC)
+         call ESMF_TimeIntervalSet(interval, h_r8 = duration % hour_real, _rc)
       else if(duration % hour_is_set()) then
-         call ESMF_TimeIntervalSet(interval, h = duration % hour, _RC)
+         call ESMF_TimeIntervalSet(interval, h = duration % hour, _rc)
       end if
          
       if(duration % minute_is_real()) then
-         call ESMF_TimeIntervalSet(interval, m_r8 = duration % minute_real, _RC)
+         call ESMF_TimeIntervalSet(interval, m_r8 = duration % minute_real, _rc)
       else if(duration % minute_is_set()) then
-         call ESMF_TimeIntervalSet(interval, m = duration % minute, _RC)
+         call ESMF_TimeIntervalSet(interval, m = duration % minute, _rc)
       end if
 
       if(duration % second_is_real()) then
-         call ESMF_TimeIntervalSet(interval, s_r8 = duration % second_real, _RC)
+         call ESMF_TimeIntervalSet(interval, s_r8 = duration % second_real, _rc)
       else if(duration % second_is_set()) then
-         call ESMF_TimeIntervalSet(interval, s = duration % second, _RC)
+         call ESMF_TimeIntervalSet(interval, s = duration % second, _rc)
       end if
 
       _RETURN(_SUCCESS)
@@ -66,7 +66,7 @@ contains
        integer, optional, intent(out) :: rc
        integer :: status
 
-       call ESMF_TimeSet(time, isostring, _RC)
+       call ESMF_TimeSet(time, isostring, _rc)
 
        _RETURN(_SUCCESS)
 

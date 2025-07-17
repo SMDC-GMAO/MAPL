@@ -115,14 +115,14 @@ module LocStreamFactoryMod
          tlons=tlons*MAPL_PI_R8/180.0d0
          tlats=tlats*MAPL_PI_R8/180.0d0
 
-         locstream = ESMF_LocStreamCreate(localCount=local_count,coordSys=ESMF_COORDSYS_SPH_RAD,_RC)
+         locstream = ESMF_LocStreamCreate(localCount=local_count,coordSys=ESMF_COORDSYS_SPH_RAD,_rc)
          call ESMF_LocStreamAddKey(locstream,keyName="ESMF:Lat",farray=tlats,datacopyflag=ESMF_DATACOPY_VALUE, &
-                 keyUnits="Radians", keyLongName="Latitude",_RC)
+                 keyUnits="Radians", keyLongName="Latitude",_rc)
          call ESMF_LocStreamAddKey(locstream,keyName="ESMF:Lon",farray=tlons,datacopyflag=ESMF_DATACOPY_VALUE, &
-                 keyUnits="Radians", keyLongName="Longitude",_RC)
+                 keyUnits="Radians", keyLongName="Longitude",_rc)
 
          if (present(grid)) then
-            locstream = ESMF_LocStreamCreate(locstream,background=grid,_RC)
+            locstream = ESMF_LocStreamCreate(locstream,background=grid,_rc)
          end if
          _RETURN(_SUCCESS)
        end function create_locstream_on_proc
@@ -135,7 +135,7 @@ module LocStreamFactoryMod
 
         if (allocated(this%lons)) deallocate (this%lons)
         if (allocated(this%lats)) deallocate (this%lats)
-        call ESMF_LocStreamDestroy (locstream,noGarbage=.true.,_RC)
+        call ESMF_LocStreamDestroy (locstream,noGarbage=.true.,_rc)
 
         _RETURN(_SUCCESS)
       end subroutine destroy_locstream

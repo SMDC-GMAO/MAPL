@@ -703,8 +703,8 @@ contains
       integer :: time_index = 0
       time_index = index(isostring,TIME_PREFIX)
       if(time_index > 0) then
-         datetime%date_ = ISO8601Date(isostring(1:time_index-1), _RC)
-         datetime%time_ = ISO8601Time(isostring(time_index:len(isostring)), _RC)
+         datetime%date_ = ISO8601Date(isostring(1:time_index-1), _rc)
+         datetime%time_ = ISO8601Time(isostring(time_index:len(isostring)), _rc)
          _RETURN(_SUCCESS)
       else
          _FAIL('Invalid ISO 8601 datetime string')
@@ -1035,7 +1035,7 @@ contains
       type(ISO8601Date) :: date
       integer :: status
 
-      date = ISO8601Date(isostring, _RC)
+      date = ISO8601Date(isostring, _rc)
 
       integer_date = date%get_year()*ID_YEAR + date%get_month()*ID_MONTH + &
          date%get_day()*ID_DAY
@@ -1051,7 +1051,7 @@ contains
       type(ISO8601Time) :: time
       integer :: status
 
-      time = ISO8601Time(isostring, _RC)
+      time = ISO8601Time(isostring, _rc)
 
       integer_time = time%get_hour()*IT_HOUR + time%get_minute()*IT_MINUTE + &
          time%get_second()*IT_SECOND

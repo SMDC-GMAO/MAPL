@@ -117,7 +117,7 @@ contains
       integer :: status
 
       connection=>this%get_connection()
-      call connection%send(AddExtCollectionMessage(template),_RC)
+      call connection%send(AddExtCollectionMessage(template),_rc)
       message => connection%receive()
       select type(message)
       type is(IDMessage)
@@ -177,7 +177,7 @@ contains
            collection_id, &
            file_name, &
            var_name, &
-           data_reference,unusable=unusable,start=start),_RC)
+           data_reference,unusable=unusable,start=start),_rc)
 
       handshake_msg => connection%receive()
       deallocate(handshake_msg)
@@ -202,7 +202,7 @@ contains
       connection=>this%get_connection()
       call connection%send(ModifyMetadataMessage( &
            collection_id, &
-           var_map=var_map),_RC)
+           var_map=var_map),_rc)
 
       handshake_msg => connection%receive()
       deallocate(handshake_msg)
@@ -221,7 +221,7 @@ contains
       integer :: status
 
       connection=>this%get_connection()
-      call connection%send(ReplaceMetadataMessage(collection_id,fmd),_RC)
+      call connection%send(ReplaceMetadataMessage(collection_id,fmd),_rc)
 
       handshake_msg => connection%receive()
       deallocate(handshake_msg)
@@ -256,7 +256,7 @@ contains
            file_name, &
            var_name, &
            data_reference,unusable=unusable, start=start,&
-           global_start=global_start,global_count=global_count),_RC)
+           global_start=global_start,global_count=global_count),_rc)
 
       handshake_msg => connection%receive()
       deallocate(handshake_msg)
@@ -291,7 +291,7 @@ contains
            collection_id, &
            file_name, &
            var_name, &
-           data_reference,unusable=unusable,start=start),_RC)
+           data_reference,unusable=unusable,start=start),_rc)
 
       handshake_msg => connection%receive()
       deallocate(handshake_msg)
@@ -330,7 +330,7 @@ contains
            file_name, &
            var_name, &
            data_reference,unusable=unusable, start=start,&
-           global_start=global_start,global_count=global_count),_RC)
+           global_start=global_start,global_count=global_count),_rc)
 
       handshake_msg => connection%receive()
       deallocate(handshake_msg)
@@ -383,7 +383,7 @@ contains
       integer :: status
 
       connection=>this%get_connection()
-      call connection%send(HandShakeMessage(),_RC)
+      call connection%send(HandShakeMessage(),_rc)
 
       handshake_msg => connection%receive()
       deallocate(handshake_msg)
@@ -400,7 +400,7 @@ contains
       integer :: status
 
       connection=>this%get_connection()
-      call connection%send(DoneMessage(),_RC)
+      call connection%send(DoneMessage(),_rc)
       _RETURN(_SUCCESS)
    end subroutine done
 
@@ -415,7 +415,7 @@ contains
       endif
     
       connection=>this%get_connection()
-      call connection%send(PrefetchDoneMessage(),_RC)
+      call connection%send(PrefetchDoneMessage(),_rc)
       _RETURN(_SUCCESS)
    end subroutine done_prefetch
 
@@ -430,7 +430,7 @@ contains
       endif
 
       connection=>this%get_connection()
-      call connection%send(CollectivePrefetchDoneMessage(),_RC)
+      call connection%send(CollectivePrefetchDoneMessage(),_rc)
       _RETURN(_SUCCESS)
    end subroutine done_collective_prefetch
 
@@ -445,7 +445,7 @@ contains
       endif
 
       connection=>this%get_connection()
-      call connection%send(StageDoneMessage(),_RC)
+      call connection%send(StageDoneMessage(),_rc)
       _RETURN(_SUCCESS)
    end subroutine done_stage
 
@@ -460,7 +460,7 @@ contains
       endif
      
       connection=>this%get_connection()
-      call connection%send(CollectiveStageDoneMessage(),_RC)
+      call connection%send(CollectiveStageDoneMessage(),_rc)
       _RETURN(_SUCCESS)
    end subroutine done_collective_stage
 
@@ -485,7 +485,7 @@ contains
       class (ClientThread), target, intent(inout) :: this
       integer, optional, intent(out) :: rc
       integer:: status
-      call this%clear_RequestHandle(_RC)
+      call this%clear_RequestHandle(_rc)
       !call this%shake_hand()
       _RETURN(_SUCCESS)
 
@@ -496,7 +496,7 @@ contains
       class (ClientThread), target, intent(inout) :: this
       integer, optional, intent(out):: rc
       integer :: status
-      call this%wait_all(_RC)
+      call this%wait_all(_rc)
       _RETURN(_SUCCESS)
    end subroutine post_wait_all
 
@@ -527,7 +527,7 @@ contains
       integer :: status
 
       connection=>this%get_connection()
-      call connection%send(TerminateMessage(),_RC)
+      call connection%send(TerminateMessage(),_rc)
       _RETURN(_SUCCESS)
    end subroutine terminate
 

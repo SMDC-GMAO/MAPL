@@ -122,7 +122,7 @@ contains
          call s%splitter%add_group(npes_per_node = nwriter_per_node,               name="o_server_back",  isolate_nodes=.false.)
       endif
 
-      s_comm = s%splitter%split(_RC)
+      s_comm = s%splitter%split(_rc)
 
       nwriter = nwriter_per_node*size(node_sizes)
       s%front_comm = MPI_COMM_NULL
@@ -139,7 +139,7 @@ contains
       s%I_am_back_root = .false.
       if (index(s_name, 'o_server_front') /=0) then
          s%front_comm = s_comm%get_subcommunicator()
-         call s%init(s%front_comm, s_name, with_profiler = with_profiler, _RC)
+         call s%init(s%front_comm, s_name, with_profiler = with_profiler, _rc)
          s%port_name = trim(port_name)
          call MPI_Comm_rank(s%front_comm, local_rank, ierror)
          _VERIFY(ierror)
@@ -184,7 +184,7 @@ contains
          call s%set_status(1)
          call s%add_connection(dummy_socket)
          allocate(s%buffers(s%nfront))
-         call s%init(s%back_comm, s_name, _RC)
+         call s%init(s%back_comm, s_name, _rc)
       endif
 
       if (s_rank == 0) print*, "MultiServer Start: nfront, nwriter", s%nfront, s%nwriter-1
@@ -197,11 +197,11 @@ contains
       integer :: status
 
       if ( this%front_comm /= MPI_COMM_NULL) then
-         call start_front(_RC)
+         call start_front(_rc)
       endif
 
       if ( this%back_comm /= MPI_COMM_NULL) then
-         call this%start_back(_RC)
+         call this%start_back(_rc)
       endif
       call this%splitter%free_sub_comm()
       _RETURN(_SUCCESS)
@@ -230,7 +230,7 @@ contains
 
                thread_ptr=>this%threads%at(i)
                !handle the message
-               call thread_ptr%run(_RC)
+               call thread_ptr%run(_rc)
                !delete the thread object if it terminates
                if(thread_ptr%do_terminate()) then
                   mask(i) = .true.
@@ -242,9 +242,9 @@ contains
          enddo
 
          call this%threads%clear()
-         call this%terminate_backend_server(_RC)
+         call this%terminate_backend_server(_rc)
 
-         call this%report_profile(_RC)
+         call this%report_profile(_rc)
 
          deallocate(mask)
          _RETURN(_SUCCESS)
@@ -290,7 +290,7 @@ contains
          call thread_ptr%clear_hist_collections()
       enddo ! threads
 
-      call this%clear_RequestHandle(_RC)
+      call this%clear_RequestHandle(_rc)
       call this%set_AllBacklogIsEmpty(.true.)
       this%serverthread_done_msgs(:) = .false.
 
@@ -430,7 +430,7 @@ contains
            _VERIFY(ierror)
         endif
         call f_d_ms(collection_counter)%serialize(this%buffers(back_local_rank+1)%buffer)
-        call f_d_ms(collection_counter)%destroy(_RC)
+        call f_d_ms(collection_counter)%destroy(_rc)
         msg_size= size(this%buffers(back_local_rank+1)%buffer)
         call Mpi_send(msg_size,1, MPI_INTEGER, this%back_ranks(back_local_rank+1), &
              this%back_ranks(back_local_rank+1), this%server_comm, ierror)
@@ -457,9 +457,9 @@ contains
      this%serverthread_done_msgs(:) = .false.
 
      if ( this%I_am_back_root ) then
-        call start_back_captain(_RC)
+        call start_back_captain(_rc)
      else
-        call start_back_writers(_RC)
+        call start_back_writers(_rc)
      endif
 
      _RETURN(_SUCCESS)
@@ -857,11 +857,11 @@ contains
             class is (AbstractDataMessage)
                filename =q%file_name
                call file_timer%start()
-               call thread_ptr%put_dataToFile(q, address, _RC)
+               call thread_ptr%put_dataToFile(q, address, _rc)
                call file_timer%stop()
             end select
             call msg_iter%next()
-            call array_ptr%destroy(_RC)
+            call array_ptr%destroy(_rc)
             call vars_map%erase(var_iter)
          enddo
          msg_iter = msg_map%begin()

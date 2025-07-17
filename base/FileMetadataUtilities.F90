@@ -64,12 +64,12 @@ module MAPL_FileMetadataUtilsMod
       character(:), allocatable :: fname
       type(Variable), pointer :: var
 
-      fname = this%get_file_name(_RC)
-      var => this%get_variable(var_name,_RC)
+      fname = this%get_file_name(_rc)
+      var => this%get_variable(var_name,_rc)
       _ASSERT(associated(var),"no variable named "//var_name//" in "//fname)
       ! check _FillValue, we could do more, not sure what to do here like also check for missing_value ...
       if (this%var_has_attr(var_name,"_FillValue")) then
-         missing_value = this%get_var_attr_real32(var_name,"_FillValue",_RC)
+         missing_value = this%get_var_attr_real32(var_name,"_FillValue",_rc)
       end if
 
       _RETURN(_SUCCESS)
@@ -84,8 +84,8 @@ module MAPL_FileMetadataUtilsMod
       character(:), allocatable :: fname
       type(Variable), pointer :: var
 
-      fname = this%get_file_name(_RC)
-      var => this%get_variable(var_name,_RC)
+      fname = this%get_file_name(_rc)
+      var => this%get_variable(var_name,_rc)
       _ASSERT(associated(var),"no variable named "//var_name//" in "//fname)
       var_has_missing_value = var%is_attribute_present("_FillValue")
 
@@ -102,8 +102,8 @@ module MAPL_FileMetadataUtilsMod
       character(:), allocatable :: fname
       type(Variable), pointer :: var
 
-      fname = this%get_file_name(_RC)
-      var => this%get_variable(var_name,_RC)
+      fname = this%get_file_name(_rc)
+      var => this%get_variable(var_name,_rc)
       _ASSERT(associated(var),"no variable named "//var_name//" in "//fname)
       var_has_attr = var%is_attribute_present(attr_name)
       _RETURN(_SUCCESS)
@@ -120,8 +120,8 @@ module MAPL_FileMetadataUtilsMod
       character(:), allocatable :: fname
       type(Variable), pointer :: var
 
-      fname = this%get_file_name(_RC)
-      var => this%get_variable(var_name,_RC)
+      fname = this%get_file_name(_rc)
+      var => this%get_variable(var_name,_rc)
       _ASSERT(associated(var),"no variable named "//var_name//" in "//fname)
       attr_real32 = var%get_attribute_real32(attr_name, rc=status)
       _ASSERT(status == _SUCCESS, 'failed to get attribute named '//attr_name//' in '//var_name//' in '//fname)
@@ -140,8 +140,8 @@ module MAPL_FileMetadataUtilsMod
       character(:), allocatable :: fname
       type(Variable), pointer :: var
 
-      fname = this%get_file_name(_RC)
-      var => this%get_variable(var_name,_RC)
+      fname = this%get_file_name(_rc)
+      var => this%get_variable(var_name,_rc)
       _ASSERT(associated(var),"no variable named "//var_name//" in "//fname)
       attr_real64 = var%get_attribute_real64(attr_name, rc=status)
       _ASSERT(status == _SUCCESS, 'failed to get attribute named '//attr_name//' in '//var_name//' in '//fname)
@@ -160,8 +160,8 @@ module MAPL_FileMetadataUtilsMod
       character(:), allocatable :: fname
       type(Variable), pointer :: var
 
-      fname = this%get_file_name(_RC)
-      var => this%get_variable(var_name,_RC)
+      fname = this%get_file_name(_rc)
+      var => this%get_variable(var_name,_rc)
       _ASSERT(associated(var),"no variable named "//var_name//" in "//fname)
       attr_int32 = var%get_attribute_int32(attr_name, rc=status)
       _ASSERT(status == _SUCCESS, 'failed to get attribute named '//attr_name//' in '//var_name//' in '//fname)
@@ -180,8 +180,8 @@ module MAPL_FileMetadataUtilsMod
       character(:), allocatable :: fname
       type(Variable), pointer :: var
 
-      fname = this%get_file_name(_RC)
-      var => this%get_variable(var_name,_RC)
+      fname = this%get_file_name(_rc)
+      var => this%get_variable(var_name,_rc)
       _ASSERT(associated(var),"no variable named "//var_name//" in "//fname)
       attr_int64 = var%get_attribute_int64(attr_name, rc=status)
       _ASSERT(status == _SUCCESS, 'failed to get attribute named '//attr_name//' in '//var_name//' in '//fname)
@@ -200,8 +200,8 @@ module MAPL_FileMetadataUtilsMod
       character(:), allocatable :: fname
       type(Variable), pointer :: var
 
-      fname = this%get_file_name(_RC)
-      var => this%get_variable(var_name,_RC)
+      fname = this%get_file_name(_rc)
+      var => this%get_variable(var_name,_rc)
       _ASSERT(associated(var),"no variable named "//var_name//" in "//fname)
       attr_string = var%get_attribute_string(attr_name, rc=status)
       _ASSERT(status == _SUCCESS, 'failed to get attribute named '//attr_name//' in '//var_name//' in '//fname)
@@ -242,7 +242,7 @@ module MAPL_FileMetadataUtilsMod
       real(REAL64), allocatable :: tr_r64(:)
       type(ESMF_TimeInterval) :: tint
 
-      fname = this%get_file_name(_RC)
+      fname = this%get_file_name(_rc)
       var => this%get_coordinate_variable('time',rc=status)
       _VERIFY(status)
       attr => var%get_attribute('units')
@@ -413,7 +413,7 @@ module MAPL_FileMetadataUtilsMod
       logical :: isPresent
       integer :: status
     
-      fname = this%get_file_name(_RC)
+      fname = this%get_file_name(_rc)
       var => this%get_variable(var_name,rc=status)
       _VERIFY(status)
       isPresent = var%is_attribute_present(trim(attr_name))
@@ -452,7 +452,7 @@ module MAPL_FileMetadataUtilsMod
       class(*), pointer :: coordUnitPtr
       class(*), pointer :: ptr(:)
  
-      fname = this%get_file_name(_RC)
+      fname = this%get_file_name(_rc)
       var => this%get_coordinate_variable(trim(coordinate_name),rc=status)
       _VERIFY(status)
    

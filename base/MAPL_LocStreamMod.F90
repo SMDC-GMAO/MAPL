@@ -405,7 +405,7 @@ contains
 
 ! Use some heuristics to determine filetype (choices are BINARY and ASCII)
 !------------------------------------------------------------------------
-    call MAPL_NCIOGetFileType(FILENAME, filetype, _RC)
+    call MAPL_NCIOGetFileType(FILENAME, filetype, _rc)
 
     isnc4   = (filetype == MAPL_FILETYPE_NC4)
     isascii = (filetype == MAPL_FILETYPE_TXT)
@@ -417,7 +417,7 @@ contains
 
        if (isnc4) then
           if (MAPL_AM_I_root()) then
-            call MAPL_ReadTilingNC4(FILENAME, GridName=GridNames, IM=IMs, JM=JMs, N_Grids=N_Grids, N_PfafCat=N_PfafCat, AVR=AVR, _RC)
+            call MAPL_ReadTilingNC4(FILENAME, GridName=GridNames, IM=IMs, JM=JMs, N_Grids=N_Grids, N_PfafCat=N_PfafCat, AVR=AVR, _rc)
             NT = size(AVR,1)
           endif
           call MAPL_CommsBcast(layout, NT,        1,    MAPL_Root, status)
@@ -440,7 +440,7 @@ contains
        endif
 
        if (isascii) then
-          call MAPL_ReadTilingASCII(layout, FILENAME, GridNames, NT, IMs, JMs, N_Grids, N_PfafCat, AVR, _RC)
+          call MAPL_ReadTilingASCII(layout, FILENAME, GridNames, NT, IMs, JMs, N_Grids, N_PfafCat, AVR, _rc)
        endif
 
        STREAM%N_GRIDS = N_Grids

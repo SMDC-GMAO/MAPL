@@ -235,9 +235,9 @@ contains
     endif
 
     if(     index(EASELabel,'EASEv2') /=0) then
-       call easeV2_inverse(grid,r,s,lat,lon, _RC)
+       call easeV2_inverse(grid,r,s,lat,lon, _rc)
     else if(index(EASELabel,'EASEv1') /=0) then
-       call easeV1_inverse(grid,r,s,lat,lon, _RC)
+       call easeV1_inverse(grid,r,s,lat,lon, _rc)
     else
        _FAIL("MAPL_ease_inverse(): unknown grid version: "//trim(EASELabel)//"  STOPPING.")
     endif
@@ -283,13 +283,13 @@ contains
 
     if(     index(EASELabel,'EASEv2') /=0) then
 
-       call easeV2_get_params(grid, map_scale_m, cols, rows, r0, s0, _RC)
+       call easeV2_get_params(grid, map_scale_m, cols, rows, r0, s0, _rc)
 
        if(present(cell_area)) cell_area = map_scale_m**2
 
     else if(index(EASELabel,'EASEv1') /=0) then
 
-       call easeV1_get_params(grid, CELL_km, cols, rows, r0, s0, Rg, _RC)
+       call easeV1_get_params(grid, CELL_km, cols, rows, r0, s0, Rg, _rc)
 
        if(present(cell_area)) cell_area = CELL_km**2 * 1000. * 1000.
 
@@ -301,8 +301,8 @@ contains
     !
     ! recall that EASE grid indexing is zero-based
 
-    if (present(ll_lat))  call MAPL_ease_inverse(EASElabel, 0., rows-0.5, ll_lat, tmplon, _RC)
-    if (present(ur_lat))  call MAPL_ease_inverse(EASElabel, 0.,     -0.5, ur_lat, tmplon, _RC)
+    if (present(ll_lat))  call MAPL_ease_inverse(EASElabel, 0., rows-0.5, ll_lat, tmplon, _rc)
+    if (present(ur_lat))  call MAPL_ease_inverse(EASElabel, 0.,     -0.5, ur_lat, tmplon, _rc)
 
     if (present(ll_lon))  ll_lon = -180.
     if (present(ur_lon))  ur_lon =  180.
@@ -350,7 +350,7 @@ contains
     real(kind=REAL64), parameter :: PI = easeV1_PI
     ! ---------------------------------------------------------------------
 
-    call easeV1_get_params( grid, CELL_km, cols, rows, r0, s0, Rg, _RC)
+    call easeV1_get_params( grid, CELL_km, cols, rows, r0, s0, Rg, _rc)
 
     phi = lat*PI/180.   ! convert from degree to radians
     lam = lon*PI/180.   ! convert from degree to radians
@@ -414,7 +414,7 @@ contains
 
     ! ---------------------------------------------------------------------
 
-    call easeV1_get_params( grid, CELL_km, cols, rows, r0, s0, Rg, _RC)
+    call easeV1_get_params( grid, CELL_km, cols, rows, r0, s0, Rg, _rc)
 
     x = r - r0
     y = -(s - s0)
@@ -599,7 +599,7 @@ contains
 
     ! ---------------------------------------------------------------------
 
-    call easeV2_get_params( grid, map_scale_m, cols, rows, r0, s0, _RC)
+    call easeV2_get_params( grid, map_scale_m, cols, rows, r0, s0, _rc)
 
     epsilon = 1.e-6
     dlon = lon
@@ -681,7 +681,7 @@ contains
 
     ! ---------------------------------------------------------------------
 
-    call easeV2_get_params( grid, map_scale_m, cols, rows, r0, s0, _RC)
+    call easeV2_get_params( grid, map_scale_m, cols, rows, r0, s0, _rc)
 
     x =  (r - r0)*map_scale_m
     y = -(s - s0)*map_scale_m

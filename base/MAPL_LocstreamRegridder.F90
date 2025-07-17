@@ -55,8 +55,8 @@ contains
       dst_field = ESMF_FieldCreate(locstream,typekind=ESMF_TYPEKIND_R4,gridToFieldMap=[1],rc=status)
       _VERIFY(status)
 
-      call ESMF_FieldGet(src_field, localDE=0, farrayPtr=pt2d, _RC)
-      call ESMF_FieldGet(dst_field, localDE=0, farrayPtr=pt1d, _RC)
+      call ESMF_FieldGet(src_field, localDE=0, farrayPtr=pt2d, _rc)
+      call ESMF_FieldGet(dst_field, localDE=0, farrayPtr=pt1d, _rc)
       pt2d = 0.0
       pt1d = 0.0
 
@@ -152,8 +152,8 @@ contains
      integer, optional, intent(out) :: rc     
      integer :: status
      
-     call ESMF_RouteHandleDestroy(this%route_handle, noGarbage=.true., _RC)
-     call ESMF_LocStreamDestroy (this%locstream, noGarbage=.true., _RC)
+     call ESMF_RouteHandleDestroy(this%route_handle, noGarbage=.true., _rc)
+     call ESMF_LocStreamDestroy (this%locstream, noGarbage=.true., _rc)
       
      _RETURN(_SUCCESS)
      

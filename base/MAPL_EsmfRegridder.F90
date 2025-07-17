@@ -1465,7 +1465,7 @@ contains
         compute_transpose = IAND(spec%hints,REGRID_HINT_COMPUTE_TRANSPOSE) /= 0
 
         if (file_weights) then
-           rh_file = generate_rh_name(spec%grid_in,spec%grid_out,spec%regrid_method,_RC)
+           rh_file = generate_rh_name(spec%grid_in,spec%grid_out,spec%regrid_method,_rc)
            rh_trans_file = "transpose_"//rh_file
            inquire(file=rh_file,exist=rh_file_exists)
         else
@@ -1473,10 +1473,10 @@ contains
         end if
         if (rh_file_exists) then
            call lgr%info('Reading weight file: %a', trim(rh_file))
-           route_handle = ESMF_RouteHandleCreate(rh_file,_RC)
+           route_handle = ESMF_RouteHandleCreate(rh_file,_rc)
            call route_handles%insert(spec, route_handle)
            if (compute_transpose) then
-              transpose_route_handle = ESMF_RouteHandleCreate(rh_trans_file,_RC)
+              transpose_route_handle = ESMF_RouteHandleCreate(rh_trans_file,_rc)
               call transpose_route_handles%insert(spec, transpose_route_handle)
            end if
         else
@@ -1511,13 +1511,13 @@ contains
               end if
            end if
            call ESMF_GridGetItem(spec%grid_out,itemflag=ESMF_GRIDITEM_MASK, &
-           staggerloc=ESMF_STAGGERLOC_CENTER, isPresent = has_mask, _RC)
-           call ESMF_AttributeGet(spec%grid_out, name=MAPL_DESTINATIONMASK, isPresent=has_dstMaskValues, _RC)
+           staggerloc=ESMF_STAGGERLOC_CENTER, isPresent = has_mask, _rc)
+           call ESMF_AttributeGet(spec%grid_out, name=MAPL_DESTINATIONMASK, isPresent=has_dstMaskValues, _rc)
            if (has_dstMaskValues) then
               _ASSERT(has_mask, "masking destination values when no masks is present")
-              call ESMF_AttributeGet(spec%grid_out, name=MAPL_DESTINATIONMASK, itemcount=num_mask_values, _RC)
+              call ESMF_AttributeGet(spec%grid_out, name=MAPL_DESTINATIONMASK, itemcount=num_mask_values, _rc)
               allocate(dstMaskValues(num_mask_values), _STAT)
-              call ESMF_AttributeGet(spec%grid_out, name=MAPL_DESTINATIONMASK, valuelist=dstMaskValues, _RC)
+              call ESMF_AttributeGet(spec%grid_out, name=MAPL_DESTINATIONMASK, valuelist=dstMaskValues, _rc)
            end if
 
            counter = counter + 1
@@ -1598,10 +1598,10 @@ contains
            _VERIFY(status)
            if (file_weights) then
               call lgr%info('Writing weight file: %a', trim(rh_file))
-              call ESMF_RouteHandleWrite(route_handle,rh_file,_RC)
+              call ESMF_RouteHandleWrite(route_handle,rh_file,_rc)
               if (compute_transpose) then
                  call lgr%info('Writing transpose weight file: %a', trim(rh_trans_file))
-                 call ESMF_RouteHandleWrite(transpose_route_handle,rh_trans_file,_RC)
+                 call ESMF_RouteHandleWrite(transpose_route_handle,rh_trans_file,_rc)
               end if
            end if
         end if
@@ -1663,7 +1663,7 @@ contains
       integer, optional, intent(out) :: rc
       integer :: status
 
-      call this%destroy_route_handle(ESMF_TYPEKIND_R4, _RC)
+      call this%destroy_route_handle(ESMF_TYPEKIND_R4, _rc)
 
       _RETURN(_SUCCESS)
    end subroutine destroy
@@ -1696,7 +1696,7 @@ contains
 
      _ASSERT(route_handles%count(spec) == 1, 'Did not find this spec in route handle table.')
      route_handle = route_handles%at(spec)
-     call ESMF_RouteHandleDestroy(route_handle, noGarbage=.true.,_RC)
+     call ESMF_RouteHandleDestroy(route_handle, noGarbage=.true.,_rc)
      iter = route_handles%find(spec)
      call route_handles%erase(iter)
 
@@ -1704,7 +1704,7 @@ contains
      if (compute_transpose) then
         _ASSERT(transpose_route_handles%count(spec) == 1, 'Did not find this spec in route handle table.')
         route_handle = transpose_route_handles%at(spec)
-        call ESMF_RouteHandleDestroy(route_handle, noGarbage=.true., _RC)
+        call ESMF_RouteHandleDestroy(route_handle, noGarbage=.true., _rc)
         iter = transpose_route_handles%find(spec)
         call transpose_route_handles%erase(iter)
      end if
@@ -1727,7 +1727,7 @@ contains
       integer :: temp(3),layout(2)
       integer :: status
 
-      call MAPL_GridGet(grid_in,GlobalCellCountPerDim=temp,layout=layout,_RC)
+      call MAPL_GridGet(grid_in,GlobalCellCountPerDim=temp,layout=layout,_rc)
       im_in = temp(1)
       jm_in = temp(2)
       nx_in = layout(1)
@@ -1736,7 +1736,7 @@ contains
       write(cjm_in,'(I5.5)')jm_in
       write(cnx_in,'(I5.5)')nx_in
       write(cny_in,'(I5.5)')ny_in
-      call MAPL_GridGet(grid_out,GlobalCellCountPerDim=temp,layout=layout,_RC)
+      call MAPL_GridGet(grid_out,GlobalCellCountPerDim=temp,layout=layout,_rc)
       im_out = temp(1)
       jm_out = temp(2)
       nx_out = layout(1)

@@ -682,7 +682,7 @@ contains
       status=nf90_redef(this%ncid)
       !$omp end critical
       _VERIFY(status)
-      call this%def_variables(cf, varname=varname, _RC)
+      call this%def_variables(cf, varname=varname, _rc)
       !$omp critical
       status=nf90_enddef(this%ncid)
       !$omp end critical

@@ -360,17 +360,17 @@ contains
     TM0 = currTime
 
     call ESMF_AttributeGet(CC, name='ClockYetToAdvance', &
-         isPresent=isPresent, _RC)
+         isPresent=isPresent, _rc)
     if (isPresent) then
        call ESMF_AttributeGet(CC, name='ClockYetToAdvance', &
-            value=clockYetToAdvance, _RC)
+            value=clockYetToAdvance, _rc)
     else
        clockYetToAdvance = .false.
     endif
 
     globalOffset = 0
     if (clockYetToAdvance) then
-       call ESMF_TimeIntervalGet(TS, S=timeStep, _RC)
+       call ESMF_TimeIntervalGet(TS, S=timeStep, _rc)
        globalOffset = -timeStep
     end if
 

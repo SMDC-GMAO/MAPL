@@ -247,8 +247,8 @@ contains
           tdim = this%ntime
        end if
        call metadata%add_dimension('time',tdim)
-       v = this%define_time_variable(_RC)
-       call metadata%add_variable('time',v,_RC)
+       v = this%define_time_variable(_rc)
+       call metadata%add_variable('time',v,_rc)
     end if
     _RETURN(_SUCCESS)
 

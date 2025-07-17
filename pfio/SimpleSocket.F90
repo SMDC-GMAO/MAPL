@@ -100,12 +100,12 @@ contains
       type is (SimpleSocket)
          if (allocated(connection%msg)) deallocate(connection%msg)
          allocate(connection%msg , source = message)
-         call connection%msg%dispatch(this%visitor, _RC)
+         call connection%msg%dispatch(this%visitor, _rc)
       class default
          _FAIL("Simple should connect Simple")
       end select
       _RETURN(_SUCCESS)
-     ! call message%dispatch(this%visitor,_RC)
+     ! call message%dispatch(this%visitor,_rc)
    end subroutine send
 
    function put(this, request_id, local_reference, rc) result(handle)

@@ -99,7 +99,7 @@ contains
 
             thread_ptr=>this%threads%at(i)
             !handle the message
-            call thread_ptr%run(_RC)
+            call thread_ptr%run(_rc)
             !delete the thread object if it terminates
             if(thread_ptr%do_terminate()) then
                mask(i) = .true.

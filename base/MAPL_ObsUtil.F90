@@ -143,12 +143,12 @@ contains
     integer :: status
 
     _FAIL ('DO not use get_filename_from_template')
-    call ESMF_time_to_two_integer(time, itime, _RC)
+    call ESMF_time_to_two_integer(time, itime, _rc)
     print*, 'two integer time, itime(:)', itime(1:2)
     nymd = itime(1)
     nhms = itime(2)
     call fill_grads_template ( filename, file_template, &
-         experiment_id='', nymd=nymd, nhms=nhms, _RC )
+         experiment_id='', nymd=nymd, nhms=nhms, _rc )
     print*, 'ck: obsFile_T=', trim(filename)
     _RETURN(ESMF_SUCCESS)
 
@@ -176,7 +176,7 @@ contains
     do i=1, len
        int_time = times_R8_1d(i)
        call convert_NetCDF_DateTime_to_ESMF(int_time, datetime_units, interval, &
-            time0, time=time1, time_unit=tunit, _RC)
+            time0, time=time1, time_unit=tunit, _rc)
        times_esmf_1d(i) = time1
     enddo
 
@@ -204,19 +204,19 @@ contains
     len = size (times_esmf_1d)
     int_time = 0
     call convert_NetCDF_DateTime_to_ESMF(int_time, datetime_units, interval, &
-         time0, time=time1, time_unit=tunit, _RC)
+         time0, time=time1, time_unit=tunit, _rc)
 
     do i=1, len
        t_interval = times_esmf_1d(i) - time0
        select case(trim(tunit))
        case ('days')
-          call ESMF_TimeIntervalGet(t_interval,d_r8=times_R8_1d(i),_RC)
+          call ESMF_TimeIntervalGet(t_interval,d_r8=times_R8_1d(i),_rc)
        case ('hours')
-          call ESMF_TimeIntervalGet(t_interval,h_r8=times_R8_1d(i),_RC)
+          call ESMF_TimeIntervalGet(t_interval,h_r8=times_R8_1d(i),_rc)
        case ('minutes')
-          call ESMF_TimeIntervalGet(t_interval,m_r8=times_R8_1d(i),_RC)
+          call ESMF_TimeIntervalGet(t_interval,m_r8=times_R8_1d(i),_rc)
        case ('seconds')
-          call ESMF_TimeIntervalGet(t_interval,s_r8=times_R8_1d(i),_RC)
+          call ESMF_TimeIntervalGet(t_interval,s_r8=times_R8_1d(i),_rc)
        case default
           _FAIL('illegal value for tunit: '//trim(tunit))
        end select
@@ -236,7 +236,7 @@ contains
     integer :: status
     character(len=ESMF_MAXSTR) :: string
 
-    call ESMF_timeget (time, timestring=string, _RC)
+    call ESMF_timeget (time, timestring=string, _rc)
     datetime_units = 'seconds'
     if (present(input_unit)) datetime_units = trim(input_unit)
     datetime_units = trim(datetime_units) // trim(string)
@@ -253,10 +253,10 @@ contains
     integer :: i,status,h,m,yp,mp,dp,s,ms,us,ns
     integer :: year,month,day
 
-    call ESMF_TimeGet(current_time,yy=year,mm=month,dd=day,_RC)
+    call ESMF_TimeGet(current_time,yy=year,mm=month,dd=day,_rc)
     do i=1,size(times_1d)
-       call ESMF_TimeGet(times_1d(i),yy=yp,mm=mp,dd=dp,h=h,m=m,s=s,ms=ms,us=us,ns=ns,_RC)
-       call ESMF_TimeSet(times_1d(i),yy=year,mm=month,dd=day,h=h,m=m,s=s,ms=ms,us=us,ns=ns,_RC)
+       call ESMF_TimeGet(times_1d(i),yy=yp,mm=mp,dd=dp,h=h,m=m,s=s,ms=ms,us=us,ns=ns,_rc)
+       call ESMF_TimeSet(times_1d(i),yy=year,mm=month,dd=day,h=h,m=m,s=s,ms=ms,us=us,ns=ns,_rc)
     enddo
     _RETURN(_SUCCESS)
   end subroutine reset_times_to_current_day
@@ -396,7 +396,7 @@ contains
     do i = 1, M
        filename = filenames(i)
        CALL get_ncfile_dimension(filename, nlon=nlon, nlat=nlat, &
-            key_lon=index_name_lon, key_lat=index_name_lat, _RC)
+            key_lon=index_name_lon, key_lat=index_name_lat, _rc)
        nlons(i)=nlon
        nlats(i)=nlat
        jx=jx+nlat
@@ -427,7 +427,7 @@ contains
           nlon = nlons(i)
           nlat = nlats(i)
           allocate (time_loc_R8(nlon, nlat))
-          call get_var_from_name_w_group (var_name_time, time_loc_R8, filename, _RC)
+          call get_var_from_name_w_group (var_name_time, time_loc_R8, filename, _rc)
 !!          write(6,*) 'af ith, filename', i, trim(filename)
 
           do j=1, nlat
@@ -472,11 +472,11 @@ contains
           !!write(6,'(2x,a)') 'time_loc_r8'
           !
           allocate (time_loc_R8(nlon, nlat))
-          call get_var_from_name_w_group (var_name_time, time_loc_R8, filename, _RC)
+          call get_var_from_name_w_group (var_name_time, time_loc_R8, filename, _rc)
           allocate (lon_loc(nlon, nlat))
-          call get_var_from_name_w_group (var_name_lon, lon_loc, filename, _RC)
+          call get_var_from_name_w_group (var_name_lon, lon_loc, filename, _rc)
           allocate (lat_loc(nlon, nlat))
-          call get_var_from_name_w_group (var_name_lat, lat_loc, filename, _RC)
+          call get_var_from_name_w_group (var_name_lat, lat_loc, filename, _rc)
           !
           do j=1, nlat
              !
@@ -518,13 +518,13 @@ contains
           nlat = nlats(i)
 
           if (present(var_name_time).AND.present(time)) then
-             call get_var_from_name_w_group (var_name_time, time(1:nlon,jx+1:jx+nlat), filename, _RC)
+             call get_var_from_name_w_group (var_name_time, time(1:nlon,jx+1:jx+nlat), filename, _rc)
           end if
           if (present(var_name_lon).AND.present(lon)) then
-             call get_var_from_name_w_group (var_name_lon, lon(1:nlon,jx+1:jx+nlat), filename, _RC)
+             call get_var_from_name_w_group (var_name_lon, lon(1:nlon,jx+1:jx+nlat), filename, _rc)
           end if
           if (present(var_name_lat).AND.present(lat)) then
-             call get_var_from_name_w_group (var_name_lat, lat(1:nlon,jx+1:jx+nlat), filename, _RC)
+             call get_var_from_name_w_group (var_name_lat, lat(1:nlon,jx+1:jx+nlat), filename, _rc)
           end if
 
           jx = jx + nlat
@@ -569,7 +569,7 @@ contains
     call ESMF_TimeIntervalSet(dT, s_r8=s, rc=status)
     time = obsfile_start_time + dT
 
-    call ESMF_time_to_two_integer(time, itime, _RC)
+    call ESMF_time_to_two_integer(time, itime, _rc)
     nymd = itime(1)
     nhms = itime(2)
 
@@ -579,7 +579,7 @@ contains
     j= index(file_template, '*')
     _ASSERT ( j==0 .OR. allow_wild_char, "* is not allowed in template")
     call fill_grads_template ( filename, file_template, &
-         experiment_id='', nymd=nymd, nhms=nhms, _RC )
+         experiment_id='', nymd=nymd, nhms=nhms, _rc )
     if (j==0) then
        ! exact file name
        inquire(file= trim(filename), EXIST = exist)
@@ -634,24 +634,24 @@ contains
     ! ncid1:  grp1
     ! ncid2:  grp2
     !
-    call check_nc_status(nf90_open(filename, NF90_NOWRITE, ncid), _RC)
+    call check_nc_status(nf90_open(filename, NF90_NOWRITE, ncid), _rc)
     ncid_final = ncid
     if ( found_group ) then
-       call check_nc_status(nf90_inq_ncid(ncid, grp1, ncid1), _RC)
+       call check_nc_status(nf90_inq_ncid(ncid, grp1, ncid1), _rc)
        ncid_final = ncid1
        if (j>0) then
-          call check_nc_status(nf90_inq_ncid(ncid1, grp2, ncid2), _RC)
+          call check_nc_status(nf90_inq_ncid(ncid1, grp2, ncid2), _rc)
           ncid_final = ncid2
        endif
     else
 !!       print*, 'no grp name'
     endif
 
-    call check_nc_status(nf90_inq_varid(ncid_final, short_name, varid), _RC)
+    call check_nc_status(nf90_inq_varid(ncid_final, short_name, varid), _rc)
 !!    write(6,*) 'ncid, short_name, varid', ncid, trim(short_name), varid
-    call check_nc_status(nf90_get_var(ncid_final, varid, var2d), _RC)
+    call check_nc_status(nf90_get_var(ncid_final, varid, var2d), _rc)
 
-    call check_nc_status(nf90_close(ncid), _RC)
+    call check_nc_status(nf90_close(ncid), _rc)
 
     _RETURN(_SUCCESS)
 
@@ -787,7 +787,7 @@ contains
     integer :: i, j, k
     integer :: status
 
-    union_platform = copy_platform_nckeys(a, _RC)
+    union_platform = copy_platform_nckeys(a, _rc)
     nfield = a%ngeoval + b%ngeoval
     allocate (tag(b%ngeoval))
 

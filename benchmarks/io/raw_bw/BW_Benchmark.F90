@@ -40,13 +40,13 @@ contains
       integer :: var_id
 
       if (this%file_type == BINARY_FILE) then
-         unit = open_bin_file(this%filename, _RC)
-         call write_bin_file(this%buffer, unit, _RC)
-         call delete_bin_file(this%filename, _RC)
+         unit = open_bin_file(this%filename, _rc)
+         call write_bin_file(this%buffer, unit, _rc)
+         call delete_bin_file(this%filename, _rc)
       else if (this%file_type == NETCDF_FILE) then
-         unit = open_netcdf_file(this%filename, this%buffer, var_id, _RC)
-         call write_netcdf_file(this%buffer, unit, var_id, _RC)
-         call delete_netcdf_file(this%filename, _RC)
+         unit = open_netcdf_file(this%filename, this%buffer, var_id, _rc)
+         call write_netcdf_file(this%buffer, unit, var_id, _rc)
+         call delete_netcdf_file(this%filename, _rc)
       end if
 
       _RETURN(_SUCCESS)

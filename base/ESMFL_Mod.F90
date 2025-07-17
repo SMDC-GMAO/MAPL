@@ -4338,18 +4338,18 @@ CONTAINS
      integer :: my_mpi_comm, local_undef, global_undef,grid_size(3),rank
      real, pointer :: ptr2d(:,:), ptr3d(:,:,:)
 
-     call ESMF_VMGetCurrent(VM,_RC)
-     call ESMF_VMGet(VM,mpiCommunicator=my_mpi_comm,_RC)
-     call ESMF_FieldGet(field,rank=rank,grid=grid,_RC)
-     call MAPL_GridGet(grid,globalcellcountperdim=grid_size,_RC)
+     call ESMF_VMGetCurrent(VM,_rc)
+     call ESMF_VMGet(VM,mpiCommunicator=my_mpi_comm,_rc)
+     call ESMF_FieldGet(field,rank=rank,grid=grid,_rc)
+     call MAPL_GridGet(grid,globalcellcountperdim=grid_size,_rc)
      if (rank ==2) then
-        call ESMF_FieldGet(field,0,farrayPtr=ptr2d,_RC)
+        call ESMF_FieldGet(field,0,farrayPtr=ptr2d,_rc)
         local_undef = count(ptr2d==MAPL_UNDEF)
         call MPI_AllReduce(local_undef,global_undef,1,MPI_INTEGER,MPI_SUM,my_mpi_comm,status)
         _VERIFY(status)
         field_is_undefined = global_undef == (grid_size(1)*grid_size(2))
      else if (rank ==3) then
-        call ESMF_FieldGet(field,0,farrayPtr=ptr3d,_RC)
+        call ESMF_FieldGet(field,0,farrayPtr=ptr3d,_rc)
         local_undef = count(ptr3d==MAPL_UNDEF)
         call MPI_AllReduce(local_undef,global_undef,1,MPI_INTEGER,MPI_SUM,my_mpi_comm,status)
         _VERIFY(status)

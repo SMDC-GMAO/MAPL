@@ -1102,11 +1102,11 @@ module MAPL_CommsMod
        if (RootOnly) then
           _RETURN(ESMF_SUCCESS)
        end if
-       call MAPL_CommsBcast(vm, DATA=Data, N=N, ROOT=Root, _RC)
+       call MAPL_CommsBcast(vm, DATA=Data, N=N, ROOT=Root, _rc)
     else
-       call MAPL_SyncSharedMemory(_RC)
-       call MAPL_BroadcastToNodes(Data, N=N, ROOT=Root, _RC)
-       call MAPL_SyncSharedMemory(_RC)
+       call MAPL_SyncSharedMemory(_rc)
+       call MAPL_BroadcastToNodes(Data, N=N, ROOT=Root, _rc)
+       call MAPL_SyncSharedMemory(_rc)
     endif
 
     _RETURN(ESMF_SUCCESS)
@@ -1159,11 +1159,11 @@ module MAPL_CommsMod
        if (RootOnly) then
           _RETURN(ESMF_SUCCESS)
        end if
-       call MAPL_CommsBcast(vm, DATA=Data, N=N, ROOT=Root, _RC)
+       call MAPL_CommsBcast(vm, DATA=Data, N=N, ROOT=Root, _rc)
     else
-       call MAPL_SyncSharedMemory(_RC)
-       call MAPL_BroadcastToNodes(Data, N=N, ROOT=Root, _RC)
-       call MAPL_SyncSharedMemory(_RC)
+       call MAPL_SyncSharedMemory(_rc)
+       call MAPL_BroadcastToNodes(Data, N=N, ROOT=Root, _rc)
+       call MAPL_SyncSharedMemory(_rc)
     endif
 
     _RETURN(ESMF_SUCCESS)
@@ -1183,11 +1183,11 @@ module MAPL_CommsMod
        if (RootOnly) then
           _RETURN(ESMF_SUCCESS)
        end if
-       call MAPL_CommsBcast(vm, DATA=Data, N=N, ROOT=Root, _RC)
+       call MAPL_CommsBcast(vm, DATA=Data, N=N, ROOT=Root, _rc)
     else
-       call MAPL_SyncSharedMemory(_RC)
-       call MAPL_BroadcastToNodes(Data, N=N, ROOT=Root, _RC)
-       call MAPL_SyncSharedMemory(_RC)
+       call MAPL_SyncSharedMemory(_rc)
+       call MAPL_BroadcastToNodes(Data, N=N, ROOT=Root, _rc)
+       call MAPL_SyncSharedMemory(_rc)
     endif
 
     _RETURN(ESMF_SUCCESS)

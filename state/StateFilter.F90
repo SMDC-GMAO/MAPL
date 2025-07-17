@@ -36,39 +36,39 @@ module MAPL_StateFilter
       type(ESMF_TYPEKIND_FLAG) :: tk
       type(StateMask) :: mask
 
-      call ESMF_StateGet(state, itemName, old_field, _RC)
-      call ESMF_FieldGet(old_field, typeKind=tk, rank=rank, _RC) 
+      call ESMF_StateGet(state, itemName, old_field, _rc)
+      call ESMF_FieldGet(old_field, typeKind=tk, rank=rank, _rc) 
       _ASSERT(tk==ESMF_TYPEKIND_R4,"wrong typekind when call MAPL_StateFilter")
       _ASSERT(rank==2,"wrong rank when call MAPL_StateFilter")
 
-      call ESMF_FieldGet(old_field, 0, farrayPtr=ptr2d_old, _RC)
+      call ESMF_FieldGet(old_field, 0, farrayPtr=ptr2d_old, _rc)
       allocate(array( lbound(ptr2d_old,1):ubound(ptr2d_old,1) , lbound(ptr2d_old,2):ubound(ptr2d_old,2) ),  _STAT) 
       array = ptr2d_old
  
-      call ESMF_ConfigFindLabel(config, "FILTER"//separator//trim(itemName)//":", isPresent=name_Present, _RC)
+      call ESMF_ConfigFindLabel(config, "FILTER"//separator//trim(itemName)//":", isPresent=name_Present, _rc)
       if (name_Present) then
-         call ESMF_ConfigGetAttribute(config, filter_expression, label="FILTER"//separator//trim(itemName)//":", _RC)
+         call ESMF_ConfigGetAttribute(config, filter_expression, label="FILTER"//separator//trim(itemName)//":", _rc)
       else
-         call ESMF_ConfigFindLabel(config, "FILTER"//separator//var_placeholder//":", isPresent=default_Present, _RC)
+         call ESMF_ConfigFindLabel(config, "FILTER"//separator//var_placeholder//":", isPresent=default_Present, _rc)
          _RETURN_UNLESS(default_present)
-         call ESMF_ConfigGetAttribute(config, filter_expression, label="FILTER"//separator//var_placeholder//":", _RC)
+         call ESMF_ConfigGetAttribute(config, filter_expression, label="FILTER"//separator//var_placeholder//":", _rc)
       end if
 
-      call FieldClone(old_field, new_field, _RC)
-      call ESMF_FieldGet(old_field, name=field_name, _RC)
-      call ESMF_FieldGet(new_field, 0, farrayPtr=ptr2d_new, _RC)
+      call FieldClone(old_field, new_field, _rc)
+      call ESMF_FieldGet(old_field, name=field_name, _rc)
+      call ESMF_FieldGet(new_field, 0, farrayPtr=ptr2d_new, _rc)
       ptr2d_new = ptr2d_old
 
       processed_expression = substitute_name(filter_expression, field_name) 
       if (index(processed_expression,"mask") > 0) then
          mask = StateMask(processed_expression)
-         call mask%evaluate_mask(state, new_field, _RC)
+         call mask%evaluate_mask(state, new_field, _rc)
       else
-         call MAPL_StateEval(state, processed_expression, new_field, _RC)
+         call MAPL_StateEval(state, processed_expression, new_field, _rc)
       end if
       array = ptr2d_new
 
-      call ESMF_FieldDestroy(new_field, noGarbage=.true., _RC)
+      call ESMF_FieldDestroy(new_field, noGarbage=.true., _rc)
       _RETURN(_SUCCESS)
 
    end subroutine StateFilter_R4_2D
@@ -89,39 +89,39 @@ module MAPL_StateFilter
       type(ESMF_TYPEKIND_FLAG) :: tk
       type(StateMask) :: mask
 
-      call ESMF_StateGet(state, itemName, old_field, _RC)
-      call ESMF_FieldGet(old_field, typeKind=tk, rank=rank, _RC) 
+      call ESMF_StateGet(state, itemName, old_field, _rc)
+      call ESMF_FieldGet(old_field, typeKind=tk, rank=rank, _rc) 
       _ASSERT(tk==ESMF_TYPEKIND_R4,"wrong typekind when call MAPL_StateFilter")
       _ASSERT(rank==3,"wrong rank when call MAPL_StateFilter")
 
-      call ESMF_FieldGet(old_field, 0, farrayPtr=ptr3d_old, _RC)
+      call ESMF_FieldGet(old_field, 0, farrayPtr=ptr3d_old, _rc)
       allocate(array( lbound(ptr3d_old,1):ubound(ptr3d_old,1) , lbound(ptr3d_old,2):ubound(ptr3d_old,2), lbound(ptr3d_old,3):ubound(ptr3d_old,3) ),  _STAT) 
       array = ptr3d_old
  
-      call ESMF_ConfigFindLabel(config, "FILTER"//separator//trim(itemName)//":", isPresent=name_Present, _RC)
+      call ESMF_ConfigFindLabel(config, "FILTER"//separator//trim(itemName)//":", isPresent=name_Present, _rc)
       if (name_Present) then
-         call ESMF_ConfigGetAttribute(config, filter_expression, label="FILTER"//separator//trim(itemName)//":", _RC)
+         call ESMF_ConfigGetAttribute(config, filter_expression, label="FILTER"//separator//trim(itemName)//":", _rc)
       else
-         call ESMF_ConfigFindLabel(config, "FILTER"//separator//var_placeholder//":", isPresent=default_Present, _RC)
+         call ESMF_ConfigFindLabel(config, "FILTER"//separator//var_placeholder//":", isPresent=default_Present, _rc)
          _RETURN_UNLESS(default_present)
-         call ESMF_ConfigGetAttribute(config, filter_expression, label="FILTER"//separator//var_placeholder//":", _RC)
+         call ESMF_ConfigGetAttribute(config, filter_expression, label="FILTER"//separator//var_placeholder//":", _rc)
       end if
 
-      call FieldClone(old_field, new_field, _RC)
-      call ESMF_FieldGet(old_field, name=field_name, _RC)
-      call ESMF_FieldGet(new_field, 0, farrayPtr=ptr3d_new, _RC)
+      call FieldClone(old_field, new_field, _rc)
+      call ESMF_FieldGet(old_field, name=field_name, _rc)
+      call ESMF_FieldGet(new_field, 0, farrayPtr=ptr3d_new, _rc)
       ptr3d_new = ptr3d_old
 
       processed_expression = substitute_name(filter_expression, field_name) 
       if (index(processed_expression,"mask") > 0) then
          mask = StateMask(processed_expression)
-         call mask%evaluate_mask(state, new_field, _RC)
+         call mask%evaluate_mask(state, new_field, _rc)
       else
-         call MAPL_StateEval(state, processed_expression, new_field, _RC)
+         call MAPL_StateEval(state, processed_expression, new_field, _rc)
       end if
       array = ptr3d_new
 
-      call ESMF_FieldDestroy(new_field, noGarbage=.true., _RC)
+      call ESMF_FieldDestroy(new_field, noGarbage=.true., _rc)
       _RETURN(_SUCCESS)
 
    end subroutine StateFilter_R4_3d

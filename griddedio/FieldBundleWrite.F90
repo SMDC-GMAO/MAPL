@@ -122,7 +122,7 @@ module MAPL_ESMFFieldBundleWrite
 
          call this%cfio%bundlepost(this%file_name,oClients=o_clients,rc=status)
          _VERIFY(status)
-         call o_Clients%done_collective_stage(_RC)
+         call o_Clients%done_collective_stage(_rc)
          call o_Clients%wait()
          _RETURN(_SUCCESS)
 
@@ -136,7 +136,7 @@ module MAPL_ESMFFieldBundleWrite
          integer :: status
 
          this%file_name=filename
-         call this%cfio%modifyTime(oClients=o_clients,_RC)
+         call this%cfio%modifyTime(oClients=o_clients,_rc)
          _RETURN(_SUCCESS)
       end subroutine start_new_file
 

@@ -44,8 +44,8 @@
 #  ifdef _FILE_
 #    undef _FILE_
 #  endif
-#  ifdef _RC
-#    undef _RC
+#  ifdef _rc
+#    undef _rc
 #  endif
 #  ifdef _USERRC
 #    undef _USERRC
@@ -111,7 +111,7 @@
 #    endif
 #    define _RC_(rc,status) rc=status);_VERIFY(status
 #    define _USERRC userRC=user_status, rc=status); _VERIFY(status); _VERIFY(user_status
-#    define _RC _RC_(rc,status)
+#    define _rc _RC_(rc,status)
 
 #    define _STAT _RC_(stat,status)
 #if defined(SUPPORT_FOR_MPI_IERROR_KEYWORD)

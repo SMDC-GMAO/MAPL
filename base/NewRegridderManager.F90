@@ -136,7 +136,7 @@ contains
       iter = this%prototypes%begin()
       do while (iter /= this%prototypes%end())
          prototype => iter%get()
-         supports = prototype%supports(spec,_RC)
+         supports = prototype%supports(spec,_rc)
          if (supports) then
             _RETURN(_SUCCESS)
          end if

@@ -2220,7 +2220,7 @@ contains
              _VERIFY(STATUS)
           end if
        else
-          call MAPL_AllocNodeArray(vr,[IM_WORLD],_RC)
+          call MAPL_AllocNodeArray(vr,[IM_WORLD],_rc)
        end if
 
        if (amIRoot) then
@@ -3035,12 +3035,12 @@ contains
       endif
 
       restore_export = .false.
-      call ESMF_AttributeGet(bundle, name='MAPL_RestoreExport', isPresent=isPresent, _RC)
+      call ESMF_AttributeGet(bundle, name='MAPL_RestoreExport', isPresent=isPresent, _rc)
       if (isPresent) then
-         call ESMF_AttributeGet(bundle, name='MAPL_RestoreExport', value=restore_export, _RC)
+         call ESMF_AttributeGet(bundle, name='MAPL_RestoreExport', value=restore_export, _rc)
       end if
       if (restore_export) then
-         call MAPL_AllocateCoupling(field, _RC)
+         call MAPL_AllocateCoupling(field, _rc)
       end if
 
       call MAPL_FieldReadNCPar(formatter, FieldName, field, arrdes=arrdes, HomePE=mask, rc=status)
@@ -3227,9 +3227,9 @@ contains
              skipReading = (RST == MAPL_RestartSkip .or.   &
                             RST == MAPL_RestartSkipInitial)
 
-             call ESMF_AttributeGet(state, name='MAPL_TestFramework', isPresent=isPresent, _RC)
+             call ESMF_AttributeGet(state, name='MAPL_TestFramework', isPresent=isPresent, _rc)
              if (isPresent) then
-                call ESMF_AttributeGet(state, name='MAPL_TestFramework', value=is_test_framework, _RC)
+                call ESMF_AttributeGet(state, name='MAPL_TestFramework', value=is_test_framework, _rc)
                 if (is_test_framework) skipReading = .false.
              end if
 
@@ -3257,9 +3257,9 @@ contains
                end if
                skipReading = (RST == MAPL_RestartSkip)
 
-               call ESMF_AttributeGet(state, name='MAPL_TestFramework', isPresent=isPresent, _RC)
+               call ESMF_AttributeGet(state, name='MAPL_TestFramework', isPresent=isPresent, _rc)
                if (isPresent) then
-                  call ESMF_AttributeGet(state, name='MAPL_TestFramework', value=is_test_framework, _RC)
+                  call ESMF_AttributeGet(state, name='MAPL_TestFramework', value=is_test_framework, _rc)
                   if (is_test_framework) skipReading = .false.
                end if
 
@@ -3295,9 +3295,9 @@ contains
                              value=MAPL_RestartBootstrap, rc=status)
                   else
                      restore_export = .false.
-                     call ESMF_AttributeGet(state, name='MAPL_RestoreExport', isPresent=isPresent, _RC)
+                     call ESMF_AttributeGet(state, name='MAPL_RestoreExport', isPresent=isPresent, _rc)
                      if (isPresent) then
-                        call ESMF_AttributeGet(state, name='MAPL_RestoreExport', value=restore_export, _RC)
+                        call ESMF_AttributeGet(state, name='MAPL_RestoreExport', value=restore_export, _rc)
                      end if
                      if (restore_export) then
                         if (mapl_am_i_root()) print*, trim(fieldName), " not found in ", trim(filename), ". Skipping reading..."
@@ -3329,9 +3329,9 @@ contains
              end if
              skipReading = (RST == MAPL_RestartSkip)
 
-             call ESMF_AttributeGet(state, name='MAPL_TestFramework', isPresent=isPresent, _RC)
+             call ESMF_AttributeGet(state, name='MAPL_TestFramework', isPresent=isPresent, _rc)
              if (isPresent) then
-                call ESMF_AttributeGet(state, name='MAPL_TestFramework', value=is_test_framework, _RC)
+                call ESMF_AttributeGet(state, name='MAPL_TestFramework', value=is_test_framework, _rc)
                 if (is_test_framework) skipReading = .false.
              end if
 
@@ -3344,9 +3344,9 @@ contains
                 skipReading = (DNA /= 0)
              end if
 
-             call ESMF_AttributeGet(state, name='MAPL_TestFramework', isPresent=isPresent, _RC)
+             call ESMF_AttributeGet(state, name='MAPL_TestFramework', isPresent=isPresent, _rc)
              if (isPresent) then
-                call ESMF_AttributeGet(state, name='MAPL_TestFramework', value=is_test_framework, _RC)
+                call ESMF_AttributeGet(state, name='MAPL_TestFramework', value=is_test_framework, _rc)
                 if (is_test_framework) skipReading = .false.
              end if
 
@@ -3372,9 +3372,9 @@ contains
                             value=MAPL_RestartBootstrap, rc=status)
                 else
                    restore_export = .false.
-                   call ESMF_AttributeGet(state, name='MAPL_RestoreExport', isPresent=isPresent, _RC)
+                   call ESMF_AttributeGet(state, name='MAPL_RestoreExport', isPresent=isPresent, _rc)
                    if (isPresent) then
-                      call ESMF_AttributeGet(state, name='MAPL_RestoreExport', value=restore_export, _RC)
+                      call ESMF_AttributeGet(state, name='MAPL_RestoreExport', value=restore_export, _rc)
                    end if
                    if (restore_export) then
                       if (mapl_am_i_root()) print*, trim(fieldName), " not found in ", trim(filename), ". Skipping reading..."
@@ -3392,10 +3392,10 @@ contains
 
     tile = arrdes%tile
 
-    call ESMF_AttributeGet(state, name='MAPL_RestoreExport', isPresent=isPresent, _RC)
+    call ESMF_AttributeGet(state, name='MAPL_RestoreExport', isPresent=isPresent, _rc)
     if (isPresent) then
-       call ESMF_AttributeGet(state, name='MAPL_RestoreExport', value=restore_export, _RC)
-       call ESMF_AttributeSet(bundle_read, name="MAPL_RestoreExport", value=restore_export, _RC)
+       call ESMF_AttributeGet(state, name='MAPL_RestoreExport', value=restore_export, _rc)
+       call ESMF_AttributeSet(bundle_read, name="MAPL_RestoreExport", value=restore_export, _rc)
     end if
     call MAPL_VarReadNCPar(Bundle_Read, arrdes, filename, rc=status)
     _VERIFY(STATUS)
@@ -4125,16 +4125,16 @@ contains
 
        enddo
 
-       call ESMF_AttributeGet(bundle, name='MAPL_GridCapture', isPresent=isPresent, _RC)
+       call ESMF_AttributeGet(bundle, name='MAPL_GridCapture', isPresent=isPresent, _rc)
        if (isPresent) then
-          call ESMF_AttributeGet(bundle, name='MAPL_GridCapture', value=isGridCapture, _RC)
+          call ESMF_AttributeGet(bundle, name='MAPL_GridCapture', value=isGridCapture, _rc)
        else
           isGridCapture = .false.
        end if
 
        if (isGridCapture) then
-          call add_fvar(cf, 'lons', pFIO_REAL64, 'lon,lat,', 'degrees east', 'lons', _RC)
-          call add_fvar(cf, 'lats', pFIO_REAL64, 'lon,lat,', 'degrees north', 'lats', _RC)
+          call add_fvar(cf, 'lons', pFIO_REAL64, 'lon,lat,', 'degrees east', 'lons', _rc)
+          call add_fvar(cf, 'lats', pFIO_REAL64, 'lon,lat,', 'degrees north', 'lats', _rc)
        end if
 
        if (ungrid_dim_max_size /= 0) then
@@ -4160,7 +4160,7 @@ contains
              fname_by_writer = get_fname_by_rank(trim(filename),i-1)
              iter = RstCollections%find(trim(fname_by_writer))
              if (iter == RstCollections%end()) then
-                call cf%add_attribute("Split_Cubed_Sphere", i, _RC)
+                call cf%add_attribute("Split_Cubed_Sphere", i, _rc)
                 arrdes%collection_id(i) = oClients%add_hist_collection(cf)
                 call RstCollections%insert(trim(fname_by_writer), arrdes%collection_id(i))
              else
@@ -4201,7 +4201,7 @@ contains
                 fname_by_writer = get_fname_by_rank(trim(filename),writer_rank)
                 call formatter%create(trim(fname_by_writer),rc=status)
                 _VERIFY(status)
-                call cf%add_attribute("Split_Cubed_Sphere", writer_rank, _RC)
+                call cf%add_attribute("Split_Cubed_Sphere", writer_rank, _rc)
              else
                 call formatter%create_par(trim(filename),mode=pfio_mode,comm=arrdes%writers_comm,info=info,rc=status)
                 _VERIFY(status)
@@ -4248,38 +4248,38 @@ contains
 
     enddo
 
-    call ESMF_AttributeGet(bundle, name='MAPL_GridCapture', isPresent=isPresent, _RC)
+    call ESMF_AttributeGet(bundle, name='MAPL_GridCapture', isPresent=isPresent, _rc)
     if (isPresent) then
-       call ESMF_AttributeGet(bundle, name='MAPL_GridCapture', value=isGridCapture, _RC)
+       call ESMF_AttributeGet(bundle, name='MAPL_GridCapture', value=isGridCapture, _rc)
     else
        isGridCapture = .false.
     end if
 
     if (isGridCapture) then
-       call ESMF_GridGet(arrdes%grid, name=fieldname, _RC)
-       lons_field = ESMF_FieldCreate(grid=arrdes%grid, typekind=ESMF_TYPEKIND_R8, name='lons', _RC)
-       lats_field = ESMF_FieldCreate(grid=arrdes%grid, typekind=ESMF_TYPEKIND_R8, name='lats', _RC)
+       call ESMF_GridGet(arrdes%grid, name=fieldname, _rc)
+       lons_field = ESMF_FieldCreate(grid=arrdes%grid, typekind=ESMF_TYPEKIND_R8, name='lons', _rc)
+       lats_field = ESMF_FieldCreate(grid=arrdes%grid, typekind=ESMF_TYPEKIND_R8, name='lats', _rc)
 
        call ESMF_GridGetCoord(grid=arrdes%grid, localDE=0, coordDim=1, &
-           staggerloc=ESMF_STAGGERLOC_CENTER, farrayPtr=grid_lons, _RC)
+           staggerloc=ESMF_STAGGERLOC_CENTER, farrayPtr=grid_lons, _rc)
        call ESMF_GridGetCoord(grid=arrdes%grid, localDE=0, coordDim=2, &
-           staggerloc=ESMF_STAGGERLOC_CENTER, farrayPtr=grid_lats, _RC)
+           staggerloc=ESMF_STAGGERLOC_CENTER, farrayPtr=grid_lats, _rc)
 
-       call ESMF_FieldGet(lons_field, farrayPtr=lons_field_ptr, _RC)
-       call ESMF_FieldGet(lats_field, farrayPtr=lats_field_ptr, _RC)
+       call ESMF_FieldGet(lons_field, farrayPtr=lons_field_ptr, _rc)
+       call ESMF_FieldGet(lats_field, farrayPtr=lats_field_ptr, _rc)
 
        lons_field_ptr = grid_lons
        lats_field_ptr = grid_lats
 
-       call ESMF_AttributeSet(lons_field, name="DIMS", value=MAPL_DimsHorzOnly, _RC)
-       call ESMF_AttributeSet(lats_field, name="DIMS", value=MAPL_DimsHorzOnly, _RC)
+       call ESMF_AttributeSet(lons_field, name="DIMS", value=MAPL_DimsHorzOnly, _rc)
+       call ESMF_AttributeSet(lats_field, name="DIMS", value=MAPL_DimsHorzOnly, _rc)
 
        call MAPL_FieldWriteNCPar(formatter, 'lons', lons_field, arrdes, HomePE=mask, oClients=oClients, rc=status)
        call MAPL_FieldWriteNCPar(formatter, 'lats', lats_field, arrdes, HomePE=mask, oClients=oClients, rc=status)
     end if
 
     if (have_oclients) then
-       call oClients%done_collective_stage(_RC)
+       call oClients%done_collective_stage(_rc)
        call oClients%post_wait()
        call MPI_Info_free(info, status)
        _VERIFY(STATUS)
@@ -4417,9 +4417,9 @@ contains
                 skipWriting = .true.
              end if
 
-             call ESMF_AttributeGet(state, name='MAPL_TestFramework', isPresent=isPresent, _RC)
+             call ESMF_AttributeGet(state, name='MAPL_TestFramework', isPresent=isPresent, _rc)
              if (isPresent) then
-                call ESMF_AttributeGet(state, name='MAPL_TestFramework', value=is_test_framework, _RC)
+                call ESMF_AttributeGet(state, name='MAPL_TestFramework', value=is_test_framework, _rc)
                 if (is_test_framework) skipWriting = .false.
              end if
 
@@ -4461,9 +4461,9 @@ contains
                    skipWriting = .true.
                 end if
 
-                call ESMF_AttributeGet(state, name='MAPL_TestFramework', isPresent=isPresent, _RC)
+                call ESMF_AttributeGet(state, name='MAPL_TestFramework', isPresent=isPresent, _rc)
                 if (isPresent) then
-                   call ESMF_AttributeGet(state, name='MAPL_TestFramework', value=is_test_framework, _RC)
+                   call ESMF_AttributeGet(state, name='MAPL_TestFramework', value=is_test_framework, _rc)
                    if (is_test_framework) skipWriting = .false.
                 end if
 
@@ -4477,9 +4477,9 @@ contains
                    skipWriting = (dna /= 0)
                 endif
 
-                call ESMF_AttributeGet(state, name='MAPL_TestFramework', isPresent=isPresent, _RC)
+                call ESMF_AttributeGet(state, name='MAPL_TestFramework', isPresent=isPresent, _rc)
                 if (isPresent) then
-                   call ESMF_AttributeGet(state, name='MAPL_TestFramework', value=is_test_framework, _RC)
+                   call ESMF_AttributeGet(state, name='MAPL_TestFramework', value=is_test_framework, _rc)
                    if (is_test_framework) skipWriting = .false.
                 end if
 
@@ -4504,10 +4504,10 @@ contains
     deallocate(ITEMTYPES)
     deallocate(DOIT     )
 
-    call ESMF_AttributeGet(state, name='MAPL_GridCapture', isPresent=isPresent, _RC)
+    call ESMF_AttributeGet(state, name='MAPL_GridCapture', isPresent=isPresent, _rc)
     if (isPresent) then
-       call ESMF_AttributeGet(state, name='MAPL_GridCapture', value=isGridCapture, _RC)
-       call ESMF_AttributeSet(bundle_write, name="MAPL_GridCapture", value=isGridCapture, _RC)
+       call ESMF_AttributeGet(state, name='MAPL_GridCapture', value=isGridCapture, _rc)
+       call ESMF_AttributeSet(bundle_write, name="MAPL_GridCapture", value=isGridCapture, _rc)
     end if
 
     call MAPL_BundleWriteNCPar(Bundle_Write, arrdes, CLOCK, filename, clobber=local_clobber, oClients=oClients, rc=status)

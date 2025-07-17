@@ -324,13 +324,13 @@ contains
       ! use the one from the command line arguments
       if (esmfConfigFileExists) then
          call lgr%info("Using ESMF configuration file: %a", esmfConfigFile)
-         call ESMF_Initialize (configFileName=esmfConfigFile, mpiCommunicator=comm, vm=vm, _RC)
+         call ESMF_Initialize (configFileName=esmfConfigFile, mpiCommunicator=comm, vm=vm, _rc)
       else
-         call ESMF_Initialize (logKindFlag=this%cap_options%esmf_logging_mode, mpiCommunicator=comm, vm=vm, _RC)
+         call ESMF_Initialize (logKindFlag=this%cap_options%esmf_logging_mode, mpiCommunicator=comm, vm=vm, _rc)
       end if
 
       ! We check to see if ESMF_COMM was built as mpiuni which is not allowed for MAPL
-      call ESMF_VmGet(vm, esmfComm = esmfComm, _RC)
+      call ESMF_VmGet(vm, esmfComm = esmfComm, _rc)
       _ASSERT( esmfComm /= 'mpiuni', 'ESMF_COMM=mpiuni is not allowed for MAPL')
 
       ! Note per ESMF this is a temporary routine as eventually MOAB will
@@ -405,7 +405,7 @@ contains
 
      _UNUSED_DUMMY(unusable)
 
-     pinflag = GetPinFlagFromConfig(this%cap_options%cap_rc_file, _RC)
+     pinflag = GetPinFlagFromConfig(this%cap_options%cap_rc_file, _rc)
      call MAPL_PinFlagSet(pinflag)
 
      if (this%non_dso) then
@@ -484,7 +484,7 @@ contains
       _VERIFY(ierror)
 
       if (.not. this%mpi_already_initialized) then
-         call ESMF_InitializePreMPI(_RC)
+         call ESMF_InitializePreMPI(_rc)
 
          ! Testing with GCC 14 + MVAPICH 4 found that it was failing with
          ! a SIGFPE in MPI_Init_thread(). Turning off ieee halting
@@ -598,10 +598,10 @@ contains
      integer :: status
      type(ESMF_Config) :: config
 
-     config = ESMF_ConfigCreate(_RC)
-     call ESMF_ConfigLoadFile(config,rcfile, _RC)
+     config = ESMF_ConfigCreate(_rc)
+     call ESMF_ConfigLoadFile(config,rcfile, _rc)
      call ESMF_ConfigGetAttribute(config, value=pinflag_str, &
-          label='ESMF_PINFLAG:', default='SSI_CONTIG', _RC)
+          label='ESMF_PINFLAG:', default='SSI_CONTIG', _rc)
 
      select case (pinflag_str)
      case ('PET')
@@ -616,7 +616,7 @@ contains
         _ASSERT(.false.,'Unsupported PIN flag')
      end select
 
-     call ESMF_ConfigDestroy(config, _RC)
+     call ESMF_ConfigDestroy(config, _rc)
      _RETURN(_SUCCESS)
    end function GetPinFlagFromConfig
 
