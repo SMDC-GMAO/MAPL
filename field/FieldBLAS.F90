@@ -8,9 +8,22 @@ module mapl_FieldBLAS
    implicit none
    private
 
-   ! Level 1 BLAS
+   ! Level 1 BLAS (Basic Linear Algebra Subprograms)
+   ! Available routines:
+   !   FieldSCAL  - scale vector: x = a*x
+   !   FieldAXPY  - add scaled vector: y = a*x + y  
+   !   FieldSWAP  - interchange vectors: x <-> y
+   !   FieldDOT   - dot product: result = x'*y
+   !   FieldNRM2  - Euclidean norm: result = ||x||_2
+   !   FieldASUM  - sum of absolute values: result = sum(|x_i|)
+   !   FieldIAMAX - index of max absolute value: result = argmax(|x_i|)
    public :: FieldSCAL
    public :: FieldAXPY
+   public :: FieldSWAP
+   public :: FieldDOT
+   public :: FieldNRM2
+   public :: FieldASUM
+   public :: FieldIAMAX
 
    ! Level 2 BLAS
    public :: FieldGEMV
@@ -52,6 +65,36 @@ module mapl_FieldBLAS
    interface FieldAXPY
       procedure axpy_r4
       procedure axpy_r8
+   end interface
+
+   ! call FieldSWAP(x, y, rc): interchange x and y vectors
+   interface FieldSWAP
+      procedure swap_r4
+      procedure swap_r8
+   end interface
+
+   ! result = FieldDOT(x, y, rc): compute dot product of x and y
+   interface FieldDOT
+      procedure dot_r4
+      procedure dot_r8
+   end interface
+
+   ! result = FieldNRM2(x, rc): compute Euclidean norm of x
+   interface FieldNRM2
+      procedure nrm2_r4
+      procedure nrm2_r8
+   end interface
+
+   ! result = FieldASUM(x, rc): compute sum of absolute values of x
+   interface FieldASUM
+      procedure asum_r4
+      procedure asum_r8
+   end interface
+
+   ! result = FieldIAMAX(x, rc): find index of maximum absolute value in x
+   interface FieldIAMAX
+      procedure iamax_r4
+      procedure iamax_r8
    end interface
 
    ! call FieldGEMV(alpha, A, x, beta, y, rc) (multiply y in-place, then add a*A*x to y in-place)
@@ -150,6 +193,214 @@ contains
 
       _RETURN(_SUCCESS)
    end subroutine axpy_r8
+
+   subroutine swap_r4(x, y, rc)
+      type(ESMF_Field), intent(inout) :: x
+      type(ESMF_Field), intent(inout) :: y
+      integer, optional, intent(out) :: rc
+
+      real(kind=ESMF_KIND_R4), pointer :: x_ptr(:), y_ptr(:)
+      real(kind=ESMF_KIND_R4), allocatable :: temp_array(:)
+      logical :: conformable
+      integer :: status
+
+      call verify_typekind(x, ESMF_TYPEKIND_R4)
+      call verify_typekind(y, ESMF_TYPEKIND_R4)
+
+      conformable = FieldsAreConformable(x, y)
+      _ASSERT(conformable, 'FieldSWAP() - fields not conformable.')
+
+      call assign_fptr(x, x_ptr, _RC)
+      call assign_fptr(y, y_ptr, _RC)
+
+      ! Swap by temporary storage
+      allocate(temp_array(size(x_ptr)))
+      temp_array = x_ptr
+      x_ptr = y_ptr
+      y_ptr = temp_array
+      deallocate(temp_array)
+
+      _RETURN(_SUCCESS)
+   end subroutine swap_r4
+
+   subroutine swap_r8(x, y, rc)
+      type(ESMF_Field), intent(inout) :: x
+      type(ESMF_Field), intent(inout) :: y
+      integer, optional, intent(out) :: rc
+
+      real(kind=ESMF_KIND_R8), pointer :: x_ptr(:), y_ptr(:)
+      real(kind=ESMF_KIND_R8), allocatable :: temp_array(:)
+      logical :: conformable
+      integer :: status
+
+      call verify_typekind(x, ESMF_TYPEKIND_R8)
+      call verify_typekind(y, ESMF_TYPEKIND_R8)
+
+      conformable = FieldsAreConformable(x, y)
+      _ASSERT(conformable, 'FieldSWAP() - fields not conformable.')
+
+      call assign_fptr(x, x_ptr, _RC)
+      call assign_fptr(y, y_ptr, _RC)
+
+      ! Swap by temporary storage
+      allocate(temp_array(size(x_ptr)))
+      temp_array = x_ptr
+      x_ptr = y_ptr
+      y_ptr = temp_array
+      deallocate(temp_array)
+
+      _RETURN(_SUCCESS)
+   end subroutine swap_r8
+
+   function dot_r4(x, y, rc) result(result_dot)
+      type(ESMF_Field), intent(inout) :: x
+      type(ESMF_Field), intent(inout) :: y
+      integer, optional, intent(out) :: rc
+      real(kind=ESMF_KIND_R4) :: result_dot
+
+      real(kind=ESMF_KIND_R4), pointer :: x_ptr(:), y_ptr(:)
+      logical :: conformable
+      integer :: status
+
+      call verify_typekind(x, ESMF_TYPEKIND_R4)
+      call verify_typekind(y, ESMF_TYPEKIND_R4)
+
+      conformable = FieldsAreConformable(x, y)
+      _ASSERT(conformable, 'FieldDOT() - fields not conformable.')
+
+      call assign_fptr(x, x_ptr, _RC)
+      call assign_fptr(y, y_ptr, _RC)
+
+      result_dot = dot_product(x_ptr, y_ptr)
+
+      _RETURN(_SUCCESS)
+   end function dot_r4
+
+   function dot_r8(x, y, rc) result(result_dot)
+      type(ESMF_Field), intent(inout) :: x
+      type(ESMF_Field), intent(inout) :: y
+      integer, optional, intent(out) :: rc
+      real(kind=ESMF_KIND_R8) :: result_dot
+
+      real(kind=ESMF_KIND_R8), pointer :: x_ptr(:), y_ptr(:)
+      logical :: conformable
+      integer :: status
+
+      call verify_typekind(x, ESMF_TYPEKIND_R8)
+      call verify_typekind(y, ESMF_TYPEKIND_R8)
+
+      conformable = FieldsAreConformable(x, y)
+      _ASSERT(conformable, 'FieldDOT() - fields not conformable.')
+
+      call assign_fptr(x, x_ptr, _RC)
+      call assign_fptr(y, y_ptr, _RC)
+
+      result_dot = dot_product(x_ptr, y_ptr)
+
+      _RETURN(_SUCCESS)
+   end function dot_r8
+
+   function nrm2_r4(x, rc) result(norm)
+      type(ESMF_Field), intent(inout) :: x
+      integer, optional, intent(out) :: rc
+      real(kind=ESMF_KIND_R4) :: norm
+
+      real(kind=ESMF_KIND_R4), pointer :: x_ptr(:)
+      integer :: status
+
+      call verify_typekind(x, ESMF_TYPEKIND_R4)
+
+      call assign_fptr(x, x_ptr, _RC)
+
+      norm = norm2(x_ptr)
+
+      _RETURN(_SUCCESS)
+   end function nrm2_r4
+
+   function nrm2_r8(x, rc) result(norm)
+      type(ESMF_Field), intent(inout) :: x
+      integer, optional, intent(out) :: rc
+      real(kind=ESMF_KIND_R8) :: norm
+
+      real(kind=ESMF_KIND_R8), pointer :: x_ptr(:)
+      integer :: status
+
+      call verify_typekind(x, ESMF_TYPEKIND_R8)
+
+      call assign_fptr(x, x_ptr, _RC)
+
+      norm = norm2(x_ptr)
+
+      _RETURN(_SUCCESS)
+   end function nrm2_r8
+
+   function asum_r4(x, rc) result(sum_abs)
+      type(ESMF_Field), intent(inout) :: x
+      integer, optional, intent(out) :: rc
+      real(kind=ESMF_KIND_R4) :: sum_abs
+
+      real(kind=ESMF_KIND_R4), pointer :: x_ptr(:)
+      integer :: status
+
+      call verify_typekind(x, ESMF_TYPEKIND_R4)
+
+      call assign_fptr(x, x_ptr, _RC)
+
+      sum_abs = sum(abs(x_ptr))
+
+      _RETURN(_SUCCESS)
+   end function asum_r4
+
+   function asum_r8(x, rc) result(sum_abs)
+      type(ESMF_Field), intent(inout) :: x
+      integer, optional, intent(out) :: rc
+      real(kind=ESMF_KIND_R8) :: sum_abs
+
+      real(kind=ESMF_KIND_R8), pointer :: x_ptr(:)
+      integer :: status
+
+      call verify_typekind(x, ESMF_TYPEKIND_R8)
+
+      call assign_fptr(x, x_ptr, _RC)
+
+      sum_abs = sum(abs(x_ptr))
+
+      _RETURN(_SUCCESS)
+   end function asum_r8
+
+   function iamax_r4(x, rc) result(max_index)
+      type(ESMF_Field), intent(inout) :: x
+      integer, optional, intent(out) :: rc
+      integer :: max_index
+
+      real(kind=ESMF_KIND_R4), pointer :: x_ptr(:)
+      integer :: status
+
+      call verify_typekind(x, ESMF_TYPEKIND_R4)
+
+      call assign_fptr(x, x_ptr, _RC)
+
+      max_index = maxloc(abs(x_ptr), dim=1)
+
+      _RETURN(_SUCCESS)
+   end function iamax_r4
+
+   function iamax_r8(x, rc) result(max_index)
+      type(ESMF_Field), intent(inout) :: x
+      integer, optional, intent(out) :: rc
+      integer :: max_index
+
+      real(kind=ESMF_KIND_R8), pointer :: x_ptr(:)
+      integer :: status
+
+      call verify_typekind(x, ESMF_TYPEKIND_R8)
+
+      call assign_fptr(x, x_ptr, _RC)
+
+      max_index = maxloc(abs(x_ptr), dim=1)
+
+      _RETURN(_SUCCESS)
+   end function iamax_r8
 
    ! Assumes gridded dimensions are first, and that the "vector" dim
    ! is last ungridded dim of fields.
