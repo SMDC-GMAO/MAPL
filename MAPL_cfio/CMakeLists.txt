@@ -1,5 +1,5 @@
 esma_set_this ()
-string (REPLACE MAPL_cfio_ "" precision ${this})
+string (REPLACE MAPL.cfio_ "" precision ${this})
 
 
 set (srcs
