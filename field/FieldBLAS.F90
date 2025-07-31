@@ -191,7 +191,8 @@ contains
       type(ESMF_Field), intent(inout) :: y
       integer, optional, intent(out) :: rc
 
-      real(kind=ESMF_KIND_R4), pointer :: x_ptr(:), y_ptr(:), temp_ptr(:)
+      real(kind=ESMF_KIND_R4), pointer :: x_ptr(:), y_ptr(:)
+      real(kind=ESMF_KIND_R4), allocatable :: temp_array(:)
       logical :: conformable
       integer :: status
 
@@ -205,11 +206,11 @@ contains
       call assign_fptr(y, y_ptr, _RC)
 
       ! Swap by temporary storage
-      allocate(temp_ptr(size(x_ptr)))
-      temp_ptr = x_ptr
+      allocate(temp_array(size(x_ptr)))
+      temp_array = x_ptr
       x_ptr = y_ptr
-      y_ptr = temp_ptr
-      deallocate(temp_ptr)
+      y_ptr = temp_array
+      deallocate(temp_array)
 
       _RETURN(_SUCCESS)
    end subroutine swap_r4
@@ -219,7 +220,8 @@ contains
       type(ESMF_Field), intent(inout) :: y
       integer, optional, intent(out) :: rc
 
-      real(kind=ESMF_KIND_R8), pointer :: x_ptr(:), y_ptr(:), temp_ptr(:)
+      real(kind=ESMF_KIND_R8), pointer :: x_ptr(:), y_ptr(:)
+      real(kind=ESMF_KIND_R8), allocatable :: temp_array(:)
       logical :: conformable
       integer :: status
 
@@ -233,11 +235,14 @@ contains
       call assign_fptr(y, y_ptr, _RC)
 
       ! Swap by temporary storage
-      allocate(temp_ptr(size(x_ptr)))
-      temp_ptr = x_ptr
+      allocate(temp_array(size(x_ptr)))
+      temp_array = x_ptr
       x_ptr = y_ptr
-      y_ptr = temp_ptr
-      deallocate(temp_ptr)
+      y_ptr = temp_array
+      deallocate(temp_array)
+
+      _RETURN(_SUCCESS)
+   end subroutine swap_r8
 
       _RETURN(_SUCCESS)
    end subroutine swap_r8
