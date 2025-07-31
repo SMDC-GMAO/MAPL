@@ -1,5 +1,5 @@
 esma_set_this ()
-string (REPLACE MAPL_cfio_ "" precision ${this})
+string (REPLACE MAPL.cfio_ "" precision ${this})
 
 
 set (srcs
@@ -25,7 +25,7 @@ endif ()
 
 set (EOS )
 
-set (lib MAPL_cfio_${precision})
+set (lib MAPL.cfio_${precision})
 
 esma_add_library (${lib}
   SRCS ${srcs}
