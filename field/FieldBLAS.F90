@@ -8,7 +8,15 @@ module mapl_FieldBLAS
    implicit none
    private
 
-   ! Level 1 BLAS
+   ! Level 1 BLAS (Basic Linear Algebra Subprograms)
+   ! Available routines:
+   !   FieldSCAL  - scale vector: x = a*x
+   !   FieldAXPY  - add scaled vector: y = a*x + y  
+   !   FieldSWAP  - interchange vectors: x <-> y
+   !   FieldDOT   - dot product: result = x'*y
+   !   FieldNRM2  - Euclidean norm: result = ||x||_2
+   !   FieldASUM  - sum of absolute values: result = sum(|x_i|)
+   !   FieldIAMAX - index of max absolute value: result = argmax(|x_i|)
    public :: FieldSCAL
    public :: FieldAXPY
    public :: FieldSWAP
