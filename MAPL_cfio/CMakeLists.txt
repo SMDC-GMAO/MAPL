@@ -25,7 +25,7 @@ endif ()
 
 set (EOS )
 
-set (lib MAPL_cfio_${precision})
+set (lib MAPL.cfio_${precision})
 
 esma_add_library (${lib}
   SRCS ${srcs}

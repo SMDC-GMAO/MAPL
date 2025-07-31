@@ -202,8 +202,8 @@ include(mapl_create_stub_component)
 add_subdirectory (Apps)
 
 # Special case - MAPL_cfio is built twice with two different precisions.
-add_subdirectory (MAPL_cfio MAPL_cfio_r4)
-add_subdirectory (MAPL_cfio MAPL_cfio_r8)
+add_subdirectory (MAPL_cfio MAPL.cfio_r4)
+add_subdirectory (MAPL_cfio MAPL.cfio_r8)
 
 # This tests for various capabilities of the compiler
 # We mainly use it for MPICH issues
