@@ -252,9 +252,6 @@ contains
       _RETURN(_SUCCESS)
    end subroutine swap_r8
 
-      _RETURN(_SUCCESS)
-   end subroutine swap_r8
-
    function dot_r4(x, y, rc) result(result_dot)
       type(ESMF_Field), intent(inout) :: x
       type(ESMF_Field), intent(inout) :: y
@@ -315,7 +312,7 @@ contains
 
       call assign_fptr(x, x_ptr, _RC)
 
-      norm = sqrt(dot_product(x_ptr, x_ptr))
+      norm = norm2(x_ptr)
 
       _RETURN(_SUCCESS)
    end function nrm2_r4
@@ -332,7 +329,7 @@ contains
 
       call assign_fptr(x, x_ptr, _RC)
 
-      norm = sqrt(dot_product(x_ptr, x_ptr))
+      norm = norm2(x_ptr)
 
       _RETURN(_SUCCESS)
    end function nrm2_r8
